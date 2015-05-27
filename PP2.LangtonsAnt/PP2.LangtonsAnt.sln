@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PP2.LangtonsAnt.Test", "PP2.LangtonsAnt.Test\PP2.LangtonsAnt.Test.vcxproj", "{18281089-A712-499A-A2E3-1BAEDB5AA047}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PP2.LangtonsAnt.Graphics", "PP2.LangtonsAnt.Graphics\PP2.LangtonsAnt.Graphics.vcxproj", "{A18B9832-A1A9-441D-9A20-8E79AD640D21}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PDCurses", "PDCurses\PDCurses.vcxproj", "{7E6FB700-4F8D-4188-B249-26CB063DDBBA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18281089-A712-499A-A2E3-1BAEDB5AA047}.Debug|Win32.ActiveCfg = Debug|Win32
+		{18281089-A712-499A-A2E3-1BAEDB5AA047}.Debug|Win32.Build.0 = Debug|Win32
+		{18281089-A712-499A-A2E3-1BAEDB5AA047}.Release|Win32.ActiveCfg = Release|Win32
+		{18281089-A712-499A-A2E3-1BAEDB5AA047}.Release|Win32.Build.0 = Release|Win32
+		{A18B9832-A1A9-441D-9A20-8E79AD640D21}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A18B9832-A1A9-441D-9A20-8E79AD640D21}.Debug|Win32.Build.0 = Debug|Win32
+		{A18B9832-A1A9-441D-9A20-8E79AD640D21}.Release|Win32.ActiveCfg = Release|Win32
+		{A18B9832-A1A9-441D-9A20-8E79AD640D21}.Release|Win32.Build.0 = Release|Win32
+		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Debug|Win32.Build.0 = Debug|Win32
+		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Release|Win32.ActiveCfg = Release|Win32
+		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
