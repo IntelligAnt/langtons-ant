@@ -1,10 +1,6 @@
-﻿  Test.c
-c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\graphics.h(21): warning C4005: 'COLOR_BLUE' : macro redefinition
-          c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\include\curses.h(604) : see previous definition of 'COLOR_BLUE'
-c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\graphics.h(23): warning C4005: 'COLOR_RED' : macro redefinition
-          c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\include\curses.h(606) : see previous definition of 'COLOR_RED'
-c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\graphics.h(32): warning C4005: 'COLOR_YELLOW' : macro redefinition
-          c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\include\curses.h(611) : see previous definition of 'COLOR_YELLOW'
-c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\graphics.h(35): warning C4005: 'COLOR_WHITE' : macro redefinition
-          c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant.graphics\include\curses.h(613) : see previous definition of 'COLOR_WHITE'
-  PP2.LangtonsAnt.Graphics.vcxproj -> C:\Users\Konstantin\Documents\GitHub\langtons-ant\PP2.LangtonsAnt\Debug\PP2.LangtonsAnt.Graphics.exe
+﻿  grid.c
+  graphics.c
+  Generating Code...
+graphics.obj : error LNK2019: unresolved external symbol _init_grid referenced in function _init_graphics
+graphics.obj : error LNK2019: unresolved external symbol _draw_grid_full referenced in function _init_graphics
+C:\Users\Konstantin\Documents\GitHub\langtons-ant\PP2.LangtonsAnt\Debug\PP2.LangtonsAnt.Graphics.exe : fatal error LNK1120: 2 unresolved externals

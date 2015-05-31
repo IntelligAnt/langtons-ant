@@ -3,6 +3,15 @@
 
 #include "curses.h"
 
+#undef COLOR_BLACK
+#undef COLOR_RED
+#undef COLOR_GREEN
+#undef COLOR_BLUE
+#undef COLOR_CYAN
+#undef COLOR_MAGENTA
+#undef COLOR_YELLOW
+#undef COLOR_WHITE
+
 /*** 4-bit color macros (HTML names) ***/
 
 #define COLOR_BLACK   0
@@ -36,9 +45,6 @@
 
 #define COLOR_SILVER  7
 #define COLOR_WHITE   15
-
-#undef COLOR_CYAN
-#undef COLOR_MAGENTA
 
 #define COLOR_COUNT 16
 

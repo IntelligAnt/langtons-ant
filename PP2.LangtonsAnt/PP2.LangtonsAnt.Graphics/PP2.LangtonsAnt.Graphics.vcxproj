@@ -79,10 +79,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Test.c" />
+    <ClCompile Include="graphics.c" />
+    <ClCompile Include="grid.c" />
+    <ClCompile Include="TestGraphics.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
+    <ClInclude Include="grid.h" />
     <ClInclude Include="include\curses.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

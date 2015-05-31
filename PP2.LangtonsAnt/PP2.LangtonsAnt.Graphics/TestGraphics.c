@@ -1,3 +1,4 @@
+#include "include/curses.h"
 #include "graphics.h"
 
 int main(void)
