@@ -1,6 +1,0 @@
-﻿  grid.c
-  graphics.c
-  Generating Code...
-graphics.obj : error LNK2019: unresolved external symbol _init_grid referenced in function _init_graphics
-graphics.obj : error LNK2019: unresolved external symbol _draw_grid_full referenced in function _init_graphics
-C:\Users\Konstantin\Documents\GitHub\langtons-ant\PP2.LangtonsAnt\Debug\PP2.LangtonsAnt.Graphics.exe : fatal error LNK1120: 2 unresolved externals
