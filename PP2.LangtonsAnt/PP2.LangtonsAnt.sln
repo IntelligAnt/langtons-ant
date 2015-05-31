@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PP2.LangtonsAnt.Test", "PP2
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PP2.LangtonsAnt.Graphics", "PP2.LangtonsAnt.Graphics\PP2.LangtonsAnt.Graphics.vcxproj", "{A18B9832-A1A9-441D-9A20-8E79AD640D21}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PDCurses", "PDCurses\PDCurses.vcxproj", "{7E6FB700-4F8D-4188-B249-26CB063DDBBA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PP2.LangtonsAnt.Logic", "PP2.LangtonsAnt.Logic\PP2.LangtonsAnt.Logic.vcxproj", "{CB2A4B36-BC20-4793-888B-7CC74F383417}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{A18B9832-A1A9-441D-9A20-8E79AD640D21}.Debug|Win32.Build.0 = Debug|Win32
 		{A18B9832-A1A9-441D-9A20-8E79AD640D21}.Release|Win32.ActiveCfg = Release|Win32
 		{A18B9832-A1A9-441D-9A20-8E79AD640D21}.Release|Win32.Build.0 = Release|Win32
-		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Debug|Win32.Build.0 = Debug|Win32
-		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Release|Win32.ActiveCfg = Release|Win32
-		{7E6FB700-4F8D-4188-B249-26CB063DDBBA}.Release|Win32.Build.0 = Release|Win32
+		{CB2A4B36-BC20-4793-888B-7CC74F383417}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CB2A4B36-BC20-4793-888B-7CC74F383417}.Debug|Win32.Build.0 = Debug|Win32
+		{CB2A4B36-BC20-4793-888B-7CC74F383417}.Release|Win32.ActiveCfg = Release|Win32
+		{CB2A4B36-BC20-4793-888B-7CC74F383417}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
