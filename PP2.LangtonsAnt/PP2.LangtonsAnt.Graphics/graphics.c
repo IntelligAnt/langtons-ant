@@ -3,7 +3,7 @@
 
 void init_def_pairs(short def_bg_color)
 {
-	int i;
+	short i;
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		init_pair(i+1, i, def_bg_color);
 	}
@@ -33,5 +33,7 @@ void init_graphics(void)
 	init_def_pairs(COLOR_WHITE);
 
 	init_grid();
-	draw_grid_full(NULL);
+	grid_draw_full(NULL);
+
+	// TODO Init menus
 }

@@ -1,7 +1,7 @@
 #ifndef __GRAPHICS_H__
 #define __GRAPHICS_H__
 
-#include "curses.h"
+#include "include/curses.h"
 
 #undef COLOR_BLACK
 #undef COLOR_RED

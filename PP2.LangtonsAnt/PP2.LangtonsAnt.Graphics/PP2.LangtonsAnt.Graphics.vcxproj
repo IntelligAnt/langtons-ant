@@ -52,7 +52,7 @@
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\Konstantin\Documents\GitHub\langtons-ant\PP2.LangtonsAnt\PP2.LangtonsAnt.Logic;$(ProjectDir)include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\PP2.LangtonsAnt.Logic</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

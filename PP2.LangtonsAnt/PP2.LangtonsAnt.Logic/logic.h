@@ -16,22 +16,22 @@ typedef struct vector2i {
 } Vector2i;
 
 typedef struct grid {
-	char **g;
-	int size;
+	unsigned char **c;
+	unsigned size;
 } Grid;
 
 typedef struct ant {
-	Vector2i v;
+	Vector2i p;
 	Direction dir;
 } Ant;
 
-Grid *grid_new(int size);
+Grid *grid_new(unsigned size);
 Colors *init_colors(void);
 int color_exists(Colors *colors, short c);
-int new_color(Colors *colors, short c, short turn);
-int delete_color(Colors *colors, short c);
+void new_color(Colors *colors, short c, short turn);
+void delete_color(Colors *colors, short c);
 int enough_colors(Colors *colors);
 Ant *ant_new(Grid *grid, Direction dir);
-int ant_move(Ant *ant, Grid *grid, Colors *colors);
+void ant_move(Ant *ant, Grid *grid, Colors *colors);
 
 #endif

@@ -9,7 +9,7 @@
 
 #define CLEAR() system("cls");
 
-int draw_grid(Grid *grid, int steps)
+void draw_grid(Grid *grid, int steps)
 {
 	int i, j;
 
@@ -17,7 +17,7 @@ int draw_grid(Grid *grid, int steps)
 
 	for (i = 0; i < grid->size; ++i) {
 		for (j = 0; j < grid->size; ++j) {
-			putchar(grid->g[i][j]);
+			putchar(grid->c[i][j]);
 		}
 		putchar('\n');
 	}
@@ -62,7 +62,7 @@ int main(void)
 		CLEAR();
 	}
 
-	while (ant->v.x >= 0 && ant->v.x < grid->size && ant->v.y >= 0 && ant->v.y < grid->size) {
+	while (ant->p.x >= 0 && ant->p.x < grid->size && ant->p.y >= 0 && ant->p.y < grid->size) {
 		if (++cnt == DRAW_EVERY) {
 			draw_grid(grid, steps);
 			cnt = 0;

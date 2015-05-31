@@ -4,27 +4,28 @@
 
 #include "logic.h"
 
-Grid *grid_new(int size)
+Grid *grid_new(unsigned size)
 {
-	char **grid = malloc(size * sizeof(char*)), def_color = 15;
-	Grid *new = malloc(sizeof(Grid));
-	int i, j;
+	Grid *grid = malloc(sizeof(Grid));
+	unsigned char **c = malloc(size * sizeof(unsigned char*));
+	short def_color = COLOR_WHITE;
+	unsigned i, j;
 	for (i = 0; i < size; ++i) {
-		grid[i] = malloc(size * sizeof(char));
+		c[i] = malloc(size * sizeof(unsigned char));
 		for (j = 0; j < size; ++j) {
-			grid[i][j] = def_color;
+			c[i][j] = def_color;
 		}
 	}
-	new->g = grid;
-	new->size = size;
-	return new;
+	grid->c = c;
+	grid->size = size;
+	return grid;
 }
 
 Colors *init_colors(void)
 {
 	Colors *new = malloc(sizeof(Colors));
 	int i;
-	for (i = 0; i < COLOR_COUNT - 1; i++) {
+	for (i = 0; i < COLOR_COUNT-1; ++i) {
 		new->turn[i] = 0;
 		new->next[i] = COLOR_COUNT - 1;
 	}
@@ -38,9 +39,9 @@ int color_exists(Colors *colors, short c)
 	return colors->turn[c] != 0;
 }
 
-int new_color(Colors *colors, short c, short turn)
+void new_color(Colors *colors, short c, short turn)
 {
-	colors->n++;
+	++colors->n;
 	if (colors->first == -1) {
 		colors->first = c;
 	} else {
@@ -51,7 +52,7 @@ int new_color(Colors *colors, short c, short turn)
 	colors->turn[c] = turn;
 }
 
-int delete_color(Colors *colors, short c)
+void delete_color(Colors *colors, short c)
 {
 	int i;
 	colors->n--;
@@ -61,7 +62,7 @@ int delete_color(Colors *colors, short c)
 	} else if (colors->first == c) {
 		colors->first = colors->next[colors->last] = colors->next[c];
 	} else {
-		for (i = 0; i < COLOR_COUNT - 1 && colors->next[i] != c; i++);
+		for (i = 0; i < COLOR_COUNT-1 && colors->next[i] != c; ++i);
 		colors->next[i] = colors->next[c];
 		if (colors->last == c) {
 			colors->last = i;
@@ -78,35 +79,35 @@ int enough_colors(Colors *colors)
 Ant *ant_new(Grid *grid, Direction dir)
 {
 	Ant *ant = malloc(sizeof(Ant));
-	ant->v.x = ant->v.y = grid->size / 2;
+	ant->p.x = ant->p.y = grid->size / 2;
 	ant->dir = dir;
 	return ant;
 }
 
-int ant_move(Ant *ant, Grid *grid, Colors *colors)
+void ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
-	int x = ant->v.x, y = ant->v.y;
-	if (grid->g[x][y] == COLOR_COUNT - 1) {
-		grid->g[x][y] = colors->first;
+	int x = ant->p.x, y = ant->p.y;
+	if (grid->c[x][y] == COLOR_COUNT-1) {
+		grid->c[x][y] = colors->first;
 	}
-	int turn = colors->turn[grid->g[x][y]];
+	int turn = colors->turn[grid->c[x][y]];
 	
-	grid->g[x][y] = colors->next[grid->g[x][y]];
+	grid->c[x][y] = (unsigned char) colors->next[grid->c[x][y]];
 
 	assert(abs(turn) == 1);
 
 	switch (ant->dir) {
 	case UP:
-		ant->v.y += turn;
+		ant->p.y += turn;
 		break;
 	case RIGHT:
-		ant->v.x += turn;
+		ant->p.x += turn;
 		break;
 	case DOWN:
-		ant->v.y -= turn;
+		ant->p.y -= turn;
 		break;
 	case LEFT:
-		ant->v.x -= turn;
+		ant->p.x -= turn;
 		break;
 	}
 
