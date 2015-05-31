@@ -18,8 +18,5 @@
     <ClCompile Include="LangtonsAnt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\PP2.LangtonsAnt.Logic\TestLogic.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>
