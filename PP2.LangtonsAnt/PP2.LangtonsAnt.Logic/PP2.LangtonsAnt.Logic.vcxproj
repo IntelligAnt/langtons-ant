@@ -79,6 +79,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Logic.c" />
+    <ClCompile Include="TestLogic.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="logic.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,5 +18,13 @@
     <ClCompile Include="Logic.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestLogic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="logic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
