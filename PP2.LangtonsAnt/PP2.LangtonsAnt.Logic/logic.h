@@ -1,20 +1,21 @@
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
-#define COLOR_COUNT 16
+#include "graphics.h"
+
 #define INIT_SIZE 20
 
 typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
 typedef struct colors {
-	short turn[COLOR_COUNT - 1], next[COLOR_COUNT - 1], numb, first, last;
+	short turn[COLOR_COUNT-1], next[COLOR_COUNT-1], n, first, last;
 } Colors;
 
 typedef struct vector2i {
 	int x, y;
 } Vector2i;
 
-typedef struct grid{
+typedef struct grid {
 	char **g;
 	int size;
 } Grid;

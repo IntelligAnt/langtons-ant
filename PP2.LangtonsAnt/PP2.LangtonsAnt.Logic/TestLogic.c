@@ -1,16 +1,13 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "logic.h"
-//#include <Windows.h>
 
+#include "logic.h"
 
 #define DRAW_EVERY 1
 //#define DELAY 0
 
 #define CLEAR() system("cls");
-//#define CLEAR() printf("\033[0;0H\n");
 
 int draw_grid(Grid *grid, int steps)
 {

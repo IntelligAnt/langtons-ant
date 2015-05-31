@@ -1,3 +1,6 @@
+#ifndef __GRAPHICS_H__
+#define __GRAPHICS_H__
+
 #include "curses.h"
 
 /*** 4-bit color macros (HTML names) ***/
@@ -42,3 +45,7 @@
 void init_def_pairs(short def_bg_color);
 
 short get_pair(short fg_color);
+
+void init_graphics(void);
+
+#endif

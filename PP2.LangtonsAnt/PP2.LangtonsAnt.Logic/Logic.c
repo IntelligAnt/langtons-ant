@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "logic.h"
 
 Grid *grid_new(int size)
@@ -27,7 +28,7 @@ Colors *init_colors(void)
 		new->turn[i] = 0;
 		new->next[i] = COLOR_COUNT - 1;
 	}
-	new->numb = 0;
+	new->n = 0;
 	new->first = new->last = -1;
 	return new;
 }
@@ -39,7 +40,7 @@ int color_exists(Colors *colors, short c)
 
 int new_color(Colors *colors, short c, short turn)
 {
-	colors->numb++;
+	colors->n++;
 	if (colors->first == -1) {
 		colors->first = c;
 	} else {
@@ -53,9 +54,9 @@ int new_color(Colors *colors, short c, short turn)
 int delete_color(Colors *colors, short c)
 {
 	int i;
-	colors->numb--;
+	colors->n--;
 	colors->turn[c] = 0;
-	if (colors->numb == 0) {
+	if (colors->n == 0) {
 		colors->first = colors->last = -1;
 	} else if (colors->first == c) {
 		colors->first = colors->next[colors->last] = colors->next[c];
@@ -71,7 +72,7 @@ int delete_color(Colors *colors, short c)
 
 int enough_colors(Colors *colors)
 {
-	return colors->numb >= 2;
+	return colors->n >= 2;
 }
 
 Ant *ant_new(Grid *grid, Direction dir)

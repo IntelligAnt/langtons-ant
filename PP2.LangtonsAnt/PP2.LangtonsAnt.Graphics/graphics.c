@@ -1,4 +1,5 @@
 #include "graphics.h"
+#include "grid.h"
 
 void init_def_pairs(short def_bg_color)
 {
@@ -19,4 +20,18 @@ short get_pair(short fg_color)
 		pair = (fg == fg_color) ? i : 0;
 	}
 	return pair;
+}
+
+void init_graphics(void)
+{
+	initscr();
+	cbreak();
+	keypad(stdscr, TRUE);
+	noecho();
+
+	start_color();
+	init_def_pairs(COLOR_WHITE);
+
+	init_grid();
+	draw_grid_full(NULL);
 }
