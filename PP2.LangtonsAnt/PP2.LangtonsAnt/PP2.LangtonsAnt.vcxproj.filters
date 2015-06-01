@@ -15,22 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="graphics.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestGraphics.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="grid_window.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\curses.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="logic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="graphics.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="grid.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="grid_window.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestGraphics.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestLogic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

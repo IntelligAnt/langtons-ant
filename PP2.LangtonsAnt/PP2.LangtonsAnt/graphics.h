@@ -1,7 +1,6 @@
 #ifndef __GRAPHICS_H__
 #define __GRAPHICS_H__
 
-#include "logic.h"
 #include "include/curses.h"
 
 #undef COLOR_BLACK

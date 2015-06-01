@@ -1,3 +1,4 @@
+#include "logic.h"
 #include "graphics.h"
 
 WINDOW *gridw = NULL;

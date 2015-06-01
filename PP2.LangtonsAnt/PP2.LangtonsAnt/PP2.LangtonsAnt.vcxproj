@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{18281089-A712-499A-A2E3-1BAEDB5AA047}</ProjectGuid>
+    <ProjectGuid>{9B4E985D-2588-485A-85CD-6069034A6D4F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>PP2LangtonsAntTest</RootNamespace>
+    <RootNamespace>PP2LangtonsAnt</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -52,11 +52,13 @@
       <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\PP2.LangtonsAnt.Graphics;$(SolutionDir)\PP2.LangtonsAnt.Logic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>pdcurses.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -77,7 +79,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LangtonsAnt.c" />
+    <ClInclude Include="graphics.h" />
+    <ClInclude Include="include\curses.h" />
+    <ClInclude Include="logic.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="graphics.c" />
+    <ClCompile Include="grid.c" />
+    <ClCompile Include="grid_window.c" />
+    <ClCompile Include="logic.c" />
+    <ClCompile Include="TestGraphics.c" />
+    <ClCompile Include="TestLogic.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
