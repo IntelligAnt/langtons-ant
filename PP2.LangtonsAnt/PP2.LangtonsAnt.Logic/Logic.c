@@ -54,8 +54,8 @@ void new_color(Colors *colors, short c, short turn)
 
 void delete_color(Colors *colors, short c)
 {
-	int i;
-	colors->n--;
+	short i;
+	--colors->n;
 	colors->turn[c] = 0;
 	if (colors->n == 0) {
 		colors->first = colors->last = -1;
@@ -69,6 +69,19 @@ void delete_color(Colors *colors, short c)
 		}
 	}
 	colors->next[c] = COLOR_COUNT - 1;
+}
+
+void set_color(Colors *colors, short index, short c, short turn)
+{
+	short i = colors->first, prev = colors->last;
+	assert(index >= 0 && index < colors->n);
+	assert(!color_exists(colors, c));
+	while (index--) {
+		prev = i;
+		i = colors->next[i];
+	}
+	colors->next[prev] = c;
+	colors->turn[i] = turn;
 }
 
 int enough_colors(Colors *colors)
