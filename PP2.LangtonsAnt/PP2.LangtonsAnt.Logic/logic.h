@@ -25,20 +25,20 @@ typedef struct ant {
 	Direction dir;
 } Ant;
 
-Grid *grid_new(unsigned size);
 Colors *init_colors(void);
-int color_exists(Colors *colors, short c);
 void new_color(Colors *colors, short c, short turn);
 void delete_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
 //short prev_color(Colors *colors, short c);
 //short next_color(Colors *colors, short c);
-int enough_colors(Colors *colors);
-Ant *ant_new(Grid *grid, Direction dir);
-void ant_move(Ant *ant, Grid *grid, Colors *colors);
+bool color_exists(Colors *colors, short c);
+bool enough_colors(Colors *colors);
 
-void move_ant(Ant *ant, unsigned old_size);
+Ant *ant_new(Grid *grid, Direction dir);
+bool ant_move(Ant *ant, Grid *grid, Colors *colors);
+//int ant_overboard(Ant *ant, Grid *grid);
+
+Grid *grid_new(unsigned size);
 void expand_grid(Grid *grid, Ant *ant);
-int ant_overboard(Ant *ant, Grid *grid);
 
 #endif

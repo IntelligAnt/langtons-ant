@@ -30,7 +30,8 @@ int main(void)
 	Colors *colors=init_colors();
 	Grid *grid = grid_new(INIT_SIZE);
 	Ant *ant = ant_new(grid, UP);
-	int i=1, steps = 0, cnt = DRAW_EVERY - 1;
+	int i = 1, steps, cnt = DRAW_EVERY-1;
+	bool in_bounds;
 
 	short color, turn;
 	while (i) {
@@ -62,16 +63,15 @@ int main(void)
 		CLEAR();
 	}
 
-	while (steps<1000) {
-		if (ant_overboard(ant,grid)) {
-			expand_grid(grid, ant);
-		}
+	for (steps = 0; steps < 1000; ++steps) {
 		if (++cnt == DRAW_EVERY) {
 			draw_grid(grid, steps);
 			cnt = 0;
 		}
-		ant_move(ant, grid, colors);
-		++steps;
+		in_bounds = ant_move(ant, grid, colors);
+		if (!in_bounds) {
+			expand_grid(grid, ant);
+		}
 		//Sleep(DELAY);
 	}
 

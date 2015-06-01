@@ -4,23 +4,6 @@
 
 #include "logic.h"
 
-Grid *grid_new(unsigned size)
-{
-	Grid *grid = malloc(sizeof(Grid));
-	unsigned char **c = malloc(size * sizeof(unsigned char*));
-	short def_color = COLOR_WHITE;
-	unsigned i, j;
-	for (i = 0; i < size; ++i) {
-		c[i] = malloc(size * sizeof(unsigned char));
-		for (j = 0; j < size; ++j) {
-			c[i][j] = def_color;
-		}
-	}
-	grid->c = c;
-	grid->size = size;
-	return grid;
-}
-
 Colors *init_colors(void)
 {
 	Colors *new = malloc(sizeof(Colors));
@@ -32,11 +15,6 @@ Colors *init_colors(void)
 	new->n = 0;
 	new->first = new->last = -1;
 	return new;
-}
-
-int color_exists(Colors *colors, short c)
-{
-	return colors->turn[c] != 0;
 }
 
 void new_color(Colors *colors, short c, short turn)
@@ -84,7 +62,12 @@ void set_color(Colors *colors, short index, short c, short turn)
 	colors->turn[i] = turn;
 }
 
-int enough_colors(Colors *colors)
+bool color_exists(Colors *colors, short c)
+{
+	return (colors->turn[c]) ? assert(colors->next[c] > -1), 1 : 0;
+}
+
+bool enough_colors(Colors *colors)
 {
 	return colors->n >= 2;
 }
@@ -97,7 +80,7 @@ Ant *ant_new(Grid *grid, Direction dir)
 	return ant;
 }
 
-void ant_move(Ant *ant, Grid *grid, Colors *colors)
+bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
 	int x = ant->p.x, y = ant->p.y;
 	if (grid->c[x][y] == COLOR_COUNT-1) {
@@ -125,4 +108,7 @@ void ant_move(Ant *ant, Grid *grid, Colors *colors)
 	}
 
 	ant->dir = (ant->dir + turn + 4) % 4;
+
+	return ant->p.x >= 0 && ant->p.x < grid->size
+		&& ant->p.y >= 0 && ant->p.y < grid->size;
 }
