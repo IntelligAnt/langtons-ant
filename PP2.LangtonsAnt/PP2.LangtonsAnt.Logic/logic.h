@@ -3,7 +3,7 @@
 
 #include "graphics.h"
 
-#define INIT_SIZE 20
+#define INIT_SIZE 3
 
 typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
@@ -36,5 +36,9 @@ void set_color(Colors *colors, short index, short c, short turn);
 int enough_colors(Colors *colors);
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_move(Ant *ant, Grid *grid, Colors *colors);
+
+void move_ant(Ant *ant, unsigned old_size);
+void expand_grid(Grid *grid, Ant *ant);
+int ant_overboard(Ant *ant, Grid *grid);
 
 #endif

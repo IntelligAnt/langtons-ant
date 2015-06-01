@@ -62,7 +62,10 @@ int main(void)
 		CLEAR();
 	}
 
-	while (ant->p.x >= 0 && ant->p.x < grid->size && ant->p.y >= 0 && ant->p.y < grid->size) {
+	while (steps<1000) {
+		if (ant_overboard(ant,grid)) {
+			expand_grid(grid, ant);
+		}
 		if (++cnt == DRAW_EVERY) {
 			draw_grid(grid, steps);
 			cnt = 0;

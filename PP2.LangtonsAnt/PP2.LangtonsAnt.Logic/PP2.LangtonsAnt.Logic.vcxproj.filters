@@ -21,6 +21,9 @@
     <ClCompile Include="TestLogic.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="matrix_handler.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="logic.h">
