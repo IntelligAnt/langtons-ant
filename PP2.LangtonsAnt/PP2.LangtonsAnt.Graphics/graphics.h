@@ -48,12 +48,10 @@
 
 #define COLOR_COUNT 16
 
-/*** Grid window attributes ***/
+#define BG_PAIR 0
 
-#define GRID_WINDOW_SIZE 82
-
-void init_def_pairs(short def_bg_color);
+void init_def_pairs(short bg_color);
 short get_pair(short fg_color);
-void init_graphics(void);
+void init_graphics(short bg_color);
 
 #endif

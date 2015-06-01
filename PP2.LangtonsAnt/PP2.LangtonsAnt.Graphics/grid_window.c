@@ -1,7 +1,7 @@
 #include "grid_window.h"
 #include "graphics.h"
 
-WINDOW *grid = NULL;
+WINDOW *gridw = NULL;
 
 void init_grid(void)
 {
@@ -10,6 +10,18 @@ void init_grid(void)
 
 void grid_draw_full(Grid *grid)
 {
+	int y, x;
+
+	if (!grid) {
+		setattr(COLOR_PAIR(BG_PAIR));
+		for (y = 0; y < GRID_WINDOW_SIZE; ++y) {
+			for (x = 0; x < GRID_WINDOW_SIZE; ++x) {
+				mvaddch(y, x, GRID_CELL);
+			}
+		}
+		return;
+	}
+
 	// TODO
 }
 

@@ -84,6 +84,7 @@
     <ClCompile Include="TestGraphics.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\PP2.LangtonsAnt.Logic\logic.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="grid_window.h" />
     <ClInclude Include="include\curses.h" />

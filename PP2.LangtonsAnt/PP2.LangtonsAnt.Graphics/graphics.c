@@ -1,12 +1,13 @@
 #include "graphics.h"
 #include "grid_window.h"
 
-void init_def_pairs(short def_bg_color)
+void init_def_pairs(short bg_color)
 {
 	short i;
 	for (i = 0; i < COLOR_COUNT; ++i) {
-		init_pair(i+1, i, def_bg_color);
+		init_pair(i+1, i, bg_color);
 	}
+	init_pair(BG_PAIR, bg_color, bg_color);
 }
 
 short get_pair(short fg_color)
@@ -22,7 +23,7 @@ short get_pair(short fg_color)
 	return pair;
 }
 
-void init_graphics(void)
+void init_graphics(short bg_color)
 {
 	initscr();
 	cbreak();
@@ -30,7 +31,7 @@ void init_graphics(void)
 	noecho();
 
 	start_color();
-	init_def_pairs(COLOR_WHITE);
+	init_def_pairs(bg_color);
 
 	init_grid();
 	grid_draw_full(NULL);

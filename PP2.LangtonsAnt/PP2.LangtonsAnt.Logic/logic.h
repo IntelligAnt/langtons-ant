@@ -27,7 +27,7 @@ typedef struct grid {
 
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
-void ant_move(Ant *ant, Grid *grid, Colors *colors);
+bool ant_move(Ant *ant, Grid *grid, Colors *colors);
 bool ant_out_of_bounds(Ant *ant, Grid *grid);
 
 Colors *init_colors(short def);
