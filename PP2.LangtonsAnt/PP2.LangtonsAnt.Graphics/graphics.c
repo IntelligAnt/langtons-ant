@@ -1,5 +1,4 @@
 #include "graphics.h"
-#include "grid_window.h"
 
 void init_def_pairs(short bg_color)
 {

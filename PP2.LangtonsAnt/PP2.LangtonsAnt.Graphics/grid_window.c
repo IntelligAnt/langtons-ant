@@ -1,4 +1,3 @@
-#include "grid_window.h"
 #include "graphics.h"
 
 WINDOW *gridw = NULL;

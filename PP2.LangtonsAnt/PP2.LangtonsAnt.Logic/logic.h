@@ -1,9 +1,10 @@
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
-#include "graphics.h"
+#include "include/curses.h"
 
 #define INIT_SIZE 3
+#define COLOR_COUNT 16
 
 typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
