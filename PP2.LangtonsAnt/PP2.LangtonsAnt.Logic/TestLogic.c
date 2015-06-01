@@ -42,7 +42,7 @@ int main(void)
 			if (!enough_colors(colors)) {
 				i = 1;
 			}
-				break;
+			break;
 		case 1:
 			printf("Unesite boju (0-14) i smer skretanja (-1 ili 1)\n");
 			scanf("%hi %hi", &color, &turn);
@@ -68,7 +68,11 @@ int main(void)
 			draw_grid(grid, steps);
 			cnt = 0;
 		}
-		ant_move(ant, grid, colors);
+		in_bounds = ant_move(ant, grid, colors);
+		if (!in_bounds) {
+			expand_grid(grid, ant);
+			// draw_grid_full()
+		}
 		//Sleep(DELAY);
 	}
 

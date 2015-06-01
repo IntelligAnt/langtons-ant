@@ -17,18 +17,15 @@ void ant_delete(Ant *ant)
 	free(ant);
 }
 
-void ant_move(Ant *ant, Grid *grid, Colors *colors)
+bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
-	int x = ant->p.x, y = ant->p.y;
+	int x = ant->p.x, y = ant->p.y, turn;
 	if (grid->c[x][y] == colors->def) {
 		grid->c[x][y] = colors->first;
 	}
-	int turn = colors->turn[grid->c[x][y]];
-
-	grid->c[x][y] = (unsigned char)colors->next[grid->c[x][y]];
-
+	turn = colors->turn[grid->c[x][y]];
 	assert(abs(turn) == 1);
-
+	grid->c[x][y] = (unsigned char)colors->next[grid->c[x][y]];
 	switch (ant->dir) {
 	case UP:
 		ant->p.y += turn;
@@ -43,12 +40,8 @@ void ant_move(Ant *ant, Grid *grid, Colors *colors)
 		ant->p.x -= turn;
 		break;
 	}
-
 	ant->dir = (ant->dir + turn + 4) % 4;
-
-	if (ant_out_of_bounds(ant, grid)) {
-		expand_grid(grid, ant);
-	}
+	return !ant_out_of_bounds(ant, grid);
 }
 
 bool ant_out_of_bounds(Ant *ant, Grid *grid)
