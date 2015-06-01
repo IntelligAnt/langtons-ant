@@ -17,7 +17,7 @@ typedef struct ant {
 } Ant;
 
 typedef struct colors {
-	short next[COLOR_COUNT-1], turn[COLOR_COUNT-1], n, first, last;
+	short next[COLOR_COUNT-1], turn[COLOR_COUNT-1], n, first, last, def;
 } Colors;
 
 typedef struct grid {
@@ -30,7 +30,7 @@ void ant_delete(Ant *ant);
 void ant_move(Ant *ant, Grid *grid, Colors *colors);
 bool ant_out_of_bounds(Ant *ant, Grid *grid);
 
-Colors *init_colors(void);
+Colors *init_colors(short def);
 void new_color(Colors *colors, short c, short turn);
 void delete_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
