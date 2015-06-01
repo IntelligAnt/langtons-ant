@@ -18,10 +18,10 @@
     <ClCompile Include="graphics.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="grid.c">
+    <ClCompile Include="TestGraphics.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestGraphics.c">
+    <ClCompile Include="grid_window.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,7 +32,7 @@
     <ClInclude Include="graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="grid.h">
+    <ClInclude Include="grid_window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

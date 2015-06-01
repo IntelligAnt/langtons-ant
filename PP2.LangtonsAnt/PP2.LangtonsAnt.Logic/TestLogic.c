@@ -27,7 +27,7 @@ void draw_grid(Grid *grid, int steps)
 
 int main(void)
 {
-	Colors *colors=init_colors();
+	Colors *colors = init_colors(COLOR_WHITE);
 	Grid *grid = grid_new(INIT_SIZE);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1, steps, cnt = DRAW_EVERY-1;
@@ -68,10 +68,7 @@ int main(void)
 			draw_grid(grid, steps);
 			cnt = 0;
 		}
-		in_bounds = ant_move(ant, grid, colors);
-		if (!in_bounds) {
-			expand_grid(grid, ant);
-		}
+		ant_move(ant, grid, colors);
 		//Sleep(DELAY);
 	}
 

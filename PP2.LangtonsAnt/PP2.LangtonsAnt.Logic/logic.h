@@ -7,25 +7,30 @@
 
 typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
-typedef struct colors {
-	short next[COLOR_COUNT-1], turn[COLOR_COUNT-1], n, first, last;
-} Colors;
-
 typedef struct vector2i {
 	int x, y;
 } Vector2i;
-
-typedef struct grid {
-	unsigned char **c;
-	unsigned size;
-} Grid;
 
 typedef struct ant {
 	Vector2i p;
 	Direction dir;
 } Ant;
 
-Colors *init_colors(void);
+typedef struct colors {
+	short next[COLOR_COUNT-1], turn[COLOR_COUNT-1], n, first, last, def;
+} Colors;
+
+typedef struct grid {
+	unsigned char **c;
+	unsigned size;
+} Grid;
+
+Ant *ant_new(Grid *grid, Direction dir);
+void ant_delete(Ant *ant);
+void ant_move(Ant *ant, Grid *grid, Colors *colors);
+bool ant_out_of_bounds(Ant *ant, Grid *grid);
+
+Colors *init_colors(short def);
 void new_color(Colors *colors, short c, short turn);
 void delete_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
@@ -34,11 +39,9 @@ void set_color(Colors *colors, short index, short c, short turn);
 bool color_exists(Colors *colors, short c);
 bool enough_colors(Colors *colors);
 
-Ant *ant_new(Grid *grid, Direction dir);
-bool ant_move(Ant *ant, Grid *grid, Colors *colors);
-//int ant_overboard(Ant *ant, Grid *grid);
-
+/* grid_handler.c */
 Grid *grid_new(unsigned size);
+void grid_delete(Grid *grid);
 void expand_grid(Grid *grid, Ant *ant);
 
 #endif

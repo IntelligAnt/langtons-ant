@@ -80,12 +80,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="graphics.c" />
-    <ClCompile Include="grid.c" />
+    <ClCompile Include="grid_window.c" />
     <ClCompile Include="TestGraphics.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphics.h" />
-    <ClInclude Include="grid.h" />
+    <ClInclude Include="grid_window.h" />
     <ClInclude Include="include\curses.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

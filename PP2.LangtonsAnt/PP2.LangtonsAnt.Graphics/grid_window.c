@@ -1,4 +1,4 @@
-#include "grid.h"
+#include "grid_window.h"
 #include "graphics.h"
 
 WINDOW *grid = NULL;

@@ -80,7 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="logic.c" />
-    <ClCompile Include="matrix_handler.c" />
+    <ClCompile Include="grid.c" />
     <ClCompile Include="TestLogic.c" />
   </ItemGroup>
   <ItemGroup>
