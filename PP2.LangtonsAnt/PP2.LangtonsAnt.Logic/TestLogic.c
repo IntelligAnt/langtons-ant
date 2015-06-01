@@ -27,7 +27,7 @@ void draw_grid(Grid *grid, int steps)
 
 int main(void)
 {
-	Colors *colors = init_colors(COLOR_WHITE);
+	Colors *colors = init_colors();
 	Grid *grid = grid_new(INIT_SIZE);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1, steps, cnt = DRAW_EVERY-1;
