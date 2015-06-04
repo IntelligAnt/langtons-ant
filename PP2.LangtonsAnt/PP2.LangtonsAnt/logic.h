@@ -43,10 +43,11 @@ bool enough_colors(Colors *colors);
 
 /* grid_handler.c */
 
-#define GRID_INC         3
-#define GRID_SIZE_SMALL  GRID_INC
-#define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_INC)
-#define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_INC)
+#define GRID_MUL         3
+#define GRID_SIZE_SMALL  GRID_MUL
+#define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_MUL)
+#define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_MUL)
+#define IS_GRID_LARGE(s) (s >= GRID_SIZE_LARGE)
 
 Grid *grid_new(unsigned size);
 void grid_delete(Grid *grid);

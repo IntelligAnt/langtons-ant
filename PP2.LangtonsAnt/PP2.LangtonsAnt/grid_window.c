@@ -1,5 +1,4 @@
 #include <assert.h>
-
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
@@ -16,6 +15,21 @@ void end_grid_window(void)
 	gridw = NULL;
 }
 
+static void grid_draw_small(Grid *grid)
+{
+
+}
+
+static void grid_draw_medium(Grid *grid)
+{
+
+}
+
+static void grid_draw_large(Grid *grid)
+{
+
+}
+
 void grid_draw_full(Grid *grid)
 {
 	extern short bg_pair;
@@ -23,7 +37,17 @@ void grid_draw_full(Grid *grid)
 
 	assert(gridw);
 	if (grid) {
-		// TODO
+		switch (grid->size) {
+		case GRID_SIZE_SMALL:
+			grid_draw_small(grid);
+			break;
+		case GRID_SIZE_MEDIUM:
+			grid_draw_medium(grid);
+			break;
+		default:
+			assert(IS_GRID_LARGE(grid->size));
+			grid_draw_large(grid);
+		}
 	} else {
 		wattrset(gridw, COLOR_PAIR(bg_pair));
 		for (y = 0; y < GRID_WINDOW_SIZE; ++y) {

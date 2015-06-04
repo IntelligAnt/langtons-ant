@@ -68,6 +68,10 @@ short get_pair_for(short fg_color);
 
 /* grid_window.c */
 
+#define LINE_WIDTH_SMALL  2
+#define LINE_WIDTH_MEDIUM 1
+#define LINE_WIDTH_LARGE  0
+
 void init_grid_window(void);
 void end_grid_window(void);
 void grid_draw_full(Grid *grid);

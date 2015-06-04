@@ -45,7 +45,7 @@ static bool is_in_old_matrix(int x, int y, unsigned old_size)
 
 void expand_grid(Grid *grid, Ant *ant)
 {
-	unsigned old = grid->size, size = GRID_INC*old, i, j;
+	unsigned old = grid->size, size = GRID_MUL*old, i, j;
 	unsigned char **c = malloc(size * sizeof(unsigned char*));
 	short def_color = COLOR_WHITE;
 	transfer_ant(ant, old);
