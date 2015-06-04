@@ -22,12 +22,12 @@ void ant_delete(Ant *ant)
 bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
 	int x = ant->p.x, y = ant->p.y, turn;
-	if (grid->c[x][y] == colors->def) {
-		grid->c[x][y] = colors->first;
+	if (grid->c[y][x] == colors->def) {
+		grid->c[y][x] = colors->first;
 	}
-	turn = colors->turn[grid->c[x][y]];
+	turn = colors->turn[grid->c[y][x]];
 	assert(abs(turn) == 1);
-	grid->c[x][y] = (unsigned char)colors->next[grid->c[x][y]];
+	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
 	switch (ant->dir) {
 	case UP:
 		ant->p.y += turn;

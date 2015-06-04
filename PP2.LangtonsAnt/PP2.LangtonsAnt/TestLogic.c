@@ -18,7 +18,7 @@ void draw_grid(Grid *grid, int steps)
 
 	for (i = 0; i < grid->size; ++i) {
 		for (j = 0; j < grid->size; ++j) {
-			putchar(grid->c[i][j]);
+			putchar(grid->c[j][i]);
 		}
 		putchar('\n');
 	}
