@@ -8,7 +8,7 @@ typedef unsigned char bool;
 typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
 typedef struct vector2i {
-	int x, y;
+	int y, x;
 } Vector2i;
 
 typedef struct ant {

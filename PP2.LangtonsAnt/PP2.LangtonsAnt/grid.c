@@ -34,13 +34,13 @@ void grid_delete(Grid *grid)
 
 static void transfer_ant(Ant *ant, unsigned old_size)
 {
-	ant->p.x += old_size;
 	ant->p.y += old_size;
+	ant->p.x += old_size;
 }
 
-static bool is_in_old_matrix(int x, int y, unsigned old_size)
+static bool is_in_old_matrix(int y, int x, unsigned old_size)
 {
-	return x >= old_size && x < 2*old_size && y >= old_size && y < 2*old_size;
+	return y >= old_size && y < 2*old_size && x >= old_size && x < 2*old_size;
 }
 
 void expand_grid(Grid *grid, Ant *ant)
