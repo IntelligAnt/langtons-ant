@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "logic.h"
+#include "graphics.h"
 
 #define DRAW_EVERY 1
 //#define DELAY 0
@@ -28,7 +29,7 @@ void draw_grid(Grid *grid, int steps)
 //int main(void)
 //{
 //	Colors *colors = init_colors(COLOR_WHITE);
-//	Grid *grid = grid_new(INIT_SIZE);
+//	Grid *grid = grid_new(GRID_SIZE_SMALL);
 //	Ant *ant = ant_new(grid, UP);
 //	int i = 1, steps, cnt = DRAW_EVERY-1;
 //	bool in_bounds;

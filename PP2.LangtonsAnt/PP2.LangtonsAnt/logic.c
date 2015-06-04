@@ -4,6 +4,8 @@
 
 #include "logic.h"
 
+/* Ant functions */
+
 Ant *ant_new(Grid *grid, Direction dir)
 {
 	Ant *ant = malloc(sizeof(Ant));
@@ -50,6 +52,7 @@ bool ant_out_of_bounds(Ant *ant, Grid *grid)
 		|| ant->p.y < 0 || ant->p.y >= grid->size;
 }
 
+/* Color functions */
 
 Colors *init_colors(short def)
 {
@@ -106,7 +109,6 @@ void set_color(Colors *colors, short index, short c, short turn)
 {
 	short i = colors->first, prev = colors->last;
 	assert(index >= 0 && index < colors->n);
-	assert(!color_exists(colors, c));
 	while (index--) {
 		prev = i;
 		i = colors->next[i];
@@ -115,9 +117,19 @@ void set_color(Colors *colors, short index, short c, short turn)
 	colors->turn[i] = turn;
 }
 
+short color_next(Colors *colors, short c)
+{
+	return colors->next[c];
+}
+
+short color_turn(Colors *colors, short c)
+{
+	return colors->turn[c];
+}
+
 bool color_exists(Colors *colors, short c)
 {
-	return (colors->turn[c]) ? assert(colors->next[c] != colors->def), 1 : 0;
+	return colors->turn[c] ? assert(colors->next[c] != colors->def), 1 : 0;
 }
 
 bool enough_colors(Colors *colors)
