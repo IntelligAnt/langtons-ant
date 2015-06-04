@@ -64,7 +64,7 @@
 void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
-short get_pair_for(short color);
+chtype get_pair_for(short color);
 
 /* grid_window.c */
 

@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-short fg_pair, bg_pair;
+chtype fg_pair, bg_pair;
 
 void init_graphics(short fg_color, short bg_color)
 {
@@ -39,7 +39,7 @@ void init_def_pairs(short fg_color, short bg_color)
 	}
 }
 
-short get_pair_for(short color)
+chtype get_pair_for(short color)
 {
 	short pair = color+1, i = 0, fg, bg;
 	pair_content(pair, &fg, &bg);
@@ -49,5 +49,5 @@ short get_pair_for(short color)
 		} while (fg != color);
 		pair = (fg == color) ? i : 0;
 	}
-	return pair;
+	return COLOR_PAIR(pair);
 }

@@ -2,7 +2,7 @@
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
-extern short fg_pair, bg_pair;
+extern chtype fg_pair, bg_pair;
 
 void init_grid_window(void)
 {
@@ -16,17 +16,30 @@ void end_grid_window(void)
 	gridw = NULL;
 }
 
-static Vector2i get_cell_yx()
+static Vector2i get_cell_yx(Vector2i pos, int cell_size, int line_width, int offset)
 {
-	// TODO
+	Vector2i yx = {
+		.y = offset + line_width*(pos.y+1) + cell_size*pos.y,
+		.x = offset + line_width*(pos.x+1) + cell_size*pos.x
+	};
+	return yx;
 }
 
-static void bordered(Grid *grid, int grid_size, int line_width)
+static void draw_block(Vector2i top_left, int size)
 {
-	int n = GRID_WINDOW_SIZE, i, j;
-	int cell = CELL_SIZE(grid_size, line_width);
-	int total = TOTAL_SIZE(grid_size, cell, line_width);
+	int i;
+	for (i = 0; i < size; ++i) {
+		mvwhline(gridw, top_left.y+i, top_left.x, GRID_CELL, size);
+	}
+}
+
+static void bordered(Grid *grid, int line_width)
+{
+	int n = GRID_WINDOW_SIZE, grid_size = grid->size, i, j;
+	int cell_size = CELL_SIZE(grid_size, line_width);
+	int total = TOTAL_SIZE(grid_size, cell_size, line_width);
 	int o = (n - total) / 2;
+	Vector2i yx;
 	
 	/* Draw white edge buffer zone */
 	wattrset(gridw, COLOR_PAIR(bg_pair));
@@ -39,17 +52,21 @@ static void bordered(Grid *grid, int grid_size, int line_width)
 
 	/* Draw grid lines */
 	wattrset(gridw, COLOR_PAIR(fg_pair));
-	for (i = 0; i < n+1; i += cell+line_width) {
+	for (i = 0; i < n+1; i += cell_size+line_width) {
 		for (j = 0; j < line_width; ++j) {
 			mvwhline(gridw, o+i+j, o,     GRID_CELL, total);
 			mvwvline(gridw, o,     o+i+j, GRID_CELL, total);
 		}
 	}
-
+	
 	/* Draw cells */
-
-
-	wrefresh(gridw);
+	for (i = 0; i < grid_size; ++i) {
+		for (j = 0; j < grid_size; ++j) {
+			yx = get_cell_yx((Vector2i){ i, j }, cell_size, line_width, o);
+			wattrset(gridw, get_pair_for(grid->c[i][j]));
+			draw_block(yx, cell_size);
+		}
+	}
 }
 
 static void borderless(Grid *grid)
@@ -65,10 +82,10 @@ void grid_draw_full(Grid *grid)
 	if (grid) {
 		switch (grid->size) {
 		case GRID_SIZE_SMALL:
-			bordered(grid, GRID_SIZE_SMALL, LINE_WIDTH_SMALL);
+			bordered(grid, LINE_WIDTH_SMALL);
 			break;
 		case GRID_SIZE_MEDIUM:
-			bordered(grid, GRID_SIZE_MEDIUM, LINE_WIDTH_MEDIUM);
+			bordered(grid, LINE_WIDTH_MEDIUM);
 			break;
 		default:
 			assert(IS_GRID_LARGE(grid->size));
