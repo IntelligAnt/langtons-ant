@@ -61,16 +61,18 @@
 
 #define MENU_WINDOW_SIZE 18
 
-void init_graphics(short bg_color);
+void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
-void init_def_pairs(short bg_color);
-short get_pair_for(short fg_color);
+void init_def_pairs(short fg_color, short bg_color);
+short get_pair_for(short color);
 
 /* grid_window.c */
 
 #define LINE_WIDTH_SMALL  2
 #define LINE_WIDTH_MEDIUM 1
 #define LINE_WIDTH_LARGE  0
+#define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-lw)/gs - lw)
+#define TOTAL_SIZE(n, cs, lw) (n*cs + (n+1)*lw)
 
 void init_grid_window(void);
 void end_grid_window(void);

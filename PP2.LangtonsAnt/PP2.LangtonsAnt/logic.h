@@ -41,10 +41,10 @@ short color_turn(Colors *colors, short c);
 bool color_exists(Colors *colors, short c);
 bool enough_colors(Colors *colors);
 
-/* grid_handler.c */
+/* grid.c */
 
-#define GRID_MUL         3
-#define GRID_SIZE_SMALL  GRID_MUL
+#define GRID_MUL         3 // Do not change
+#define GRID_SIZE_SMALL  2 // Allow user-changeable initial size
 #define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_MUL)
 #define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_MUL)
 #define IS_GRID_LARGE(s) (s >= GRID_SIZE_LARGE)
