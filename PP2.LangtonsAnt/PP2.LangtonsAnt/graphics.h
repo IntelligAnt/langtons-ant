@@ -1,8 +1,8 @@
 #ifndef __GRAPHICS_H__
 #define __GRAPHICS_H__
 
-#include "logic.h"
 #include "include/curses.h"
+#include "logic.h"
 
 #undef COLOR_BLACK
 #undef COLOR_RED
@@ -50,7 +50,6 @@
 #ifndef COLOR_COUNT
 #define COLOR_COUNT 16
 #endif
-#define BG_PAIR 0
 
 /*** Grid window attributes ***/
 
@@ -58,14 +57,19 @@
 #define GRID_BUFFER_ZONE 2
 #define GRID_CELL ACS_BLOCK
 
+/*** Menu window attributes ***/
 
-void init_def_pairs(short bg_color);
-short get_pair(short fg_color);
+#define MENU_WINDOW_SIZE 18
+
 void init_graphics(short bg_color);
+void end_graphics(void);
+void init_def_pairs(short bg_color);
+short get_pair_for(short fg_color);
 
 /* grid_window.c */
 
-void init_grid(void);
+void init_grid_window(void);
+void end_grid_window(void);
 void grid_draw_full(Grid *grid);
 void grid_draw_iter(Vector2i oldp, short oldc, Vector2i newp, short newc);
 

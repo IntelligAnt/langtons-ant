@@ -1,10 +1,9 @@
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
-#include "include/curses.h"
-
-#define INIT_SIZE 3
 #define COLOR_COUNT 16
+
+typedef unsigned char bool;
 
 typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
@@ -37,10 +36,18 @@ void delete_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
 //short prev_color(Colors *colors, short c);
 //short next_color(Colors *colors, short c);
+short color_next(Colors *colors, short c);
+short color_turn(Colors *colors, short c);
 bool color_exists(Colors *colors, short c);
 bool enough_colors(Colors *colors);
 
 /* grid_handler.c */
+
+#define GRID_INC         3
+#define GRID_SIZE_SMALL  GRID_INC
+#define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_INC)
+#define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_INC)
+
 Grid *grid_new(unsigned size);
 void grid_delete(Grid *grid);
 void expand_grid(Grid *grid, Ant *ant);
