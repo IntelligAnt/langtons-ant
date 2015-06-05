@@ -53,9 +53,16 @@
 
 /*** Grid window attributes ***/
 
-#define GRID_WINDOW_SIZE 82
-#define GRID_BUFFER_ZONE 2
-#define GRID_CELL ACS_BLOCK
+#define GRID_WINDOW_SIZE  82
+#define GRID_BUFFER_ZONE  2
+#define GRID_CELL         ACS_BLOCK
+#define LINE_WIDTH_SMALL  2
+#define LINE_WIDTH_MEDIUM 1
+#define LINE_WIDTH_LARGE  0
+
+#define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-lw)/gs - lw)
+#define TOTAL_SIZE(gs, lw, cs) ((gs+1)*lw + gs*cs)
+#define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-total) / 2)
 
 /*** Menu window attributes ***/
 
@@ -68,15 +75,9 @@ chtype get_pair_for(short color);
 
 /* grid_window.c */
 
-#define LINE_WIDTH_SMALL  2
-#define LINE_WIDTH_MEDIUM 1
-#define LINE_WIDTH_LARGE  0
-#define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-lw)/gs - lw)
-#define TOTAL_SIZE(n, cs, lw) (n*cs + (n+1)*lw)
-
 void init_grid_window(void);
 void end_grid_window(void);
 void grid_draw_full(Grid *grid);
-void grid_draw_iter(Vector2i oldp, short oldc, Vector2i newp, short newc);
+void grid_draw_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp);
 
 #endif

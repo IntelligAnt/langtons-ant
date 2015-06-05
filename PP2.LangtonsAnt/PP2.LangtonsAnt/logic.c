@@ -9,7 +9,7 @@
 Ant *ant_new(Grid *grid, Direction dir)
 {
 	Ant *ant = malloc(sizeof(Ant));
-	ant->p.y = ant->p.x = grid->size / 2;
+	ant->pos.y = ant->pos.x = grid->size / 2;
 	ant->dir = dir;
 	return ant;
 }
@@ -21,7 +21,7 @@ void ant_delete(Ant *ant)
 
 bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
-	int y = ant->p.y, x = ant->p.x, turn;
+	int y = ant->pos.y, x = ant->pos.x, turn;
 	if (grid->c[y][x] == colors->def) {
 		grid->c[y][x] = colors->first;
 	}
@@ -30,16 +30,16 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
 	switch (ant->dir) {
 	case UP:
-		ant->p.x += turn;
+		ant->pos.x += turn;
 		break;
 	case RIGHT:
-		ant->p.y += turn;
+		ant->pos.y += turn;
 		break;
 	case DOWN:
-		ant->p.x -= turn;
+		ant->pos.x -= turn;
 		break;
 	case LEFT:
-		ant->p.y -= turn;
+		ant->pos.y -= turn;
 		break;
 	}
 	ant->dir = (ant->dir + turn + 4) % 4;
@@ -48,8 +48,8 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 
 bool ant_out_of_bounds(Ant *ant, Grid *grid)
 {
-	return ant->p.y < 0 || ant->p.y >= grid->size
-		|| ant->p.x < 0 || ant->p.x >= grid->size;
+	return ant->pos.y < 0 || ant->pos.y >= grid->size
+		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
 }
 
 /* Color functions */

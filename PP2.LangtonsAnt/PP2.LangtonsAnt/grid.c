@@ -32,10 +32,15 @@ void grid_delete(Grid *grid)
 	free(grid);
 }
 
+unsigned char grid_get_color(Grid *grid, Vector2i pos)
+{
+	return grid->c[pos.y][pos.x];
+}
+
 static void transfer_ant(Ant *ant, unsigned old_size)
 {
-	ant->p.y += old_size;
-	ant->p.x += old_size;
+	ant->pos.y += old_size;
+	ant->pos.x += old_size;
 }
 
 static bool is_in_old_matrix(int y, int x, unsigned old_size)

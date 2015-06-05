@@ -12,7 +12,7 @@ typedef struct vector2i {
 } Vector2i;
 
 typedef struct ant {
-	Vector2i p;
+	Vector2i pos;
 	Direction dir;
 } Ant;
 
@@ -36,7 +36,7 @@ void delete_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
 //short prev_color(Colors *colors, short c);
 //short next_color(Colors *colors, short c);
-short color_next(Colors *colors, short c);
+short color_next(Colors *colors, short c); // TODO macros for next & turn
 short color_turn(Colors *colors, short c);
 bool color_exists(Colors *colors, short c);
 bool enough_colors(Colors *colors);
@@ -51,6 +51,7 @@ bool enough_colors(Colors *colors);
 
 Grid *grid_new(unsigned size);
 void grid_delete(Grid *grid);
+unsigned char grid_get_color(Grid *grid, Vector2i p); // TODO macro for get color
 void expand_grid(Grid *grid, Ant *ant);
 
 #endif
