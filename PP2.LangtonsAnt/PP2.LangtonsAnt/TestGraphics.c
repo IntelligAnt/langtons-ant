@@ -6,7 +6,7 @@ int main(void)
 	Grid *grid = grid_new(GRID_SIZE_SMALL);
 	Ant *ant = ant_new(grid, UP);
 	
-	init_graphics(COLOR_BLACK, COLOR_SILVER);
+	init_graphics(COLOR_BLACK, COLOR_WHITE);
 	grid_draw_full(grid);
 	end_graphics();
 

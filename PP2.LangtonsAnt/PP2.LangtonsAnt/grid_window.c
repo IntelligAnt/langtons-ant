@@ -19,8 +19,8 @@ void end_grid_window(void)
 static Vector2i pos2yx(Vector2i pos, int line_width, int cell_size, int offset)
 {
 	Vector2i yx = {
-		.y = line_width*(pos.y+1) + cell_size*pos.y + offset,
-		.x = line_width*(pos.y+1) + cell_size*pos.x + offset
+		.y = offset + line_width*(pos.y+1) + cell_size*pos.y,
+		.x = offset + line_width*(pos.x+1) + cell_size*pos.x
 	};
 	return yx;
 }

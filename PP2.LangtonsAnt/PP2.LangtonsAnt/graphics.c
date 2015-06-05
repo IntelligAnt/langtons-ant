@@ -6,6 +6,7 @@ void init_graphics(short fg_color, short bg_color)
 {
 	initscr();
 	resize_term(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE + MENU_WINDOW_SIZE);
+	curs_set(0);
 	
 	cbreak();
 	// keypad(stdscr, TRUE);
