@@ -1,8 +1,8 @@
 #ifndef __GRAPHICS_H__
 #define __GRAPHICS_H__
 
-#include "include/curses.h"
 #include "logic.h"
+#include "include/curses.h"
 
 #undef COLOR_BLACK
 #undef COLOR_RED
@@ -54,7 +54,7 @@
 /*** Grid window attributes ***/
 
 #define GRID_WINDOW_SIZE  82
-#define GRID_BUFFER_ZONE  2
+#define GRID_BUFFER_ZONE  4
 #define GRID_CELL         ACS_BLOCK
 #define LINE_WIDTH_SMALL  2
 #define LINE_WIDTH_MEDIUM 1
@@ -67,6 +67,8 @@
 /*** Menu window attributes ***/
 
 #define MENU_WINDOW_SIZE 18
+
+/* graphics.c */
 
 void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);

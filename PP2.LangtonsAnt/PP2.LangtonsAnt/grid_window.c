@@ -117,8 +117,7 @@ void grid_draw_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp)
 
 	assert(gridw);
 
-	/* Draw */
-	wattrset(gridw, grid_get_color(grid, oldp));
+	wattrset(gridw, get_pair_for(newc));
 	draw_block(oldp, cs);
-
+	// TODO draw ant transition
 }

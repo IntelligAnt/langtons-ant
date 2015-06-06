@@ -5,11 +5,11 @@
 
 typedef unsigned char bool;
 
-typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
-
 typedef struct vector2i {
 	int y, x;
 } Vector2i;
+
+typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
 typedef struct ant {
 	Vector2i pos;
@@ -20,10 +20,20 @@ typedef struct colors {
 	short next[COLOR_COUNT-1], turn[COLOR_COUNT-1], n, first, last, def;
 } Colors;
 
+/*** Grid attributes and type ***/
+
+#define GRID_MUL         3 // Do not change
+#define GRID_SIZE_SMALL  3 // Allow user-changeable initial size (2, 3, 5)
+#define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_MUL)
+#define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_MUL)
+#define IS_GRID_LARGE(s) (s >= GRID_SIZE_LARGE)
+
 typedef struct grid {
 	unsigned char **c;
 	unsigned size;
 } Grid;
+
+/* logic.c */
 
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
@@ -42,12 +52,6 @@ bool color_exists(Colors *colors, short c);
 bool enough_colors(Colors *colors);
 
 /* grid.c */
-
-#define GRID_MUL         3 // Do not change
-#define GRID_SIZE_SMALL  3 // Allow user-changeable initial size
-#define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_MUL)
-#define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_MUL)
-#define IS_GRID_LARGE(s) (s >= GRID_SIZE_LARGE)
 
 Grid *grid_new(unsigned size);
 void grid_delete(Grid *grid);
