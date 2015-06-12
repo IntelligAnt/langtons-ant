@@ -32,11 +32,6 @@ void grid_delete(Grid *grid)
 	free(grid);
 }
 
-unsigned char grid_get_color(Grid *grid, Vector2i pos)
-{
-	return grid->c[pos.y][pos.x];
-}
-
 static void transfer_ant(Ant *ant, unsigned old_size)
 {
 	ant->pos.y += old_size;

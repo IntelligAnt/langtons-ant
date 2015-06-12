@@ -117,16 +117,6 @@ void set_color(Colors *colors, short index, short c, short turn)
 	colors->turn[i] = turn;
 }
 
-short color_next(Colors *colors, short c)
-{
-	return colors->next[c];
-}
-
-short color_turn(Colors *colors, short c)
-{
-	return colors->turn[c];
-}
-
 bool color_exists(Colors *colors, short c)
 {
 	return colors->turn[c] ? assert(colors->next[c] != colors->def), 1 : 0;

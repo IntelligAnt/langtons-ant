@@ -66,7 +66,7 @@ static void bordered(Grid *grid, int line_width)
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, line_width, cs, o);
-			wattrset(gridw, get_pair_for(grid_get_color(grid, pos))); // TODO get color macro?
+			wattrset(gridw, get_pair_for(GRID_COLOR(grid, pos)));
 			draw_block(yx, cs);
 		}
 	}

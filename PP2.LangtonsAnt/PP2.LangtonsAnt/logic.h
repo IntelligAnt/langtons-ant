@@ -20,6 +20,10 @@ typedef struct colors {
 	short next[COLOR_COUNT-1], turn[COLOR_COUNT-1], n, first, last, def;
 } Colors;
 
+#define COLOR_NEXT(cs, c) cs->next[c]
+#define COLOR_TURN(cs, c) cs->turn[c]
+#define ENOUGH_COLORS(cs) (cs->n >= 2)
+
 /*** Grid attributes and type ***/
 
 #define GRID_MUL         3 // Do not change
@@ -27,6 +31,7 @@ typedef struct colors {
 #define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_MUL)
 #define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_MUL)
 #define IS_GRID_LARGE(s) (s >= GRID_SIZE_LARGE)
+#define GRID_COLOR(g, p) g->c[p.y][p.x]
 
 typedef struct grid {
 	unsigned char **c;
@@ -46,8 +51,6 @@ void delete_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
 //short prev_color(Colors *colors, short c);
 //short next_color(Colors *colors, short c);
-short color_next(Colors *colors, short c); // TODO macros for next & turn
-short color_turn(Colors *colors, short c);
 bool color_exists(Colors *colors, short c);
 bool enough_colors(Colors *colors);
 
@@ -55,7 +58,6 @@ bool enough_colors(Colors *colors);
 
 Grid *grid_new(unsigned size);
 void grid_delete(Grid *grid);
-unsigned char grid_get_color(Grid *grid, Vector2i p); // TODO macro for get color
 void expand_grid(Grid *grid, Ant *ant);
 
 #endif
