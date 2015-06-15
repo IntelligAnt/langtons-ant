@@ -81,9 +81,11 @@
   <ItemGroup>
     <ClInclude Include="graphics.h" />
     <ClInclude Include="include\curses.h" />
+    <ClInclude Include="io.h" />
     <ClInclude Include="logic.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="rules_io.c" />
     <ClCompile Include="graphics.c" />
     <ClCompile Include="grid.c" />
     <ClCompile Include="grid_window.c" />

@@ -24,6 +24,9 @@
     <ClInclude Include="logic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="graphics.c">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestLogic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rules_io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
