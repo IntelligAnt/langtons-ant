@@ -51,7 +51,7 @@
 #define COLOR_COUNT 16
 #endif
 
-/*** Grid window attributes ***/
+/*** Grid window attributes and types ***/
 
 #define GRID_WINDOW_SIZE  82
 #define GRID_BUFFER_ZONE  4
@@ -63,6 +63,11 @@
 #define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-lw)/gs - lw)
 #define TOTAL_SIZE(gs, lw, cs) ((gs+1)*lw + gs*cs)
 #define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-total) / 2)
+
+typedef struct scroll_info {
+	int y, x;
+	double scale;
+} ScrollInfo;
 
 /*** Menu window attributes ***/
 

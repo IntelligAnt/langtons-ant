@@ -26,7 +26,7 @@ typedef struct colors {
 #define COLOR_TURN(cs, c) cs->turn[c]
 #define ENOUGH_COLORS(cs) (cs->n >= 2)
 
-/*** Grid attributes and type ***/
+/*** Grid attributes and types ***/
 
 #define GRID_MUL         3 // Do not change
 #define GRID_SIZE_SMALL  3 // Allow user-changeable initial size (2, 3, 5)

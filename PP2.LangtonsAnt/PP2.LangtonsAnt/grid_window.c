@@ -2,7 +2,7 @@
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
-int scrolly, scrollx; // TODO implement scrolling
+ScrollInfo scroll; // TODO implement scrolling
 extern chtype fg_pair, bg_pair;
 
 void init_grid_window(void)
@@ -37,6 +37,21 @@ static void draw_block(Vector2i top_left, int size)
 		mvwhline(gridw, top_left.y+i, top_left.x, GRID_CELL, size);
 		//wrefresh(gridw);
 	}
+}
+
+static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
+{
+	int n = GRID_WINDOW_SIZE-1, mid = n/2;
+	wattrset(gridw, COLOR_PAIR(sb_bg_pair));
+	mvwhline(gridw, n, 0, GRID_CELL, n);
+	mvwvline(gridw, 0, n, GRID_CELL, n);
+	wattrset(gridw, COLOR_PAIR(sb_fg_pair));
+	//mvwhline(gridw, GRID_CELL, n*scroll.scale);
+	wattron(gridw, A_REVERSE);
+	mvwaddch(gridw, n,   0,   ACS_LARROW);
+	mvwaddch(gridw, n,   n-1, ACS_RARROW);
+	mvwaddch(gridw, 0,   n,   ACS_UARROW);
+	mvwaddch(gridw, n-1, n,   ACS_DARROW);
 }
 
 static void bordered(Grid *grid, int line_width)
@@ -79,26 +94,19 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = grid->size, n = GRID_WINDOW_SIZE, i, j;
+	int gs = grid->size, i, j;
 	int cs = CELL_SIZE(gs, 0);
 	int total = TOTAL_SIZE(gs, 0, cs);
 	int o = OFFSET_SIZE(total);
 	Vector2i pos, yx;
 
-	/* Draw scroll bars in case of largest grid */
+	/* Draw scrollbars in case of largest grid */
 	if (cs == 1) {
-		if (total == n) {
+		if (total == GRID_WINDOW_SIZE) {
 			total = TOTAL_SIZE(gs-1, 0, cs);
 			o = OFFSET_SIZE(total);
 		}
-		wattrset(gridw, COLOR_PAIR(get_pair_for(COLOR_GRAY)));
-		mvwhline(gridw, n-1, 0,   GRID_CELL, n-1);
-		mvwvline(gridw, 0,   n-1, GRID_CELL, n-1);
-		wattrset(gridw, COLOR_PAIR(get_pair_for(COLOR_SILVER)) | A_REVERSE);
-		mvwaddch(gridw, n-1, 0,   ACS_LARROW);
-		mvwaddch(gridw, n-1, n-2, ACS_RARROW);
-		mvwaddch(gridw, 0,   n-1, ACS_UARROW);
-		mvwaddch(gridw, n-2, n-1, ACS_DARROW);
+		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
 	}
 
 	/* Draw cells */
