@@ -2,6 +2,7 @@
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
+int scrolly, scrollx; // TODO implement scrolling
 extern chtype fg_pair, bg_pair;
 
 void init_grid_window(void)
@@ -28,15 +29,19 @@ static Vector2i pos2yx(Vector2i pos, int line_width, int cell_size, int offset)
 static void draw_block(Vector2i top_left, int size)
 {
 	int i;
+	if (size == 1) {
+		mvwaddch(gridw, top_left.y, top_left.x, GRID_CELL);
+		return;
+	}
 	for (i = 0; i < size; ++i) {
 		mvwhline(gridw, top_left.y+i, top_left.x, GRID_CELL, size);
-		wrefresh(gridw);
+		//wrefresh(gridw);
 	}
 }
 
 static void bordered(Grid *grid, int line_width)
 {
-	int n = GRID_WINDOW_SIZE, gs = grid->size, i, j;
+	int gs = grid->size, n = GRID_WINDOW_SIZE, i, j;
 	int cs = CELL_SIZE(gs, line_width);
 	int total = TOTAL_SIZE(gs, line_width, cs);
 	int o = OFFSET_SIZE(total);
@@ -66,7 +71,7 @@ static void bordered(Grid *grid, int line_width)
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, line_width, cs, o);
-			wattrset(gridw, get_pair_for(GRID_COLOR(grid, pos)));
+			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, pos)));
 			draw_block(yx, cs);
 		}
 	}
@@ -74,10 +79,40 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	// TODO
+	int gs = grid->size, n = GRID_WINDOW_SIZE, i, j;
+	int cs = CELL_SIZE(gs, 0);
+	int total = TOTAL_SIZE(gs, 0, cs);
+	int o = OFFSET_SIZE(total);
+	Vector2i pos, yx;
+
+	/* Draw scroll bars in case of largest grid */
+	if (cs == 1) {
+		if (total == n) {
+			total = TOTAL_SIZE(gs-1, 0, cs);
+			o = OFFSET_SIZE(total);
+		}
+		wattrset(gridw, COLOR_PAIR(get_pair_for(COLOR_GRAY)));
+		mvwhline(gridw, n-1, 0,   GRID_CELL, n-1);
+		mvwvline(gridw, 0,   n-1, GRID_CELL, n-1);
+		wattrset(gridw, COLOR_PAIR(get_pair_for(COLOR_SILVER)) | A_REVERSE);
+		mvwaddch(gridw, n-1, 0,   ACS_LARROW);
+		mvwaddch(gridw, n-1, n-2, ACS_RARROW);
+		mvwaddch(gridw, 0,   n-1, ACS_UARROW);
+		mvwaddch(gridw, n-2, n-1, ACS_DARROW);
+	}
+
+	/* Draw cells */
+	for (i = 0; i < gs; ++i) {
+		for (j = 0; j < gs; ++j) {
+			pos.y = i, pos.x = j;
+			yx = pos2yx(pos, 0, cs, o);
+			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, pos)));
+			draw_block(yx, cs);
+		}
+	}
 }
 
-void grid_draw_full(Grid *grid)
+void draw_grid_full(Grid *grid)
 {
 	int y, x;
 
@@ -106,7 +141,7 @@ void grid_draw_full(Grid *grid)
 	wrefresh(gridw);
 }
 
-void grid_draw_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp)
+void draw_grid_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp)
 {
 	int gs = grid->size, i;
 	int lw = (gs == GRID_SIZE_SMALL)  ? LINE_WIDTH_SMALL

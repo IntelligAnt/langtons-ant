@@ -1,6 +1,8 @@
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
+#include <stddef.h>
+
 #define COLOR_COUNT 16
 
 typedef unsigned char bool;
@@ -28,14 +30,14 @@ typedef struct colors {
 
 #define GRID_MUL         3 // Do not change
 #define GRID_SIZE_SMALL  3 // Allow user-changeable initial size (2, 3, 5)
-#define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL * GRID_MUL)
+#define GRID_SIZE_MEDIUM (GRID_SIZE_SMALL  * GRID_MUL)
 #define GRID_SIZE_LARGE  (GRID_SIZE_MEDIUM * GRID_MUL)
 #define IS_GRID_LARGE(s) (s >= GRID_SIZE_LARGE)
-#define GRID_COLOR(g, p) g->c[p.y][p.x]
+#define GRID_COLOR_AT(g, p) g->c[p.y][p.x]
 
 typedef struct grid {
 	unsigned char **c;
-	unsigned size;
+	size_t size;
 } Grid;
 
 /* logic.c */
@@ -56,7 +58,7 @@ bool enough_colors(Colors *colors);
 
 /* grid.c */
 
-Grid *grid_new(unsigned size);
+Grid *grid_new(size_t size);
 void grid_delete(Grid *grid);
 void expand_grid(Grid *grid, Ant *ant);
 

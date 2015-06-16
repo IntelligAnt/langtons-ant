@@ -16,7 +16,7 @@ void init_graphics(short fg_color, short bg_color)
 	init_def_pairs(fg_color, bg_color);
 
 	init_grid_window();
-	grid_draw_full(NULL);
+	draw_grid_full(NULL);
 
 	// TODO Init menus
 }

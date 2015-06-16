@@ -79,7 +79,7 @@ chtype get_pair_for(short color);
 
 void init_grid_window(void);
 void end_grid_window(void);
-void grid_draw_full(Grid *grid);
-void grid_draw_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp);
+void draw_grid_full(Grid *grid);
+void draw_grid_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp);
 
 #endif

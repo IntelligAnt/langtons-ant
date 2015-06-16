@@ -7,7 +7,7 @@ int main(void)
 	Ant *ant = ant_new(grid, UP);
 	
 	init_graphics(COLOR_BLACK, COLOR_WHITE);
-	grid_draw_full(grid);
+	draw_grid_full(grid);
 	end_graphics();
 
 	return 0;
