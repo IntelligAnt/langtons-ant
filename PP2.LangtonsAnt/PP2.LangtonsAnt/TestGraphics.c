@@ -47,7 +47,7 @@ int main(void)
 		system("cls");
 	}
 
-	init_graphics(COLOR_BLACK, COLOR_WHITE);
+	init_graphics(COLOR_BLACK, COLOR_WHITE); // TODO fix flicker with bg colors other than white
 
 	for (steps = 0;; ++steps) {
 		if (++cnt == DRAW_EVERY) {

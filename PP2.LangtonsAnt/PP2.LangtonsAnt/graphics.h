@@ -54,11 +54,12 @@
 /*** Grid window attributes and types ***/
 
 #define GRID_WINDOW_SIZE  82
-#define GRID_BUFFER_ZONE  4
+#define GRID_BUFFER_ZONE  5
 #define GRID_CELL         ACS_BLOCK
 #define LINE_WIDTH_SMALL  2
 #define LINE_WIDTH_MEDIUM 1
 #define LINE_WIDTH_LARGE  0
+#define SLIDER_MIN_SIZE   1
 
 #define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
 #define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
@@ -71,7 +72,7 @@ typedef struct scroll_info {
 
 /*** Menu window attributes ***/
 
-#define MENU_WINDOW_SIZE 18
+#define MENU_WINDOW_SIZE 28
 
 /* graphics.c */
 
