@@ -9,7 +9,7 @@ extern chtype fg_pair, bg_pair;
 void init_grid_window(void)
 {
 	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
-	gridscrl = (ScrollInfo){
+	gridscrl = (ScrollInfo) {
 		.y = 0,
 		.x = 0,
 		.hcenter = 0,
@@ -27,9 +27,17 @@ void end_grid_window(void)
 
 static Vector2i pos2yx(Vector2i pos, int line_width, int cell_size, int offset)
 {
-	return (Vector2i){
+	return (Vector2i) {
 		.y = offset + line_width*(pos.y+1) + cell_size*pos.y,
 		.x = offset + line_width*(pos.x+1) + cell_size*pos.x
+	};
+}
+
+static Vector2i rel2abs(Vector2i rel, Vector2i origin)
+{
+	return (Vector2i) {
+		.y = origin.y + rel.y,
+		.x = origin.x + rel.x
 	};
 }
 
@@ -120,30 +128,31 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = min(grid->size, GRID_WINDOW_SIZE-1), i, j;
-	int cs = CELL_SIZE(gs, 0);
-	int total = TOTAL_SIZE(gs, 0, cs);
+	int dgs = min(grid->size, GRID_WINDOW_SIZE-1), i, j;
+	int cs = CELL_SIZE(dgs, 0);
+	int total = TOTAL_SIZE(dgs, 0, cs);
 	int o = OFFSET_SIZE(total);
-	Vector2i pos, yx;
+	Vector2i pos, yx, origin = { 0, 0 };
 
 	/* Draw scrollbars in case of largest grid */
 	if (cs == 1) {
-		//if (total == GRID_WINDOW_SIZE) {
-		//	total = TOTAL_SIZE(gs-1, 0, cs);
-		//	o = OFFSET_SIZE(total);
-		//}
 		adjust_scrollbars(grid);
+		origin = (Vector2i) {
+			.y = grid->size/2 - dgs/2 + gridscrl.y,
+			.x = grid->size/2 - dgs/2 + gridscrl.x
+		};
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
+		wrefresh(gridw);
 	}
 
 	/* Draw cells */
-	for (i = 0; i < gs; ++i) { // TODO Fix cells not drawing properly when grid extends beyond viewport
-		for (j = 0; j < gs; ++j) {
+	for (i = 0; i < dgs; ++i) {
+		for (j = 0; j < dgs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
-			pos.y += gridscrl.y, pos.x += gridscrl.x;
-			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, pos)));
+			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
 			draw_block(yx, cs);
+			wrefresh(gridw);
 		}
 	}
 }
