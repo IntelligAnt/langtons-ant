@@ -52,6 +52,40 @@ bool ant_out_of_bounds(Ant *ant, Grid *grid)
 		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
 }
 
+bool ant_move_s(Ant *ant, Grid_s *grid, Colors *colors) //TO DO
+{
+	int y = ant->pos.y, x = ant->pos.x, turn;
+	Element *t = grid->rows[y];
+
+	while (t && t->column < x){
+		t = t->next;
+	}
+	if 
+
+	if (grid->c[y][x] == colors->def) {
+		grid->c[y][x] = colors->first;
+	}
+	turn = colors->turn[grid->c[y][x]];
+	assert(abs(turn) == 1);
+	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
+	switch (ant->dir) {
+	case UP:
+		ant->pos.x += turn;
+		break;
+	case RIGHT:
+		ant->pos.y += turn;
+		break;
+	case DOWN:
+		ant->pos.x -= turn;
+		break;
+	case LEFT:
+		ant->pos.y -= turn;
+		break;
+	}
+	ant->dir = (ant->dir + turn + 4) % 4;
+	return !ant_out_of_bounds(ant, grid);
+}
+
 /* Color functions */
 
 Colors *init_colors(short def)

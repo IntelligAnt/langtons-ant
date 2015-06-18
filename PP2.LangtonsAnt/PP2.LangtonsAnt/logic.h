@@ -40,6 +40,17 @@ typedef struct grid {
 	size_t size;
 } Grid;
 
+typedef struct element {
+	size_t column;
+	unsigned char c;
+	struct element *prev, *next;
+}Element;
+
+typedef struct grid_s {
+	Element **rows /*, **last_visit*/ ; //TO DO
+	size_t size;
+} Grid_s;
+
 /* logic.c */
 
 Ant *ant_new(Grid *grid, Direction dir);
@@ -58,8 +69,13 @@ bool enough_colors(Colors *colors);
 
 /* grid.c */
 
-Grid *grid_new(size_t size);
+Grid *grid_new(size_t size, Colors *colors);
 void grid_delete(Grid *grid);
-void expand_grid(Grid *grid, Ant *ant);
+void expand_grid(Grid *grid, Ant *ant, Colors *colors);
+
+void new_element(Element *cur, unsigned column, unsigned char c);
+Grid_s *to_sparse(Grid *old, Colors *colors);
+void grid_s_delete(Grid_s *grid);
+void expand_grid_s(Grid_s *grid, Ant *ant);
 
 #endif
