@@ -163,15 +163,13 @@ void draw_grid_full(Grid *grid)
 
 	assert(gridw);
 	if (grid) {
-		switch (grid->size) {
-		case GRID_SIZE_SMALL:
+		if (grid->size == GRID_SIZE_SMALL(grid)){
 			bordered(grid, LINE_WIDTH_SMALL);
-			break;
-		case GRID_SIZE_MEDIUM:
+		} else if (grid->size == GRID_SIZE_MEDIUM(grid)){
 			bordered(grid, LINE_WIDTH_MEDIUM);
-			break;
-		default:
-			assert(IS_GRID_LARGE(grid->size));
+		}
+else {
+			assert(IS_GRID_LARGE(grid));
 			borderless(grid);
 		}
 	} else {
@@ -187,8 +185,8 @@ void draw_grid_full(Grid *grid)
 void draw_grid_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp)
 {
 	int gs = grid->size;
-	int lw = (gs == GRID_SIZE_SMALL)  ? LINE_WIDTH_SMALL
-		   : (gs == GRID_SIZE_MEDIUM) ? LINE_WIDTH_MEDIUM
+	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
+		   : (gs == GRID_SIZE_MEDIUM(grid)) ? LINE_WIDTH_MEDIUM
 		   : LINE_WIDTH_LARGE;
 	int cs = CELL_SIZE(gs, lw);
 	int o = OFFSET_SIZE(TOTAL_SIZE(gs, lw, cs));

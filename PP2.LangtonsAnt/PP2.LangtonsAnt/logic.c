@@ -37,7 +37,13 @@ static void ant_dir_turn(Ant *ant, int turn){
 	ant->dir = (ant->dir + turn + 4) % 4;
 }
 
-bool ant_move(Ant *ant, Grid *grid, Colors *colors)
+bool ant_out_of_bounds(Ant *ant, Grid *grid)
+{
+	return ant->pos.y < 0 || ant->pos.y >= grid->size
+		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
+}
+
+static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	if (grid->c[y][x] == colors->def) {
@@ -47,22 +53,9 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 	assert(abs(turn) == 1);
 	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
 	ant_dir_turn(ant, turn);
-	return !ant_out_of_bounds(ant, grid);
 }
 
-bool ant_out_of_bounds(Ant *ant, Grid *grid)
-{
-	return ant->pos.y < 0 || ant->pos.y >= grid->size
-		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
-}
-
-bool ant_out_of_bounds_s(Ant *ant, Grid_s *grid)
-{
-	return ant->pos.y < 0 || ant->pos.y >= grid->size
-		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
-}
-
-bool ant_move_s(Ant *ant, Grid_s *grid, Colors *colors)
+static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	Element *t = grid->rows[y];
@@ -82,7 +75,16 @@ bool ant_move_s(Ant *ant, Grid_s *grid, Colors *colors)
 	assert(abs(turn) == 1);
 	t->c = (unsigned char)colors->next[t->c];
 	ant_dir_turn(ant, turn);
-	return !ant_out_of_bounds_s(ant, grid);
+}
+
+bool ant_move(Ant *ant, Grid *grid, Colors *colors)
+{
+	if (is_sparse(grid)) {
+		ant_move_s(ant, grid, colors);
+	} else {
+		ant_move_n(ant, grid, colors);
+	}
+	return !ant_out_of_bounds(ant, grid);
 }
 
 /* Color functions */

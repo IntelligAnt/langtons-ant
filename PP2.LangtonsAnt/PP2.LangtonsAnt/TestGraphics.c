@@ -6,8 +6,14 @@
 
 int main(void)
 {
+	int init_size;
+	printf("Pocetna velicina (2, 3 ili 5): ");
+	scanf("%d", &init_size);
+	assert(init_size == 2 || init_size == 3 || init_size == 5);
+	system("cls");
+
 	Colors *colors = init_colors(COLOR_WHITE);
-	Grid *grid = grid_new(GRID_SIZE_SMALL);
+	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1, steps, cnt = DRAW_EVERY-1;
 	short c, turn;
@@ -50,7 +56,7 @@ int main(void)
 		}
 		in_bounds = ant_move(ant, grid, colors);
 		if (!in_bounds) {
-			expand_grid(grid, ant);
+			grid_expand(grid, ant);
 			//draw_grid_full(grid);
 		}
 	}
