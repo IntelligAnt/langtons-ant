@@ -182,11 +182,15 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 		   : LINE_WIDTH_LARGE;
 	int cs = CELL_SIZE(gs, lw);
 	int o = OFFSET_SIZE(TOTAL_SIZE(gs, lw, cs));
-	Vector2i origin = ORIGIN_POS(gs, ws, gridscrl.y, gridscrl.x);
+	Vector2i origin = ORIGIN_POS(gs, ws, gridscrl.y, gridscrl.x), pos, yx;
 
 	assert(gridw);
 
+	pos = abs2rel(oldp, origin);
+	yx = pos2yx(pos, lw, cs, o);
 	wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, oldp)));
-	draw_box(gridw, pos2yx(oldp, lw, cs, o), cs);
+	draw_box(gridw, yx, cs);
+
+	wrefresh(gridw);
 	// TODO draw ant transition
 }

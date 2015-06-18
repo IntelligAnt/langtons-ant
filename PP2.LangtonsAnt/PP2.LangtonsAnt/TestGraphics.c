@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+#include "logic.h"
 #include "graphics.h"
 
 #define DRAW_EVERY 1
@@ -15,9 +16,8 @@ int main(void)
 	Colors *colors = init_colors(COLOR_WHITE);
 	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
-	int i = 1, steps, cnt = DRAW_EVERY-1;
+	int i = 1;
 	short c, turn;
-	bool in_bounds;
 	
 	while (i) {
 		printf("1. Nova boja.\n2. Izbrisi boju.\n0 za crtanje\n");
@@ -47,18 +47,24 @@ int main(void)
 		system("cls");
 	}
 
-	init_graphics(COLOR_BLACK, COLOR_WHITE); // TODO fix flicker with bg colors other than white
+	Vector2i oldp;
+	bool in_bounds;
+	int steps = 0, cnt = DRAW_EVERY-1;
 
-	for (steps = 0;; ++steps) {
-		if (++cnt == DRAW_EVERY) {
-			draw_grid_full(grid);
-			cnt = 0;
-		}
+	init_graphics(COLOR_BLACK, COLOR_WHITE); // TODO fix flicker with bg colors other than white
+	draw_grid_full(grid);
+
+	while (1) {
+		oldp = ant->pos;
 		in_bounds = ant_move(ant, grid, colors);
 		if (!in_bounds) {
 			grid_expand(grid, ant);
-			//draw_grid_full(grid);
+			draw_grid_full(grid);
+		} else if (++cnt == DRAW_EVERY) {
+			draw_grid_iter(grid, oldp, ant->pos);
+			cnt = 0;
 		}
+		++steps;
 	}
 
 	end_graphics();
