@@ -1,13 +1,21 @@
 #include <assert.h>
+#include <stdlib.h>
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
-ScrollInfo scroll; // TODO implement scrolling
+ScrollInfo gridscrl; // TODO implement scrolling
 extern chtype fg_pair, bg_pair;
 
 void init_grid_window(void)
 {
 	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
+	gridscrl = (ScrollInfo){
+		.y = 0,
+		.x = 0,
+		.hcenter = 0,
+		.vcenter = 0,
+		.scale = 1
+	};
 	keypad(gridw, TRUE);
 }
 
@@ -19,11 +27,10 @@ void end_grid_window(void)
 
 static Vector2i pos2yx(Vector2i pos, int line_width, int cell_size, int offset)
 {
-	Vector2i yx = {
+	return (Vector2i){
 		.y = offset + line_width*(pos.y+1) + cell_size*pos.y,
 		.x = offset + line_width*(pos.x+1) + cell_size*pos.x
 	};
-	return yx;
 }
 
 static void draw_block(Vector2i top_left, int size)
@@ -35,23 +42,42 @@ static void draw_block(Vector2i top_left, int size)
 	}
 	for (i = 0; i < size; ++i) {
 		mvwhline(gridw, top_left.y+i, top_left.x, GRID_CELL, size);
-		//wrefresh(gridw);
+	}
+}
+
+static void adjust_scrollbars(Grid *grid)
+{
+	static bool first = TRUE;
+	static size_t prev_size;
+	if (first) {
+		prev_size = grid->size;
+		first = FALSE;
+	} else if (grid->size > prev_size) {
+		gridscrl.scale /= GRID_MUL;
+		prev_size = grid->size;
 	}
 }
 
 static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 {
-	int n = GRID_WINDOW_SIZE-1, mid = n/2;
-	wattrset(gridw, COLOR_PAIR(sb_bg_pair));
+	const int n = GRID_WINDOW_SIZE-1, mid = n/2;
+	int size = (int)((n-2)*gridscrl.scale);
+	int h = mid + gridscrl.hcenter - size/2;
+	int v = mid + gridscrl.vcenter - size/2;
+	/* Scrollbar background */
+	wattrset(gridw, sb_bg_pair);
 	mvwhline(gridw, n, 0, GRID_CELL, n);
 	mvwvline(gridw, 0, n, GRID_CELL, n);
-	wattrset(gridw, COLOR_PAIR(sb_fg_pair));
-	//mvwhline(gridw, GRID_CELL, n*scroll.scale);
+	/* Scrollbar arrows */
 	wattron(gridw, A_REVERSE);
 	mvwaddch(gridw, n,   0,   ACS_LARROW);
 	mvwaddch(gridw, n,   n-1, ACS_RARROW);
 	mvwaddch(gridw, 0,   n,   ACS_UARROW);
 	mvwaddch(gridw, n-1, n,   ACS_DARROW);
+	/* Scrollbars themselves */
+	wattrset(gridw, sb_fg_pair);
+	mvwhline(gridw, n, h, GRID_CELL, size);
+	mvwvline(gridw, v, n, GRID_CELL, size);
 }
 
 static void bordered(Grid *grid, int line_width)
@@ -94,7 +120,7 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = grid->size, i, j;
+	int gs = min(grid->size, GRID_WINDOW_SIZE-1), i, j;
 	int cs = CELL_SIZE(gs, 0);
 	int total = TOTAL_SIZE(gs, 0, cs);
 	int o = OFFSET_SIZE(total);
@@ -102,18 +128,20 @@ static void borderless(Grid *grid)
 
 	/* Draw scrollbars in case of largest grid */
 	if (cs == 1) {
-		if (total == GRID_WINDOW_SIZE) {
-			total = TOTAL_SIZE(gs-1, 0, cs);
-			o = OFFSET_SIZE(total);
-		}
+		//if (total == GRID_WINDOW_SIZE) {
+		//	total = TOTAL_SIZE(gs-1, 0, cs);
+		//	o = OFFSET_SIZE(total);
+		//}
+		adjust_scrollbars(grid);
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
 	}
 
 	/* Draw cells */
-	for (i = 0; i < gs; ++i) {
+	for (i = 0; i < gs; ++i) { // TODO Fix cells not drawing properly when grid extends beyond viewport
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
+			pos.y += gridscrl.y, pos.x += gridscrl.x;
 			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, pos)));
 			draw_block(yx, cs);
 		}
@@ -122,7 +150,7 @@ static void borderless(Grid *grid)
 
 void draw_grid_full(Grid *grid)
 {
-	int y, x;
+	int i;
 
 	assert(gridw);
 	if (grid) {
@@ -139,10 +167,8 @@ void draw_grid_full(Grid *grid)
 		}
 	} else {
 		wattrset(gridw, COLOR_PAIR(bg_pair));
-		for (y = 0; y < GRID_WINDOW_SIZE; ++y) {
-			for (x = 0; x < GRID_WINDOW_SIZE; ++x) {
-				mvwaddch(gridw, y, x, GRID_CELL);
-			}
+		for (i = 0; i < GRID_WINDOW_SIZE; ++i) {
+			mvwhline(gridw, i, 0, GRID_CELL, GRID_WINDOW_SIZE);
 		}
 	}
 
@@ -151,7 +177,7 @@ void draw_grid_full(Grid *grid)
 
 void draw_grid_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp)
 {
-	int gs = grid->size, i;
+	int gs = grid->size;
 	int lw = (gs == GRID_SIZE_SMALL)  ? LINE_WIDTH_SMALL
 		   : (gs == GRID_SIZE_MEDIUM) ? LINE_WIDTH_MEDIUM
 		   : LINE_WIDTH_LARGE;
