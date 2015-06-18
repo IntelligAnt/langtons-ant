@@ -92,7 +92,7 @@ Grid_s *to_sparse(Grid *old, Colors *colors)
 	int i,j;
 	Element *cur;
 	char c;
-	for (i = 0; i < size; i++){
+	for (i = 0; i < size; i++) {
 		cur = new->rows[i];
 		for (j = 0; j < size; j++){
 			c = old->c[i][j];

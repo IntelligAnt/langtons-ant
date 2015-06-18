@@ -19,6 +19,24 @@ void ant_delete(Ant *ant)
 	free(ant);
 }
 
+static void ant_dir_turn(Ant *ant, int turn){
+	switch (ant->dir) {
+	case UP:
+		ant->pos.x += turn;
+		break;
+	case RIGHT:
+		ant->pos.y += turn;
+		break;
+	case DOWN:
+		ant->pos.x -= turn;
+		break;
+	case LEFT:
+		ant->pos.y -= turn;
+		break;
+	}
+	ant->dir = (ant->dir + turn + 4) % 4;
+}
+
 bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
@@ -28,21 +46,7 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 	turn = colors->turn[grid->c[y][x]];
 	assert(abs(turn) == 1);
 	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
-	switch (ant->dir) {
-	case UP:
-		ant->pos.x += turn;
-		break;
-	case RIGHT:
-		ant->pos.y += turn;
-		break;
-	case DOWN:
-		ant->pos.x -= turn;
-		break;
-	case LEFT:
-		ant->pos.y -= turn;
-		break;
-	}
-	ant->dir = (ant->dir + turn + 4) % 4;
+	ant_dir_turn(ant, turn);
 	return !ant_out_of_bounds(ant, grid);
 }
 
@@ -52,7 +56,13 @@ bool ant_out_of_bounds(Ant *ant, Grid *grid)
 		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
 }
 
-bool ant_move_s(Ant *ant, Grid_s *grid, Colors *colors) //TO DO
+bool ant_out_of_bounds_s(Ant *ant, Grid_s *grid)
+{
+	return ant->pos.y < 0 || ant->pos.y >= grid->size
+		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
+}
+
+bool ant_move_s(Ant *ant, Grid_s *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	Element *t = grid->rows[y];
@@ -60,30 +70,19 @@ bool ant_move_s(Ant *ant, Grid_s *grid, Colors *colors) //TO DO
 	while (t && t->column < x){
 		t = t->next;
 	}
-	if 
+	if (t && t->column > x) {
+		t = t->prev;
+	}
+	if (!t || t->column < x){
+		new_element(t, x, (unsigned char)colors->first);
+		if (t->column != x) t = t->next;
+	}
 
-	if (grid->c[y][x] == colors->def) {
-		grid->c[y][x] = colors->first;
-	}
-	turn = colors->turn[grid->c[y][x]];
+	turn = colors->turn[t->c];
 	assert(abs(turn) == 1);
-	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
-	switch (ant->dir) {
-	case UP:
-		ant->pos.x += turn;
-		break;
-	case RIGHT:
-		ant->pos.y += turn;
-		break;
-	case DOWN:
-		ant->pos.x -= turn;
-		break;
-	case LEFT:
-		ant->pos.y -= turn;
-		break;
-	}
-	ant->dir = (ant->dir + turn + 4) % 4;
-	return !ant_out_of_bounds(ant, grid);
+	t->c = (unsigned char)colors->next[t->c];
+	ant_dir_turn(ant, turn);
+	return !ant_out_of_bounds_s(ant, grid);
 }
 
 /* Color functions */

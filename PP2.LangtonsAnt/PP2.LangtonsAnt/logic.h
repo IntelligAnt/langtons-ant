@@ -57,6 +57,8 @@ Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
 bool ant_move(Ant *ant, Grid *grid, Colors *colors);
 bool ant_out_of_bounds(Ant *ant, Grid *grid);
+bool ant_out_of_bounds_s(Ant *ant, Grid_s *grid);
+bool ant_move_s(Ant *ant, Grid_s *grid, Colors *colors);
 
 Colors *init_colors(short def);
 void new_color(Colors *colors, short c, short turn);

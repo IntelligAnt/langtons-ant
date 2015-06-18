@@ -26,56 +26,94 @@ void draw_grid(Grid *grid, int steps)
 	printf("Steps: %d\n", steps);
 }
 
-//int main(void)
-//{
-//	Colors *colors = init_colors(COLOR_WHITE);
-//	Grid *grid = grid_new(GRID_SIZE_SMALL, colors);
-//	Ant *ant = ant_new(grid, UP);
-//	int i = 1, steps, cnt = DRAW_EVERY-1;
-//	bool in_bounds;
-//
-//	short color, turn;
-//	while (i) {
-//		printf("1. Nova boja.\n2. Izbrisi boju.\n0 za crtanje\n");
-//		scanf("%d", &i);
-//		switch (i) {
-//		case 0: 
-//			if (!enough_colors(colors)) {
-//				i = 1;
-//			}
-//			break;
-//		case 1:
-//			printf("Unesite boju (0-14) i smer skretanja (-1 ili 1)\n");
-//			scanf("%hi %hi", &color, &turn);
-//			assert(abs(turn) == 1);
-//			if (!color_exists(colors, color)) {
-//				new_color(colors, color, turn);
-//			}
-//			break;
-//		case 2:
-//			printf("Unesite boju (0-14)\n");
-//			scanf("%hi", &color);
-//			if (color_exists(colors, color)) {
-//				delete_color(colors, color);
-//			}
-//			break;
-//		}
-//
-//		CLEAR();
-//	}
-//
-//	for (steps = 0; steps < 1000; ++steps) {
-//		if (++cnt == DRAW_EVERY) {
-//			draw_grid(grid, steps);
-//			cnt = 0;
-//		}
-//		in_bounds = ant_move(ant, grid, colors);
-//		if (!in_bounds) {
-//			expand_grid(grid, ant, colors);
-//			// draw_grid_full()
-//		}
-//		//Sleep(DELAY);
-//	}
-//
-//	return 0;
-//}
+void draw_grid_s(Grid_s *grid, int steps, Colors *colors)
+{
+	int i, j;
+	Element *t;
+
+	CLEAR();
+
+	for (i = 0; i < grid->size; ++i) {
+		t = grid->rows[i];
+		for (j = 0; j < grid->size; ++j) {
+			if (!t) {
+				for (; j < grid->size; ++j) {
+					putchar(colors->def);
+				}
+				break;
+			}
+			while (t->column > j) {
+				putchar(colors->def);
+				++j;
+			}
+			putchar(t->c);
+		}
+		putchar('\n');
+	}
+
+	printf("Steps: %d\n", steps);
+}
+
+int main(void)
+{
+	Colors *colors = init_colors(COLOR_WHITE);
+	Grid *grid = grid_new(GRID_SIZE_SMALL, colors);
+	Grid_s *grid_s;
+	Ant *ant = ant_new(grid, UP);
+	int i = 1, steps, cnt = DRAW_EVERY-1;
+	bool in_bounds;
+
+	short color, turn;
+	while (i) {
+		printf("1. Nova boja.\n2. Izbrisi boju.\n0 za crtanje\n");
+		scanf("%d", &i);
+		switch (i) {
+		case 0: 
+			if (!enough_colors(colors)) {
+				i = 1;
+			}
+			break;
+		case 1:
+			printf("Unesite boju (0-14) i smer skretanja (-1 ili 1)\n");
+			scanf("%hi %hi", &color, &turn);
+			assert(abs(turn) == 1);
+			if (!color_exists(colors, color)) {
+				new_color(colors, color, turn);
+			}
+			break;
+		case 2:
+			printf("Unesite boju (0-14)\n");
+			scanf("%hi", &color);
+			if (color_exists(colors, color)) {
+				delete_color(colors, color);
+			}
+			break;
+		}
+
+		CLEAR();
+	}
+
+	for (steps = 0; steps < 20; ++steps) {
+		if (++cnt == DRAW_EVERY) {
+			draw_grid(grid, steps);
+			cnt = 0;
+		}
+		in_bounds = ant_move(ant, grid, colors);
+		if (!in_bounds) {
+			expand_grid(grid, ant, colors);
+			// draw_grid_full()
+		}
+		//Sleep(DELAY);
+	}
+
+	grid_s = to_sparse(grid, colors);
+	for (; steps < 100; ++steps) {
+		draw_grid_s(grid_s, steps, colors);
+		in_bounds = ant_move_s(ant, grid_s, colors);
+		if (!in_bounds) {
+			expand_grid_s(grid_s, ant);
+		}
+	}
+
+	return 0;
+}
