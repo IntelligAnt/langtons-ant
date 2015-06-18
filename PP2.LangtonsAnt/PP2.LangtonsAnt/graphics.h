@@ -4,6 +4,9 @@
 #include "logic.h"
 #include "include/curses.h"
 
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+
 #undef COLOR_BLACK
 #undef COLOR_RED
 #undef COLOR_GREEN
@@ -65,6 +68,9 @@
 #define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
 #define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-(total)) / 2)
 
+#define ORIGIN_COORD(gs, ws, sc) max((gs)/2-(ws)/2+(sc), 0)
+#define ORIGIN_POS(gs, ws, scy, scx) (Vector2i) { ORIGIN_COORD(gs, ws, scy), ORIGIN_COORD(gs, ws, scx) }
+
 typedef struct scroll_info {
 	int y, x, hcenter, vcenter;
 	double scale;
@@ -80,12 +86,15 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
 chtype get_pair_for(short color);
+Vector2i rel2abs(Vector2i rel, Vector2i origin);
+Vector2i abs2rel(Vector2i abs, Vector2i origin);
+void draw_box(WINDOW *w, Vector2i top_left, int size);
 
 /* grid_window.c */
 
 void init_grid_window(void);
 void end_grid_window(void);
 void draw_grid_full(Grid *grid);
-void draw_grid_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp);
+void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp);
 
 #endif

@@ -52,3 +52,31 @@ chtype get_pair_for(short color)
 	}
 	return COLOR_PAIR(pair);
 }
+
+Vector2i rel2abs(Vector2i rel, Vector2i origin)
+{
+	return (Vector2i) {
+		.y = origin.y + rel.y,
+		.x = origin.x + rel.x
+	};
+}
+
+Vector2i abs2rel(Vector2i abs, Vector2i origin)
+{
+	return (Vector2i) {
+		.y = abs.y - origin.y,
+		.x = abs.x - origin.x
+	};
+}
+
+void draw_box(WINDOW *w, Vector2i top_left, int size)
+{
+	int i;
+	if (size == 1) {
+		mvwaddch(w, top_left.y, top_left.x, GRID_CELL);
+		return;
+	}
+	for (i = 0; i < size; ++i) {
+		mvwhline(w, top_left.y+i, top_left.x, GRID_CELL, size);
+	}
+}
