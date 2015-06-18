@@ -3,7 +3,7 @@
 int main(void)
 {
 	Colors *colors = init_colors(COLOR_WHITE);
-	Grid *grid = grid_new(GRID_SIZE_SMALL);
+	Grid *grid = grid_new(243);
 	Ant *ant = ant_new(grid, UP);
 	
 	init_graphics(COLOR_BLACK, COLOR_WHITE);
