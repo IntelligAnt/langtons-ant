@@ -4,9 +4,6 @@
 #include "logic.h"
 #include "include/curses.h"
 
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-
 #undef COLOR_BLACK
 #undef COLOR_RED
 #undef COLOR_GREEN
@@ -63,9 +60,9 @@
 #define LINE_WIDTH_MEDIUM 1
 #define LINE_WIDTH_LARGE  0
 
-#define CELL_SIZE(gs, lw) max((GRID_WINDOW_SIZE-lw)/gs - lw, 1)
-#define TOTAL_SIZE(gs, lw, cs) min((gs+1)*lw + gs*cs, GRID_WINDOW_SIZE)
-#define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-total) / 2)
+#define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
+#define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
+#define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-(total)) / 2)
 
 typedef struct scroll_info {
 	int y, x, hcenter, vcenter;

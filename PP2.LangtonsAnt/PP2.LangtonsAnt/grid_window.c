@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdlib.h>
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
@@ -44,16 +45,16 @@ static void draw_block(Vector2i top_left, int size)
 	}
 }
 
-static void adjust_scrollbars(size_t grid_size)
+static void adjust_scrollbars(Grid *grid)
 {
 	static bool first = TRUE;
 	static size_t prev_size;
 	if (first) {
-		prev_size = grid_size;
+		prev_size = grid->size;
 		first = FALSE;
-	} else if (grid_size > prev_size) {
+	} else if (grid->size > prev_size) {
 		gridscrl.scale /= GRID_MUL;
-		prev_size = grid_size;
+		prev_size = grid->size;
 	}
 }
 
@@ -119,7 +120,7 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = grid->size, i, j;
+	int gs = min(grid->size, GRID_WINDOW_SIZE-1), i, j;
 	int cs = CELL_SIZE(gs, 0);
 	int total = TOTAL_SIZE(gs, 0, cs);
 	int o = OFFSET_SIZE(total);
@@ -127,13 +128,12 @@ static void borderless(Grid *grid)
 
 	/* Draw scrollbars in case of largest grid */
 	if (cs == 1) {
-		if (total == GRID_WINDOW_SIZE) {
-			total = TOTAL_SIZE(gs-1, 0, cs);
-			o = OFFSET_SIZE(total);
-		}
-		adjust_scrollbars(gs);
+		//if (total == GRID_WINDOW_SIZE) {
+		//	total = TOTAL_SIZE(gs-1, 0, cs);
+		//	o = OFFSET_SIZE(total);
+		//}
+		adjust_scrollbars(grid);
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
-		wrefresh(gridw);
 	}
 
 	/* Draw cells */
@@ -141,9 +141,9 @@ static void borderless(Grid *grid)
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
+			pos.y += gridscrl.y, pos.x += gridscrl.x;
 			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, pos)));
 			draw_block(yx, cs);
-			wrefresh(gridw);
 		}
 	}
 }
