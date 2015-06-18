@@ -109,7 +109,7 @@ static void bordered(Grid *grid, int line_width)
 {
 	int gs = grid->size, i, j;
 	int cs = CELL_SIZE(gs, line_width);
-	int total = TOTAL_SIZE(gs, line_width, cs);
+	int total = TOTAL_SIZE(line_width, cs);
 	int o = OFFSET_SIZE(total);
 	Vector2i pos, yx;
 
@@ -139,9 +139,9 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int dgs = min(grid->size, GRID_WINDOW_SIZE-1), i, j;
-	int cs = CELL_SIZE(dgs, 0);
-	int total = TOTAL_SIZE(dgs, 0, cs);
+	int gs = min(grid->size, GRID_WINDOW_SIZE-1), i, j;
+	int cs = CELL_SIZE(gs, 0);
+	int total = TOTAL_SIZE(0, cs);
 	int o = OFFSET_SIZE(total);
 	Vector2i pos, yx, origin = { 0, 0 };
 
@@ -154,15 +154,15 @@ static void borderless(Grid *grid)
 	if (is_scrl_on) {
 		adjust_scrollbars(grid);
 		origin = (Vector2i) {
-			.y = grid->size/2 - dgs/2 + gridscrl.y,
-			.x = grid->size/2 - dgs/2 + gridscrl.x
+			.y = grid->size/2 - gs/2 + gridscrl.y,
+			.x = grid->size/2 - gs/2 + gridscrl.x
 		};
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
 	}
 
 	/* Draw cells */
-	for (i = 0; i < dgs; ++i) {
-		for (j = 0; j < dgs; ++j) {
+	for (i = 0; i < gs; ++i) {
+		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
 			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
@@ -205,7 +205,7 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp)
 		   : (gs == GRID_SIZE_MEDIUM) ? LINE_WIDTH_MEDIUM
 		   : LINE_WIDTH_LARGE;
 	int cs = CELL_SIZE(gs, lw);
-	int o = OFFSET_SIZE(TOTAL_SIZE(gs, lw, cs));
+	int o = OFFSET_SIZE(TOTAL_SIZE(lw, cs));
 
 	assert(gridw);
 

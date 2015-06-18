@@ -62,7 +62,7 @@
 #define SLIDER_MIN_SIZE   1
 
 #define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
-#define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
+#define TOTAL_SIZE(lw, cs) (((GRID_WINDOW_SIZE/((cs)+(lw))) - !(GRID_WINDOW_SIZE%((cs)+(lw)))) * ((cs)+(lw)) + (lw))
 #define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-(total)) / 2)
 
 typedef struct scroll_info {
