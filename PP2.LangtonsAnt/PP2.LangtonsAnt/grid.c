@@ -151,7 +151,7 @@ static void grid_expand_s(Grid *grid)
 			new[i] = NULL;
 		}
 	}
-	grid_delete_s(grid->rows);
+	grid_delete_s(grid);
 	grid->rows = new;
 	grid->size = size;
 }
