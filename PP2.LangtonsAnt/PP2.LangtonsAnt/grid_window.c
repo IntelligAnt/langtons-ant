@@ -137,7 +137,7 @@ static void borderless(Grid *grid)
 	}
 
 	/* Draw cells */
-	for (i = 0; i < gs; ++i) {
+	for (i = 0; i < gs; ++i) { // TODO Fix cells not drawing properly when grid extends beyond viewport
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
@@ -150,7 +150,7 @@ static void borderless(Grid *grid)
 
 void draw_grid_full(Grid *grid)
 {
-	int y, x;
+	int i;
 
 	assert(gridw);
 	if (grid) {
@@ -167,10 +167,8 @@ void draw_grid_full(Grid *grid)
 		}
 	} else {
 		wattrset(gridw, COLOR_PAIR(bg_pair));
-		for (y = 0; y < GRID_WINDOW_SIZE; ++y) {
-			for (x = 0; x < GRID_WINDOW_SIZE; ++x) {
-				mvwaddch(gridw, y, x, GRID_CELL);
-			}
+		for (i = 0; i < GRID_WINDOW_SIZE; ++i) {
+			mvwhline(gridw, i, 0, GRID_CELL, GRID_WINDOW_SIZE);
 		}
 	}
 
@@ -179,7 +177,7 @@ void draw_grid_full(Grid *grid)
 
 void draw_grid_iter(Grid *grid, Vector2i oldp, short newc, Vector2i newp)
 {
-	int gs = grid->size, i;
+	int gs = grid->size;
 	int lw = (gs == GRID_SIZE_SMALL)  ? LINE_WIDTH_SMALL
 		   : (gs == GRID_SIZE_MEDIUM) ? LINE_WIDTH_MEDIUM
 		   : LINE_WIDTH_LARGE;
