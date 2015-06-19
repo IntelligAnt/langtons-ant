@@ -38,7 +38,7 @@ typedef struct colors {
 typedef struct element {
 	size_t column;
 	unsigned char c;
-	struct element *prev, *next;
+	struct element *next;
 }Element;
 
 typedef struct grid {

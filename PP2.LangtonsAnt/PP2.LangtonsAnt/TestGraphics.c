@@ -55,6 +55,9 @@ int main(void)
 	draw_grid_full(grid);
 
 	while (1) {
+		if (steps == 200) {
+			grid_to_sparse(grid);
+		}
 		oldp = ant->pos;
 		in_bounds = ant_move(ant, grid, colors);
 		if (!in_bounds) {

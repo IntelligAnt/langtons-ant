@@ -58,22 +58,18 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
-	Element *t = grid->rows[y];
+	Element **t = grid->rows+y;
 
-	while (t && t->column < x){
-		t = t->next;
+	while (*t && (*t)->column < x){
+		t = &((*t)->next);
 	}
-	if (t && t->column > x) {
-		t = t->prev;
-	}
-	if (!t || t->column < x){
+	if (!*t || (*t)->column != x){
 		new_element(t, x, (unsigned char)colors->first);
-		if (t->column != x) t = t->next;
 	}
 
-	turn = colors->turn[t->c];
+	turn = colors->turn[(*t)->c];
 	assert(abs(turn) == 1);
-	t->c = (unsigned char)colors->next[t->c];
+	(*t)->c = (unsigned char)colors->next[(*t)->c];
 	ant_dir_turn(ant, turn);
 }
 
