@@ -19,7 +19,7 @@ typedef struct ant {
 } Ant;
 
 typedef struct colors {
-	short next[COLOR_COUNT-1], turn[COLOR_COUNT-1], n, first, last, def;
+	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def;
 } Colors;
 
 #define COLOR_NEXT(cs, c) cs->next[c]

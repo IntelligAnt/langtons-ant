@@ -91,11 +91,8 @@ Colors *init_colors(short def)
 	Colors *colors = malloc(sizeof(Colors));
 	int i;
 	for (i = 0; i < COLOR_COUNT; ++i) {
-		if (i == def) {
-			continue;
-		}
-		colors->turn[i] = 0;
 		colors->next[i] = def;
+		colors->turn[i] = 0;
 	}
 	colors->n = 0;
 	colors->first = colors->last = -1;
@@ -150,7 +147,7 @@ void set_color(Colors *colors, short index, short c, short turn)
 
 bool color_exists(Colors *colors, short c)
 {
-	return colors->turn[c] ? assert(colors->next[c] != colors->def), 1 : 0;
+	return c == colors->def || colors->turn[c];
 }
 
 bool enough_colors(Colors *colors)
