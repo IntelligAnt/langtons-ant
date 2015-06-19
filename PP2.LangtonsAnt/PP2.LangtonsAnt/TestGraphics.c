@@ -49,15 +49,15 @@ int main(void)
 
 	Vector2i oldp;
 	bool in_bounds;
-	int steps = 0, cnt = DRAW_EVERY-1;
+	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0, ch;
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE); // TODO fix flicker with bg colors other than white
 	draw_grid_full(grid);
 
 	while (1) {
-		if (steps == 200) {
+		/*if (steps == 200) {
 			grid_to_sparse(grid);
-		}
+		}*/
 		oldp = ant->pos;
 		in_bounds = ant_move(ant, grid, colors);
 		if (!in_bounds) {
@@ -66,6 +66,26 @@ int main(void)
 		} else if (++cnt == DRAW_EVERY) {
 			draw_grid_iter(grid, oldp, ant->pos);
 			cnt = 0;
+		}
+		if (input_delay == 0) {
+			switch (ch = getch()) {
+			case KEY_UP:
+				scroll_grid(grid, -1, 0);
+				goto delay;
+			case KEY_DOWN:
+				scroll_grid(grid, 1, 0);
+				goto delay;
+			case KEY_LEFT:
+				scroll_grid(grid, 0, -1);
+				goto delay;
+			case KEY_RIGHT:
+				scroll_grid(grid, 0, 1);
+			delay:
+				input_delay = 2;
+				draw_grid_full(grid);
+			}
+		} else {
+			--input_delay;
 		}
 		++steps;
 	}

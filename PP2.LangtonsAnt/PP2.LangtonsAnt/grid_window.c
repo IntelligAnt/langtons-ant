@@ -60,7 +60,7 @@ static void adjust_scrollbars(Grid *grid)
 
 static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 {
-	const int n = GRID_WINDOW_SIZE-1, mid = n/2;
+	const int n = GRID_SC_VIEW_SIZE, mid = n/2;
 	int size = (int)(max((n-2)*gridscrl.scale, SLIDER_MIN_SIZE));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
@@ -118,7 +118,7 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = min(grid->size, GRID_WINDOW_SIZE-1), i, j;
+	int gs = min(grid->size, GRID_SC_VIEW_SIZE), i, j;
 	int cs = CELL_SIZE(gs, 0);
 	int o = OFFSET_SIZE(TOTAL_SIZE(gs, 0, cs));
 	Vector2i pos, yx, origin = { 0, 0 };
@@ -154,6 +154,7 @@ void draw_grid_full(Grid *grid)
 	int i;
 
 	assert(gridw);
+
 	if (grid) {
 		if (grid->size == GRID_SIZE_SMALL(grid)){
 			bordered(grid, LINE_WIDTH_SMALL);
@@ -193,4 +194,19 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 
 	wrefresh(gridw);
 	// TODO draw ant transition
+}
+
+void scroll_grid(Grid *grid, int dy, int dx)
+{
+	const int n = GRID_SC_VIEW_SIZE, gs = grid->size, half = gs/2;
+	int newy = gridscrl.y+dy, newx = gridscrl.x+dx;
+
+	if (!is_scrl_on || newy < -half || newy > half || newx < -half || newx > half) {
+		return;
+	}
+
+	gridscrl.y = newy;
+	gridscrl.x = newx;
+	gridscrl.hcenter = (int)(n/(double)gs * gridscrl.x);
+	gridscrl.vcenter = (int)(n/(double)gs * gridscrl.y);
 }

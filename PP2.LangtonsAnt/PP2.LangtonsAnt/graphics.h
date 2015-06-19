@@ -57,6 +57,7 @@
 /*** Grid window attributes and types ***/
 
 #define GRID_WINDOW_SIZE  82
+#define GRID_SC_VIEW_SIZE GRID_WINDOW_SIZE - 1
 #define GRID_BUFFER_ZONE  5
 #define GRID_CELL         ACS_BLOCK
 #define LINE_WIDTH_SMALL  2
@@ -96,5 +97,6 @@ void init_grid_window(void);
 void end_grid_window(void);
 void draw_grid_full(Grid *grid);
 void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp);
+void scroll_grid(Grid *grid, int dy, int dx);
 
 #endif

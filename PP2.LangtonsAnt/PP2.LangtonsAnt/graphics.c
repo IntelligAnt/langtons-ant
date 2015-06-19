@@ -9,7 +9,8 @@ void init_graphics(short fg_color, short bg_color)
 	curs_set(0);
 	
 	cbreak();
-	// keypad(stdscr, TRUE);
+	keypad(stdscr, TRUE);
+	nodelay(stdscr, TRUE);
 	noecho();
 
 	start_color();
