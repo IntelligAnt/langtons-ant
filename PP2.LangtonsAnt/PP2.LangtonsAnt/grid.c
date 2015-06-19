@@ -130,21 +130,22 @@ static void grid_expand_n(Grid *grid)
 static void grid_expand_s(Grid *grid)
 {
 	size_t old = grid->size, size = GRID_MUL*old, i;
-	Element **new = malloc(size*sizeof(Element*)), **t;
+	Element **new = malloc(size*sizeof(Element*)), *t;
 
 	for (i = 0; i < size; ++i) {
 		if (is_in_old_matrix_row(i, old)) {
 			new[i] = grid->rows[i - old];
-			t=new+i;
-			while (*t) {
-				(*t)->column += old;
-				t = &((*t)->next);
+			grid->rows[i - old] = NULL;
+			t=new[i];
+			while (t) {
+				t->column += old;
+				t = t->next;
 			}
 		} else {
 			new[i] = NULL;
 		}
 	}
-	grid_delete_s(grid);
+	free(grid->rows);
 	grid->rows = new;
 	grid->size = size;
 }

@@ -65,7 +65,7 @@ bool enough_colors(Colors *colors);
 /* grid.c */
 
 Grid *grid_new(size_t size, Colors *colors);
-void new_element(Element *cur, unsigned column, unsigned char c);
+void new_element(Element **cur, unsigned column, unsigned char c);
 void grid_to_sparse(Grid *grid);
 bool is_sparse(Grid *grid);
 void grid_delete(Grid *grid);
