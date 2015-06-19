@@ -28,8 +28,8 @@ typedef struct colors {
 
 /*** Grid attributes and types ***/
 
-#define GRID_MUL 3 // Do not change
-#define GRID_SIZE_SMALL(g) (g)->init_size  // Allow user-changeable initial size (2, 3, 5)
+#define GRID_MUL 3
+#define GRID_SIZE_SMALL(g) (g)->init_size // 2, 3, 4, 5, 6
 #define GRID_SIZE_MEDIUM(g) (GRID_SIZE_SMALL(g) * GRID_MUL)
 #define GRID_SIZE_LARGE(g) (GRID_SIZE_MEDIUM(g) * GRID_MUL)
 #define IS_GRID_LARGE(g) (g->size >= GRID_SIZE_LARGE(g))
@@ -43,7 +43,7 @@ typedef struct element {
 
 typedef struct grid {
 	unsigned char **c, def_color;
-	Element **rows /*, **last_visit*/; //TO DO
+	Element **rows;
 	size_t size, init_size;
 } Grid;
 
@@ -53,7 +53,6 @@ Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
 bool ant_out_of_bounds(Ant *ant, Grid *grid);
 bool ant_move(Ant *ant, Grid *grid, Colors *colors);
-
 
 Colors *init_colors(short def);
 void new_color(Colors *colors, short c, short turn);

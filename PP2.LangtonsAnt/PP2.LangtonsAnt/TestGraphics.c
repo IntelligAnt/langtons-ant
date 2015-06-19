@@ -8,9 +8,9 @@
 int main(void)
 {
 	int init_size;
-	printf("Pocetna velicina (2, 3 ili 5): ");
+	printf("Pocetna velicina (2, 3, 4, 5): ");
 	scanf("%d", &init_size);
-	assert(init_size == 2 || init_size == 3 || init_size == 5);
+	//assert(init_size == 2 || init_size == 3 || init_size == 5);
 	system("cls");
 
 	Colors *colors = init_colors(COLOR_WHITE);
@@ -55,7 +55,7 @@ int main(void)
 	draw_grid_full(grid);
 
 	while (1) {
-		/*if (steps == 200) {
+		/*if (steps == 1000) {
 			grid_to_sparse(grid);
 		}*/
 		oldp = ant->pos;
@@ -81,7 +81,7 @@ int main(void)
 			case KEY_RIGHT:
 				scroll_grid(grid, 0, 1);
 			delay:
-				input_delay = 2;
+				input_delay = 1;
 				draw_grid_full(grid);
 			}
 		} else {

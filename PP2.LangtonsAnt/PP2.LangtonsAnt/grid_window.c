@@ -123,19 +123,17 @@ static void borderless(Grid *grid)
 	int o = OFFSET_SIZE(TOTAL_SIZE(gs, 0, cs));
 	Vector2i pos, yx, origin = { 0, 0 };
 
+	/* Draw background edge buffer zone */
+	wattrset(gridw, get_pair_for(grid->def_color));
+	draw_buffer_zone(o+1);
+
 	/* Draw scrollbars in case of largest grid */
 	is_scrl_on = cs == 1;
 	if (is_scrl_on) {
-		wattrset(gridw, get_pair_for(grid->def_color));
-		draw_buffer_zone(o+1);
 		origin = ORIGIN_POS(grid->size, gs, gridscrl.y, gridscrl.x);
 		// TODO correct slight shift with init size 2 grid
 		adjust_scrollbars(grid);
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
-	} else {
-		assert(o <= GRID_BUFFER_ZONE);
-		wattrset(gridw, COLOR_PAIR(bg_pair));
-		draw_buffer_zone(GRID_BUFFER_ZONE);
 	}
 
 	/* Draw cells */

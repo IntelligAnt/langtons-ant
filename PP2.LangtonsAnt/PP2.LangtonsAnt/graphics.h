@@ -56,9 +56,9 @@
 
 /*** Grid window attributes and types ***/
 
-#define GRID_WINDOW_SIZE  82
-#define GRID_SC_VIEW_SIZE GRID_WINDOW_SIZE - 1
-#define GRID_BUFFER_ZONE  5
+#define GRID_WINDOW_SIZE  109
+#define GRID_SC_VIEW_SIZE GRID_WINDOW_SIZE-1
+#define GRID_BUFFER_ZONE  2
 #define GRID_CELL         ACS_BLOCK
 #define LINE_WIDTH_SMALL  2
 #define LINE_WIDTH_MEDIUM 1
