@@ -45,19 +45,6 @@ static void draw_buffer_zone(int width)
 	}
 }
 
-static void adjust_scrollbars(Grid *grid)
-{
-	static bool first = TRUE;
-	static size_t prev_size;
-	if (first) {
-		prev_size = grid->size;
-		first = FALSE;
-	} else if (grid->size > prev_size) {
-		gridscrl.scale /= GRID_MUL;
-		prev_size = grid->size;
-	}
-}
-
 static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 {
 	const int n = GRID_SC_VIEW_SIZE, mid = n/2;
@@ -118,9 +105,9 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = min(grid->size, GRID_SC_VIEW_SIZE), i, j;
-	int cs = CELL_SIZE(gs, 0);
-	int o = OFFSET_SIZE(TOTAL_SIZE(gs, 0, cs));
+	int gs = grid->size, vgs = min(gs, GRID_SC_VIEW_SIZE), i, j;
+	int cs = CELL_SIZE(vgs, 0);
+	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, 0, cs));
 	Vector2i pos, yx, origin = { 0, 0 };
 
 	/* Draw background edge buffer zone */
@@ -130,15 +117,15 @@ static void borderless(Grid *grid)
 	/* Draw scrollbars in case of largest grid */
 	is_scrl_on = cs == 1;
 	if (is_scrl_on) {
-		origin = ORIGIN_POS(grid->size, gs, gridscrl.y, gridscrl.x);
+		origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x);
 		// TODO correct slight shift with init size 2 grid
-		adjust_scrollbars(grid);
+		gridscrl.scale = GRID_SC_VIEW_SIZE / (double)gs;
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
 	}
 
 	/* Draw cells */
-	for (i = 0; i < gs; ++i) {
-		for (j = 0; j < gs; ++j) {
+	for (i = 0; i < vgs; ++i) {
+		for (j = 0; j < vgs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
 			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
@@ -174,21 +161,22 @@ void draw_grid_full(Grid *grid)
 
 void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 {
-	int gs = grid->size;
-	int ws = GRID_WINDOW_SIZE - is_scrl_on;
+	int gs = grid->size, vgs = min(gs, GRID_SC_VIEW_SIZE);
 	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
 		   : (gs == GRID_SIZE_MEDIUM(grid)) ? LINE_WIDTH_MEDIUM
 		   : LINE_WIDTH_LARGE;
-	int cs = CELL_SIZE(gs, lw);
-	int o = OFFSET_SIZE(TOTAL_SIZE(gs, lw, cs));
-	Vector2i origin = ORIGIN_POS(gs, ws, gridscrl.y, gridscrl.x), pos, yx;
+	int cs = CELL_SIZE(vgs, lw);
+	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, lw, cs));
+	Vector2i origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x), pos, yx;
 
 	assert(gridw);
 
 	pos = abs2rel(oldp, origin);
 	yx = pos2yx(pos, lw, cs, o);
-	wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, oldp)));
-	draw_box(gridw, yx, cs);
+	if (yx.y != GRID_SC_VIEW_SIZE && yx.x != GRID_SC_VIEW_SIZE) {
+		wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, oldp)));
+		draw_box(gridw, yx, cs);
+	}
 
 	wrefresh(gridw);
 	// TODO draw ant transition

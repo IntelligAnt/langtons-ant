@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdlib.h>
+#include <vld.h>
 #include "logic.h"
 #include "graphics.h"
 
@@ -8,7 +9,7 @@
 int main(void)
 {
 	int init_size;
-	printf("Pocetna velicina (2, 3, 4, 5): ");
+	printf("Pocetna velicina (2, 3, 4, 5, 6): ");
 	scanf("%d", &init_size);
 	//assert(init_size == 2 || init_size == 3 || init_size == 5);
 	system("cls");
@@ -18,7 +19,8 @@ int main(void)
 	Ant *ant = ant_new(grid, UP);
 	int i = 1;
 	short c, turn;
-	
+	//grid_to_sparse(grid);
+
 	while (i) {
 		printf("1. Nova boja.\n2. Izbrisi boju.\n0 za crtanje\n");
 		scanf("%d", &i);
@@ -55,9 +57,9 @@ int main(void)
 	draw_grid_full(grid);
 
 	while (1) {
-		/*if (steps == 1000) {
-			grid_to_sparse(grid);
-		}*/
+		if (steps == 10000) {
+			exit(1);
+		}
 		oldp = ant->pos;
 		in_bounds = ant_move(ant, grid, colors);
 		if (!in_bounds) {

@@ -57,7 +57,7 @@
 /*** Grid window attributes and types ***/
 
 #define GRID_WINDOW_SIZE  109
-#define GRID_SC_VIEW_SIZE GRID_WINDOW_SIZE-1
+#define GRID_SC_VIEW_SIZE (GRID_WINDOW_SIZE - 1)
 #define GRID_BUFFER_ZONE  2
 #define GRID_CELL         ACS_BLOCK
 #define LINE_WIDTH_SMALL  2
@@ -69,8 +69,8 @@
 #define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
 #define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-(total)) / 2)
 
-#define ORIGIN_COORD(gs, ws, sc) max((gs)/2-(ws)/2+(sc), 0)
-#define ORIGIN_POS(gs, ws, scy, scx) (Vector2i) { ORIGIN_COORD(gs, ws, scy), ORIGIN_COORD(gs, ws, scx) }
+#define ORIGIN_COORD(gs, vs, sc) max((gs)/2-(vs)/2+(sc), 0)
+#define ORIGIN_POS(gs, vs, scy, scx) (Vector2i) { ORIGIN_COORD(gs, vs, scy), ORIGIN_COORD(gs, vs, scx) }
 
 typedef struct scroll_info {
 	int y, x, hcenter, vcenter;

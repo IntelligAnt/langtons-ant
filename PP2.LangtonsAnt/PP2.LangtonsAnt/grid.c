@@ -19,7 +19,7 @@ Grid *grid_new(size_t size, Colors *colors)
 	grid->c = c;
 	grid->size = grid->init_size = size;
 	grid->rows = NULL;
-	grid->def_color = colors->def;
+	grid->def_color = (unsigned char)colors->def;
 	return grid;
 }
 

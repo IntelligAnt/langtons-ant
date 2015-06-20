@@ -47,7 +47,7 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	if (grid->c[y][x] == colors->def) {
-		grid->c[y][x] = colors->first;
+		grid->c[y][x] = (unsigned char)colors->first;
 	}
 	turn = colors->turn[grid->c[y][x]];
 	assert(abs(turn) == 1);
