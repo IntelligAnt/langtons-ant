@@ -34,7 +34,7 @@ static void grid_delete_m(Grid *grid)
 static void grid_delete_s(Grid *grid)
 {
 	int i;
-	Element *temp;
+	Cell *temp;
 	for (i = 0; i < grid->size; i++) {
 		while (grid->rows[i]) {
 			temp = grid->rows[i];
@@ -91,7 +91,7 @@ static void grid_expand_m(Grid *grid)
 static void grid_expand_s(Grid *grid)
 {
 	size_t old = grid->size, size = GRID_MUL*old, i;
-	Element **new = malloc(size*sizeof(Element*)), *t;
+	Cell **new = malloc(size*sizeof(Cell*)), *t;
 
 	for (i = 0; i < size; ++i) {
 		if (is_in_old_matrix_row(i, old)) {
@@ -121,20 +121,20 @@ void grid_expand(Grid *grid, Ant *ant)
 	}
 }
 
-void grid_to_sparse(Grid *grid)
+void grid_make_sparse(Grid *grid)
 {
 	size_t size = grid->size;
 	int i, j;
-	Element **cur;
+	Cell **cur;
 	char c;
-	grid->rows = malloc(size*sizeof(Element*));
+	grid->rows = malloc(size*sizeof(Cell*));
 	for (i = 0; i < size; i++) {
 		grid->rows[i] = NULL;
 		cur = grid->rows + i;
 		for (j = 0; j < size; j++) {
 			c = grid->c[i][j];
 			if (c != grid->def_color) {
-				new_element(cur, j, c);
+				new_cell(cur, j, c);
 				cur = &((*cur)->next);
 			}
 		}
@@ -148,9 +148,9 @@ bool is_grid_sparse(Grid *grid)
 	return grid->rows ? assert(!grid->c), 1 : 0;
 }
 
-void new_element(Element **cur, unsigned column, unsigned char c)
+void new_cell(Cell **cur, unsigned column, unsigned char c)
 {
-	Element *new = malloc(sizeof(Element));
+	Cell *new = malloc(sizeof(Cell));
 	new->column = column;
 	new->c = c;
 	new->next = *cur;
@@ -159,7 +159,7 @@ void new_element(Element **cur, unsigned column, unsigned char c)
 
 unsigned char color_at_s(Grid *grid, Vector2i p)
 {
-	Element *t = grid->rows[p.y];
+	Cell *t = grid->rows[p.y];
 	while (t && t->column < p.x) {
 		t = t->next;
 	}

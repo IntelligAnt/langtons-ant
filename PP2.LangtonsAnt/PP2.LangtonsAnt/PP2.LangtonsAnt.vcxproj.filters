@@ -44,9 +44,6 @@
     <ClCompile Include="TestGraphics.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestLogic.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rules_io.c">
       <Filter>Source Files</Filter>
     </ClCompile>

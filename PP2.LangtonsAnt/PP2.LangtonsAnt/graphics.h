@@ -89,7 +89,7 @@ void init_def_pairs(short fg_color, short bg_color);
 chtype get_pair_for(short color);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
-void draw_box(WINDOW *w, Vector2i top_left, int size);
+void draw_box(WINDOW *window, Vector2i top_left, int size);
 
 /* grid_window.c */
 

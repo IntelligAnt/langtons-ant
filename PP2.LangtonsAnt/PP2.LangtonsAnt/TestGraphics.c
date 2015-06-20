@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <vld.h>
+//#include <vld.h>
 #include "logic.h"
 #include "graphics.h"
 
@@ -15,12 +15,12 @@ int main(void)
 	//assert(init_size == 2 || init_size == 3 || init_size == 5);
 	system("cls");
 
-	Colors *colors = colors_new(COLOR_WHITE);
+	Colors *colors = colors_new(COLOR_SILVER);
 	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1;
 	short c, turn;
-	//grid_to_sparse(grid);
+	//grid_make_sparse(grid);
 
 	while (i) {
 		printf("1. Nova boja.\n2. Izbrisi boju.\n0 za crtanje\n");
@@ -50,45 +50,45 @@ int main(void)
 		system("cls");
 	}
 	//freopen("memleaks.dmp", "w", stdout);
-	i = 0;
+	
 	Vector2i oldp;
-	bool in_bounds;
-	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0, ch;
+	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0;
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE); // TODO fix flicker with bg colors other than white
 	draw_grid_full(grid);
 
+	i = 0;
 	while (1) {
-		if (steps == 1000000) {
-			freopen("memleaks.dmp", "w", stdout);
-			goto exit;
-			exit(1);
-		}
 		oldp = ant->pos;
-		in_bounds = ant_move(ant, grid, colors);
-		if (!in_bounds) {
+		ant_move(ant, grid, colors);
+		if (is_ant_out_of_bounds(ant, grid)) {
 			grid_expand(grid, ant);
 			mvprintw(10, GRID_WINDOW_SIZE+10, "%d", ++i);
+			mvprintw(11, GRID_WINDOW_SIZE+10, "%d", grid->size);
+			if (i == 7) {
+				grid_make_sparse(grid);
+				mvaddstr(12, GRID_WINDOW_SIZE+10, "SPARSE");
+			}
 			draw_grid_full(grid);
 		} else if (++cnt == DRAW_EVERY) {
 			draw_grid_iter(grid, oldp, ant->pos);
 			cnt = 0;
 		}
 		if (input_delay == 0) {
-			switch (ch = getch()) {
+			switch (getch()) { // TODO apparently getch() refreshes the screen - optimize
 			case KEY_UP:
-				scroll_grid(grid, -1, 0);
+				scroll_grid(grid, -10, 0);
 				goto delay;
 			case KEY_DOWN:
-				scroll_grid(grid, 1, 0);
+				scroll_grid(grid, 10, 0);
 				goto delay;
 			case KEY_LEFT:
-				scroll_grid(grid, 0, -1);
+				scroll_grid(grid, 0, -10);
 				goto delay;
 			case KEY_RIGHT:
-				scroll_grid(grid, 0, 1);
+				scroll_grid(grid, 0, 10);
 			delay:
-				input_delay = 1;
+				++input_delay;
 				draw_grid_full(grid);
 			}
 		} else {

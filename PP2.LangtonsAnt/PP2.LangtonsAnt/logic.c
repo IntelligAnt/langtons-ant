@@ -52,13 +52,13 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
-	Element **t = grid->rows+y;
+	Cell **t = grid->rows+y;
 
 	while (*t && (*t)->column < x) {
 		t = &((*t)->next);
 	}
 	if (!*t || (*t)->column != x) {
-		new_element(t, x, (unsigned char)colors->first);
+		new_cell(t, x, (unsigned char)colors->first);
 	}
 
 	turn = colors->turn[(*t)->c];
@@ -74,10 +74,10 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 	} else {
 		ant_move_n(ant, grid, colors);
 	}
-	return !is_and_out_of_bounds(ant, grid);
+	return !is_ant_out_of_bounds(ant, grid);
 }
 
-bool is_and_out_of_bounds(Ant *ant, Grid *grid)
+bool is_ant_out_of_bounds(Ant *ant, Grid *grid)
 {
 	return ant->pos.y < 0 || ant->pos.y >= grid->size
 		|| ant->pos.x < 0 || ant->pos.x >= grid->size;

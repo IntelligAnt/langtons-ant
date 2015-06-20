@@ -166,18 +166,25 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 
 	pos = abs2rel(oldp, origin);
 	yx = pos2yx(pos, lw, cs, o);
-	if (yx.y != GRID_SC_VIEW_SIZE && yx.x != GRID_SC_VIEW_SIZE) {
-		wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, oldp)));
-		draw_box(gridw, yx, cs);
+	mvprintw(13, GRID_WINDOW_SIZE+10, "%4d %4d", yx.y, yx.x);
+
+	if (yx.y < 0 || yx.y >= GRID_SC_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_SC_VIEW_SIZE) {
+		mvaddch(14, GRID_WINDOW_SIZE+10, 'n');
+		return;
+	} else {
+		mvaddch(14, GRID_WINDOW_SIZE+10, 'd');
 	}
 
-	wrefresh(gridw);
+	wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, oldp)));
+	draw_box(gridw, yx, cs);
 	// TODO draw ant transition
+
+	wrefresh(gridw);
 }
 
 void scroll_grid(Grid *grid, int dy, int dx)
 {
-	const int n = GRID_SC_VIEW_SIZE, gs = grid->size, half = gs/2;
+	int n = GRID_SC_VIEW_SIZE, gs = grid->size, half = gs/2;
 	int newy = gridscrl.y+dy, newx = gridscrl.x+dx;
 
 	if (!is_scrl_on || newy < -half || newy > half || newx < -half || newx > half) {

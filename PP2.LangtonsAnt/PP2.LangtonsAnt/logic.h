@@ -34,15 +34,15 @@ typedef struct colors {
 #define IS_GRID_LARGE(g) ((g)->size >= GRID_SIZE_LARGE(g))
 #define GRID_COLOR_AT(g, p) (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
 
-typedef struct element {
+typedef struct cell {
 	size_t column;
 	unsigned char c;
-	struct element *next;
-}Element;
+	struct cell *next;
+}Cell;
 
 typedef struct grid {
 	unsigned char **c, def_color;
-	Element **rows;
+	Cell **rows;
 	size_t size, init_size;
 } Grid;
 
@@ -51,7 +51,7 @@ typedef struct grid {
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
 bool ant_move(Ant *ant, Grid *grid, Colors *colors);
-bool is_and_out_of_bounds(Ant *ant, Grid *grid);
+bool is_ant_out_of_bounds(Ant *ant, Grid *grid);
 
 Colors *colors_new(short def);
 void colors_delete(Colors *colors);
@@ -66,9 +66,9 @@ bool has_enough_colors(Colors *colors);
 Grid *grid_new(size_t size, Colors *colors);
 void grid_delete(Grid *grid);
 void grid_expand(Grid *grid, Ant *ant);
-void grid_to_sparse(Grid *grid);
+void grid_make_sparse(Grid *grid);
 bool is_grid_sparse(Grid *grid);
-void new_element(Element **cur, unsigned column, unsigned char c);
+void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
 
 #endif

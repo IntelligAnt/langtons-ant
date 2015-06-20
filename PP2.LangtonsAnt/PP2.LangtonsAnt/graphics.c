@@ -70,14 +70,14 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin)
 	};
 }
 
-void draw_box(WINDOW *w, Vector2i top_left, int size)
+void draw_box(WINDOW *window, Vector2i top_left, int size)
 {
 	int i;
 	if (size == 1) {
-		mvwaddch(w, top_left.y, top_left.x, GRID_CELL);
+		mvwaddch(window, top_left.y, top_left.x, GRID_CELL);
 		return;
 	}
 	for (i = 0; i < size; ++i) {
-		mvwhline(w, top_left.y+i, top_left.x, GRID_CELL, size);
+		mvwhline(window, top_left.y+i, top_left.x, GRID_CELL, size);
 	}
 }

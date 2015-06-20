@@ -1,2 +1,130 @@
-No memory leaks detected.
+WARNING: Visual Leak Detector detected memory leaks!
+---------- Block 5 at 0x00FD57A0: 4 bytes ----------
+  Leak Hash: 0x9C7417F8, Count: 1, Total 4 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\grid.c (14): PP2.LangtonsAnt.exe!grid_new + 0xC bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (19): PP2.LangtonsAnt.exe!main + 0xD bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    07 07 07 07                                                  ........ ........
+
+
+---------- Block 3 at 0x00FD7DD8: 16 bytes ----------
+  Leak Hash: 0x8DC30146, Count: 1, Total 16 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\grid.c (12): PP2.LangtonsAnt.exe!grid_new + 0xF bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (19): PP2.LangtonsAnt.exe!main + 0xD bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    18 7E FD 00    A0 57 FD 00    70 21 FE 00    A0 21 FE 00     .~...W.. p!...!..
+
+
+---------- Block 4 at 0x00FD7E18: 4 bytes ----------
+  Leak Hash: 0x9C7417F8, Count: 1, Total 4 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\grid.c (14): PP2.LangtonsAnt.exe!grid_new + 0xC bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (19): PP2.LangtonsAnt.exe!main + 0xD bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    07 07 07 07                                                  ........ ........
+
+
+---------- Block 8 at 0x00FDC138: 12 bytes ----------
+  Leak Hash: 0xA42B6FA3, Count: 1, Total 12 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\logic.c (11): PP2.LangtonsAnt.exe!ant_new + 0xA bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (20): PP2.LangtonsAnt.exe!main + 0xB bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    02 00 00 00    02 00 00 00    00 00 00 00                    ........ ........
+
+
+---------- Block 1 at 0x00FE1490: 72 bytes ----------
+  Leak Hash: 0x7C72B73D, Count: 1, Total 72 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\logic.c (91): PP2.LangtonsAnt.exe!colors_new + 0xA bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (18): PP2.LangtonsAnt.exe!main + 0x7 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    07 00 07 00    09 00 07 00    02 00 07 00    0F 00 07 00     ........ ........
+    04 00 06 00    0B 00 0E 00    0A 00 08 00    0D 00 0C 00     ........ ........
+    00 00 00 00    01 00 00 00    FF FF 00 00    01 00 00 00     ........ ........
+    FF FF 01 00    01 00 01 00    01 00 FF FF    01 00 FF FF     ........ ........
+    0B 00 0F 00    06 00 07 00                                   ........ ........
+
+
+---------- Block 2 at 0x00FE1FC0: 20 bytes ----------
+  Leak Hash: 0xF09781BE, Count: 1, Total 20 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\grid.c (10): PP2.LangtonsAnt.exe!grid_new + 0xA bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (19): PP2.LangtonsAnt.exe!main + 0xD bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    D8 7D FD 00    07 CD CD CD    00 00 00 00    04 00 00 00     .}...... ........
+    04 00 00 00                                                  ........ ........
+
+
+---------- Block 6 at 0x00FE2170: 4 bytes ----------
+  Leak Hash: 0x9C7417F8, Count: 1, Total 4 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\grid.c (14): PP2.LangtonsAnt.exe!grid_new + 0xC bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (19): PP2.LangtonsAnt.exe!main + 0xD bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    07 07 07 07                                                  ........ ........
+
+
+---------- Block 7 at 0x00FE21A0: 4 bytes ----------
+  Leak Hash: 0x9C7417F8, Count: 1, Total 4 bytes
+  Call Stack (TID 3096):
+    0x5200E590 (File and line number not available): MSVCR120D.dll!malloc
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\grid.c (14): PP2.LangtonsAnt.exe!grid_new + 0xC bytes
+    c:\users\konstantin\documents\github\langtons-ant\pp2.langtonsant\pp2.langtonsant\testgraphics.c (19): PP2.LangtonsAnt.exe!main + 0xD bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (626): PP2.LangtonsAnt.exe!__tmainCRTStartup + 0x19 bytes
+    f:\dd\vctools\crt\crtw32\dllstuff\crtexe.c (466): PP2.LangtonsAnt.exe!mainCRTStartup
+    0x753D7C04 (File and line number not available): KERNEL32.DLL!BaseThreadInitThunk + 0x24 bytes
+    0x7744AD1F (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x8F bytes
+    0x7744ACEA (File and line number not available): ntdll.dll!RtlInitializeExceptionChain + 0x5A bytes
+  Data:
+    07 07 07 07                                                  ........ ........
+
+
+Visual Leak Detector detected 8 memory leaks (424 bytes).
+Largest number used: 424 bytes.
+Total allocations: 424 bytes.
 Visual Leak Detector is now exiting.
