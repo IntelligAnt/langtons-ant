@@ -13,7 +13,7 @@ Colors* load_rules(char *name)
     fscanf(in, "%s", buff);
     short def;
     def = atoi(buff);
-    rule_set = init_colors(def);
+    rule_set = colors_new(def);
     rule_set->def = def;
     t = 0;
     w = 1;
@@ -36,7 +36,7 @@ Colors* load_rules(char *name)
             if ( r == 0){
                 r = -1;
             }
-            new_color(rule_set, k, r);
+            add_color(rule_set, k, r);
             t = 0;
         }
         else

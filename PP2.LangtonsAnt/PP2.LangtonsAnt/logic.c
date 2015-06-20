@@ -37,12 +37,6 @@ static void ant_dir_turn(Ant *ant, int turn){
 	ant->dir = (ant->dir + turn + 4) % 4;
 }
 
-bool ant_out_of_bounds(Ant *ant, Grid *grid)
-{
-	return ant->pos.y < 0 || ant->pos.y >= grid->size
-		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
-}
-
 static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
@@ -60,10 +54,10 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	Element **t = grid->rows+y;
 
-	while (*t && (*t)->column < x){
+	while (*t && (*t)->column < x) {
 		t = &((*t)->next);
 	}
-	if (!*t || (*t)->column != x){
+	if (!*t || (*t)->column != x) {
 		new_element(t, x, (unsigned char)colors->first);
 	}
 
@@ -75,17 +69,23 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 
 bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
-	if (grid_is_sparse(grid)) {
+	if (is_grid_sparse(grid)) {
 		ant_move_s(ant, grid, colors);
 	} else {
 		ant_move_n(ant, grid, colors);
 	}
-	return !ant_out_of_bounds(ant, grid);
+	return !is_and_out_of_bounds(ant, grid);
+}
+
+bool is_and_out_of_bounds(Ant *ant, Grid *grid)
+{
+	return ant->pos.y < 0 || ant->pos.y >= grid->size
+		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
 }
 
 /* Color functions */
 
-Colors *init_colors(short def)
+Colors *colors_new(short def)
 {
 	assert(def >= 0 && def < COLOR_COUNT);
 	Colors *colors = malloc(sizeof(Colors));
@@ -100,7 +100,12 @@ Colors *init_colors(short def)
 	return colors;
 }
 
-void new_color(Colors *colors, short c, short turn)
+void colors_delete(Colors *colors)
+{
+	free(colors);
+}
+
+void add_color(Colors *colors, short c, short turn)
 {
 	++colors->n;
 	if (colors->first == -1) {
@@ -113,7 +118,7 @@ void new_color(Colors *colors, short c, short turn)
 	colors->turn[c] = turn;
 }
 
-void delete_color(Colors *colors, short c)
+void remove_color(Colors *colors, short c)
 {
 	short i;
 	assert(c != colors->def);
@@ -150,7 +155,7 @@ bool color_exists(Colors *colors, short c)
 	return c == colors->def || colors->turn[c];
 }
 
-bool enough_colors(Colors *colors)
+bool has_enough_colors(Colors *colors)
 {
 	return colors->n >= 2;
 }

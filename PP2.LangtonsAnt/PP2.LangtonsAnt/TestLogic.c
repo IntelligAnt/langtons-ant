@@ -56,7 +56,7 @@
 //
 //int main(void)
 //{
-//	Colors *colors = init_colors(COLOR_WHITE);
+//	Colors *colors = colors_new(COLOR_WHITE);
 //	Grid *grid = grid_new(GRID_SIZE_SMALL, colors);
 //	Grid_s *grid_s;
 //	Ant *ant = ant_new(grid, UP);
@@ -69,7 +69,7 @@
 //		scanf("%d", &i);
 //		switch (i) {
 //		case 0: 
-//			if (!enough_colors(colors)) {
+//			if (!has_enough_colors(colors)) {
 //				i = 1;
 //			}
 //			break;
@@ -78,14 +78,14 @@
 //			scanf("%hi %hi", &color, &turn);
 //			assert(abs(turn) == 1);
 //			if (!color_exists(colors, color)) {
-//				new_color(colors, color, turn);
+//				add_color(colors, color, turn);
 //			}
 //			break;
 //		case 2:
 //			printf("Unesite boju (0-14)\n");
 //			scanf("%hi", &color);
 //			if (color_exists(colors, color)) {
-//				delete_color(colors, color);
+//				remove_color(colors, color);
 //			}
 //			break;
 //		}

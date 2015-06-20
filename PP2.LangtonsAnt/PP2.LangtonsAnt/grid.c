@@ -22,7 +22,7 @@ Grid *grid_new(size_t size, Colors *colors)
 	return grid;
 }
 
-static void grid_delete_n(Grid *grid)
+static void grid_delete_m(Grid *grid)
 {
 	int i;
 	for (i = 0; i < grid->size; ++i) {
@@ -47,10 +47,10 @@ static void grid_delete_s(Grid *grid)
 
 void grid_delete(Grid *grid)
 {
-	if (grid_is_sparse(grid)) {
+	if (is_grid_sparse(grid)) {
 		grid_delete_s(grid);
 	} else {
-		grid_delete_n(grid);
+		grid_delete_m(grid);
 	}
 	free(grid);
 }
@@ -72,7 +72,7 @@ static bool is_in_old_matrix_row(int y, size_t old_size)
 	return y >= old_size && y < 2 * old_size;
 }
 
-static void grid_expand_n(Grid *grid)
+static void grid_expand_m(Grid *grid)
 {
 	size_t old = grid->size, size = GRID_MUL*old, i, j;
 	unsigned char **c = malloc(size * sizeof(unsigned char*));
@@ -83,7 +83,7 @@ static void grid_expand_n(Grid *grid)
 			c[i][j] = is_in_old_matrix(i, j, old) ? grid->c[i-old][j-old] : grid->def_color;
 		}
 	}
-	grid_delete_n(grid);
+	grid_delete_m(grid);
 	grid->c = c;
 	grid->size = size;
 }
@@ -114,10 +114,10 @@ static void grid_expand_s(Grid *grid)
 void grid_expand(Grid *grid, Ant *ant)
 {
 	transfer_ant(ant, grid->size);
-	if (grid_is_sparse(grid)) {
+	if (is_grid_sparse(grid)) {
 		grid_expand_s(grid);
 	} else {
-		grid_expand_n(grid);
+		grid_expand_m(grid);
 	}
 }
 
@@ -139,11 +139,11 @@ void grid_to_sparse(Grid *grid)
 			}
 		}
 	}
-	grid_delete_n(grid);
+	grid_delete_m(grid);
 	grid->c = NULL;
 }
 
-bool grid_is_sparse(Grid *grid)
+bool is_grid_sparse(Grid *grid)
 {
 	return grid->rows ? assert(!grid->c), 1 : 0;
 }
@@ -157,7 +157,7 @@ void new_element(Element **cur, unsigned column, unsigned char c)
 	*cur = new;
 }
 
-unsigned char get_color_s(Grid *grid, Vector2i p)
+unsigned char color_at_s(Grid *grid, Vector2i p)
 {
 	Element *t = grid->rows[p.y];
 	while (t && t->column < p.x) {

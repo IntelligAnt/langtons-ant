@@ -15,7 +15,7 @@ int main(void)
 	//assert(init_size == 2 || init_size == 3 || init_size == 5);
 	system("cls");
 
-	Colors *colors = init_colors(COLOR_WHITE);
+	Colors *colors = colors_new(COLOR_WHITE);
 	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1;
@@ -27,7 +27,7 @@ int main(void)
 		scanf("%d", &i);
 		switch (i) {
 		case 0:
-			if (!enough_colors(colors)) {
+			if (!has_enough_colors(colors)) {
 				i = 1;
 			}
 			break;
@@ -36,20 +36,21 @@ int main(void)
 			scanf("%hi %hi", &c, &turn);
 			assert(abs(turn) == 1);
 			if (!color_exists(colors, c)) {
-				new_color(colors, c, turn);
+				add_color(colors, c, turn);
 			}
 			break;
 		case 2:
 			printf("Unesite boju (0-14)\n");
 			scanf("%hi", &c);
 			if (color_exists(colors, c)) {
-				delete_color(colors, c);
+				remove_color(colors, c);
 			}
 			break;
 		}
 		system("cls");
 	}
-
+	//freopen("memleaks.dmp", "w", stdout);
+	i = 0;
 	Vector2i oldp;
 	bool in_bounds;
 	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0, ch;
@@ -58,14 +59,16 @@ int main(void)
 	draw_grid_full(grid);
 
 	while (1) {
-		if (steps == 10000) {
+		if (steps == 1000000) {
 			freopen("memleaks.dmp", "w", stdout);
+			goto exit;
 			exit(1);
 		}
 		oldp = ant->pos;
 		in_bounds = ant_move(ant, grid, colors);
 		if (!in_bounds) {
 			grid_expand(grid, ant);
+			mvprintw(10, GRID_WINDOW_SIZE+10, "%d", ++i);
 			draw_grid_full(grid);
 		} else if (++cnt == DRAW_EVERY) {
 			draw_grid_iter(grid, oldp, ant->pos);
@@ -94,6 +97,10 @@ int main(void)
 		++steps;
 	}
 
+exit:
+	colors_delete(colors);
+	grid_delete(grid);
+	ant_delete(ant);
 	end_graphics();
 
 	return 0;

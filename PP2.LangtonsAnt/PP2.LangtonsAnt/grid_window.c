@@ -2,20 +2,14 @@
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
-ScrollInfo gridscrl; // TODO implement scrolling
+ScrollInfo gridscrl;
 bool is_scrl_on;
 extern chtype fg_pair, bg_pair;
 
 void init_grid_window(void)
 {
 	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
-	gridscrl = (ScrollInfo) {
-		.y = 0,
-		.x = 0,
-		.hcenter = 0,
-		.vcenter = 0,
-		.scale = 1
-	};
+	gridscrl = (ScrollInfo) { 0 };
 	keypad(gridw, TRUE);
 }
 
@@ -118,7 +112,6 @@ static void borderless(Grid *grid)
 	is_scrl_on = cs == 1;
 	if (is_scrl_on) {
 		origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x);
-		// TODO correct slight shift with init size 2 grid
 		gridscrl.scale = GRID_SC_VIEW_SIZE / (double)gs;
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
 	}
