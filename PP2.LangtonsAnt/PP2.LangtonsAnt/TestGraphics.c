@@ -6,16 +6,18 @@
 #include "graphics.h"
 
 #define DRAW_EVERY 1
+#define INPUT_DELAY 5000
+#define SCROLL_INC 10
 
 int main(void)
 {
 	int init_size;
 	printf("Pocetna velicina (2, 3, 4, 5, 6): ");
 	scanf("%d", &init_size);
-	//assert(init_size == 2 || init_size == 3 || init_size == 5);
+	assert(init_size == 2 || init_size == 3 || init_size == 4 || init_size == 5 || init_size == 6);
 	system("cls");
 
-	Colors *colors = colors_new(COLOR_SILVER);
+	Colors *colors = colors_new(COLOR_WHITE);
 	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1;
@@ -52,7 +54,7 @@ int main(void)
 	//freopen("memleaks.dmp", "w", stdout);
 	
 	Vector2i oldp;
-	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0;
+	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0, sc_inc;
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE); // TODO fix flicker with bg colors other than white
 	draw_grid_full(grid);
@@ -65,8 +67,7 @@ int main(void)
 			grid_expand(grid, ant);
 			mvprintw(10, GRID_WINDOW_SIZE+10, "%d", ++i);
 			mvprintw(11, GRID_WINDOW_SIZE+10, "%d", grid->size);
-			if (i == 7) {
-				grid_make_sparse(grid);
+			if (is_grid_sparse(grid)) {
 				mvaddstr(12, GRID_WINDOW_SIZE+10, "SPARSE");
 			}
 			draw_grid_full(grid);
@@ -77,18 +78,18 @@ int main(void)
 		if (input_delay == 0) {
 			switch (getch()) { // TODO apparently getch() refreshes the screen - optimize
 			case KEY_UP:
-				scroll_grid(grid, -10, 0);
+				scroll_grid(grid, -SCROLL_INC, 0);
 				goto delay;
 			case KEY_DOWN:
-				scroll_grid(grid, 10, 0);
+				scroll_grid(grid, SCROLL_INC, 0);
 				goto delay;
 			case KEY_LEFT:
-				scroll_grid(grid, 0, -10);
+				scroll_grid(grid, 0, -SCROLL_INC);
 				goto delay;
 			case KEY_RIGHT:
-				scroll_grid(grid, 0, 10);
+				scroll_grid(grid, 0, SCROLL_INC);
 			delay:
-				++input_delay;
+				input_delay += INPUT_DELAY;
 				draw_grid_full(grid);
 			}
 		} else {

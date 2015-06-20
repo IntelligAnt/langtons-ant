@@ -28,6 +28,8 @@ typedef struct colors {
 /*** Grid attributes and types ***/
 
 #define GRID_MUL 3
+#define GRID_MAX_N_SIZE 1400
+
 #define GRID_SIZE_SMALL(g) (g)->init_size // 2, 3, 4, 5, 6
 #define GRID_SIZE_MEDIUM(g) (GRID_SIZE_SMALL(g) * GRID_MUL)
 #define GRID_SIZE_LARGE(g) (GRID_SIZE_MEDIUM(g) * GRID_MUL)

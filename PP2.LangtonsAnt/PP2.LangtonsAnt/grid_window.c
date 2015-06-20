@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <stdlib.h>
+#include <math.h>
 #include "graphics.h"
 
 WINDOW *gridw = NULL;
@@ -41,7 +43,7 @@ static void draw_buffer_zone(int width)
 
 static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 {
-	const int n = GRID_SC_VIEW_SIZE, mid = n/2;
+	int n = GRID_SC_VIEW_SIZE, mid = n/2;
 	int size = (int)(max((n-2)*gridscrl.scale, SLIDER_MIN_SIZE));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
@@ -59,7 +61,7 @@ static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 	mvwaddch(gridw, n-1, n,   ACS_DARROW);
 
 	/* Scrollbar sliders */
-	wattrset(gridw, sb_fg_pair);
+	wattrset(gridw, sb_fg_pair); // TODO fix sliders drawing over right/bottom arrows
 	mvwhline(gridw, n, h, GRID_CELL, size);
 	mvwvline(gridw, v, n, GRID_CELL, size);
 }
@@ -106,7 +108,7 @@ static void borderless(Grid *grid)
 
 	/* Draw background edge buffer zone */
 	wattrset(gridw, get_pair_for(grid->def_color));
-	draw_buffer_zone(o+1);
+	draw_buffer_zone(o + 1);
 
 	/* Draw scrollbars in case of largest grid */
 	is_scrl_on = cs == 1;
@@ -166,13 +168,9 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 
 	pos = abs2rel(oldp, origin);
 	yx = pos2yx(pos, lw, cs, o);
-	mvprintw(13, GRID_WINDOW_SIZE+10, "%4d %4d", yx.y, yx.x);
 
 	if (yx.y < 0 || yx.y >= GRID_SC_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_SC_VIEW_SIZE) {
-		mvaddch(14, GRID_WINDOW_SIZE+10, 'n');
 		return;
-	} else {
-		mvaddch(14, GRID_WINDOW_SIZE+10, 'd');
 	}
 
 	wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, oldp)));
@@ -184,15 +182,22 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 
 void scroll_grid(Grid *grid, int dy, int dx)
 {
-	int n = GRID_SC_VIEW_SIZE, gs = grid->size, half = gs/2;
-	int newy = gridscrl.y+dy, newx = gridscrl.x+dx;
+	int gs = grid->size, n = GRID_SC_VIEW_SIZE;
+	int newy = gridscrl.y+dy, newx = gridscrl.x+dx, clamp = max(gs/2-n/2, 0);
 
-	if (!is_scrl_on || newy < -half || newy > half || newx < -half || newx > half) {
+	if (!is_scrl_on) {
 		return;
 	}
 
+	if (abs(newy) > clamp) {
+		newy = (newy < 0) ? -clamp : clamp;
+	}
+	if (abs(newx) > clamp) {
+		newx = (newx < 0) ? -clamp : clamp;
+	}
+	
 	gridscrl.y = newy;
 	gridscrl.x = newx;
-	gridscrl.hcenter = (int)(n/(double)gs * gridscrl.x);
-	gridscrl.vcenter = (int)(n/(double)gs * gridscrl.y);
+	gridscrl.hcenter = (int)(gridscrl.scale * newx);
+	gridscrl.vcenter = (int)(gridscrl.scale * newy);
 }

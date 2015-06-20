@@ -107,7 +107,9 @@ void colors_delete(Colors *colors)
 
 void add_color(Colors *colors, short c, short turn)
 {
-	++colors->n;
+	if (c < 0 || c >= COLOR_COUNT) {
+		return;
+	}
 	if (colors->first == -1) {
 		colors->first = c;
 	} else {
@@ -116,6 +118,7 @@ void add_color(Colors *colors, short c, short turn)
 	}
 	colors->last = c;
 	colors->turn[c] = turn;
+	++colors->n;
 }
 
 void remove_color(Colors *colors, short c)
