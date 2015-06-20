@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <vld.h>
 #include "logic.h"
@@ -58,6 +59,7 @@ int main(void)
 
 	while (1) {
 		if (steps == 10000) {
+			freopen("memleaks.dmp", "w", stdout);
 			exit(1);
 		}
 		oldp = ant->pos;

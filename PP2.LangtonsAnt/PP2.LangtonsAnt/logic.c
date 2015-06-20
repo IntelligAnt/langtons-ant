@@ -75,7 +75,7 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 
 bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
-	if (is_sparse(grid)) {
+	if (grid_is_sparse(grid)) {
 		ant_move_s(ant, grid, colors);
 	} else {
 		ant_move_n(ant, grid, colors);

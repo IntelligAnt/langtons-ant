@@ -33,7 +33,7 @@ typedef struct colors {
 #define GRID_SIZE_MEDIUM(g) (GRID_SIZE_SMALL(g) * GRID_MUL)
 #define GRID_SIZE_LARGE(g) (GRID_SIZE_MEDIUM(g) * GRID_MUL)
 #define IS_GRID_LARGE(g) (g->size >= GRID_SIZE_LARGE(g))
-#define GRID_COLOR_AT(g, p) (is_sparse(g) ? get_color_s(g, p) : (g)->c[(p).y][(p).x])
+#define GRID_COLOR_AT(g, p) (grid_is_sparse(g) ? get_color_s(g, p) : (g)->c[(p).y][(p).x])
 
 typedef struct element {
 	size_t column;
@@ -64,11 +64,11 @@ bool enough_colors(Colors *colors);
 /* grid.c */
 
 Grid *grid_new(size_t size, Colors *colors);
-void new_element(Element **cur, unsigned column, unsigned char c);
-void grid_to_sparse(Grid *grid);
-bool is_sparse(Grid *grid);
 void grid_delete(Grid *grid);
 void grid_expand(Grid *grid, Ant *ant);
+void grid_to_sparse(Grid *grid);
+bool grid_is_sparse(Grid *grid);
+void new_element(Element **cur, unsigned column, unsigned char c);
 unsigned char get_color_s(Grid *grid, Vector2i p);
 
 #endif
