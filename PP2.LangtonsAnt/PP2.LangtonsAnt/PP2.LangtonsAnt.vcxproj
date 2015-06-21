@@ -85,6 +85,7 @@
     <ClInclude Include="logic.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="grid_controls.c" />
     <ClCompile Include="rules_io.c" />
     <ClCompile Include="graphics.c" />
     <ClCompile Include="grid.c" />

@@ -56,30 +56,38 @@
 
 /*** Grid window attributes and types ***/
 
-#define GRID_WINDOW_SIZE  109
-#define GRID_SC_VIEW_SIZE (GRID_WINDOW_SIZE - 1)
-#define GRID_BUFFER_ZONE  2
-#define GRID_CELL         ACS_BLOCK
-#define LINE_WIDTH_SMALL  2
-#define LINE_WIDTH_MEDIUM 1
-#define LINE_WIDTH_LARGE  0
-#define SLIDER_MIN_SIZE   1
+#define GRID_WINDOW_SIZE    109
+#define GRID_SCRL_VIEW_SIZE (GRID_WINDOW_SIZE - 1)
+#define GRID_BUFFER_ZONE    2
+#define GRID_CELL           ACS_BLOCK
+#define LINE_WIDTH_SMALL    2
+#define LINE_WIDTH_MEDIUM   1
+#define LINE_WIDTH_LARGE    0
+#define SLIDER_MIN_SIZE     1
+#define SCROLL_STEP         10
 
-#define CELL_SIZE(gs, lw) ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
+#define CELL_SIZE(gs, lw)      ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
 #define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
-#define OFFSET_SIZE(total) ((GRID_WINDOW_SIZE-(total)) / 2)
+#define OFFSET_SIZE(total)     ((GRID_WINDOW_SIZE-(total)) / 2)
 
-#define ORIGIN_COORD(gs, vs, sc) max((gs)/2-(vs)/2+(sc), 0)
+#define ORIGIN_COORD(gs, vs, sc)     max((gs)/2-(vs)/2+(sc), 0)
 #define ORIGIN_POS(gs, vs, scy, scx) (Vector2i) { ORIGIN_COORD(gs, vs, scy), ORIGIN_COORD(gs, vs, scx) }
 
 typedef struct scroll_info {
 	int y, x, hcenter, vcenter;
 	double scale;
+	bool enabled;
 } ScrollInfo;
 
 /*** Menu window attributes ***/
 
 #define MENU_WINDOW_SIZE 41
+
+/*** Globals ***/
+
+extern chtype fg_pair, bg_pair;
+extern WINDOW *gridw;
+extern ScrollInfo gridscrl;
 
 /* graphics.c */
 
@@ -98,5 +106,9 @@ void end_grid_window(void);
 void draw_grid_full(Grid *grid);
 void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp);
 void scroll_grid(Grid *grid, int dy, int dx);
+
+/* grid_controls.c */
+
+int grid_resolve_key(Grid *grid, int key);
 
 #endif

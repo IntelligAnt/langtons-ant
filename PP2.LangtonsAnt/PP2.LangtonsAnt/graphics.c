@@ -19,7 +19,7 @@ void init_graphics(short fg_color, short bg_color)
 	init_grid_window();
 	draw_grid_full(NULL);
 
-	// TODO Init menus
+	// TODO init menus
 }
 
 void end_graphics(void)

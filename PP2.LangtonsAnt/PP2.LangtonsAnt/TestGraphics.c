@@ -1,13 +1,12 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <vld.h>
+#include <vld.h>
 #include "logic.h"
 #include "graphics.h"
 
 #define DRAW_EVERY 1
-#define INPUT_DELAY 10000
-#define SCROLL_INC 10
+#define INPUT_DELAY 1000
 
 int main(void)
 {
@@ -51,7 +50,6 @@ int main(void)
 		}
 		system("cls");
 	}
-	//freopen("memleaks.dmp", "w", stdout);
 	
 	Vector2i oldp;
 	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0, sc_inc;
@@ -77,22 +75,10 @@ int main(void)
 			cnt = 0;
 		}
 		if (input_delay == 0) {
-			switch (getch()) { // TODO apparently getch() refreshes the screen - optimize
-			case KEY_UP:
-				scroll_grid(grid, -SCROLL_INC, 0);
-				goto delay;
-			case KEY_DOWN:
-				scroll_grid(grid, SCROLL_INC, 0);
-				goto delay;
-			case KEY_LEFT:
-				scroll_grid(grid, 0, -SCROLL_INC);
-				goto delay;
-			case KEY_RIGHT:
-				scroll_grid(grid, 0, SCROLL_INC);
-			delay:
-				input_delay += INPUT_DELAY;
+			if (grid_resolve_key(grid, getch()) != ERR) { // TODO apparently getch() refreshes the screen - optimize
 				draw_grid_full(grid);
 			}
+			input_delay += INPUT_DELAY;
 		} else {
 			--input_delay;
 		}
@@ -104,6 +90,6 @@ exit:
 	grid_delete(grid);
 	ant_delete(ant);
 	end_graphics();
-
+	freopen("memleaks.dmp", "w", stdout);
 	return 0;
 }

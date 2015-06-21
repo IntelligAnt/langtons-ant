@@ -47,5 +47,8 @@
     <ClCompile Include="rules_io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="grid_controls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

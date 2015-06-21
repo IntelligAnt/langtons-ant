@@ -3,16 +3,15 @@
 #include <math.h>
 #include "graphics.h"
 
-WINDOW *gridw = NULL;
+WINDOW *gridw;
 ScrollInfo gridscrl;
-bool is_scrl_on;
-extern chtype fg_pair, bg_pair;
 
 void init_grid_window(void)
 {
 	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
 	gridscrl = (ScrollInfo) { 0 };
 	keypad(gridw, TRUE);
+	nodelay(gridw, TRUE);
 }
 
 void end_grid_window(void)
@@ -43,7 +42,7 @@ static void draw_buffer_zone(int width)
 
 static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 {
-	int n = GRID_SC_VIEW_SIZE, mid = n/2;
+	int n = GRID_SCRL_VIEW_SIZE, mid = n/2;
 	int size = (int)(max((n-2)*gridscrl.scale, SLIDER_MIN_SIZE));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
@@ -101,7 +100,7 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = grid->size, vgs = min(gs, GRID_SC_VIEW_SIZE), i, j;
+	int gs = grid->size, vgs = min(gs, GRID_SCRL_VIEW_SIZE), i, j;
 	int cs = CELL_SIZE(vgs, 0);
 	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, 0, cs));
 	Vector2i pos, yx, origin = { 0, 0 };
@@ -111,10 +110,10 @@ static void borderless(Grid *grid)
 	draw_buffer_zone(o + 1);
 
 	/* Draw scrollbars in case of largest grid */
-	is_scrl_on = cs == 1;
-	if (is_scrl_on) {
+	gridscrl.enabled = cs == 1;
+	if (gridscrl.enabled) {
 		origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x);
-		gridscrl.scale = GRID_SC_VIEW_SIZE / (double)gs;
+		gridscrl.scale = GRID_SCRL_VIEW_SIZE / (double)gs;
 		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
 	}
 
@@ -132,8 +131,6 @@ static void borderless(Grid *grid)
 void draw_grid_full(Grid *grid)
 {
 	int i;
-
-	assert(gridw);
 
 	if (grid) {
 		if (grid->size == GRID_SIZE_SMALL(grid)){
@@ -156,7 +153,7 @@ void draw_grid_full(Grid *grid)
 
 void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 {
-	int gs = grid->size, vgs = min(gs, GRID_SC_VIEW_SIZE);
+	int gs = grid->size, vgs = min(gs, GRID_SCRL_VIEW_SIZE);
 	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
 		   : (gs == GRID_SIZE_MEDIUM(grid)) ? LINE_WIDTH_MEDIUM
 		   : LINE_WIDTH_LARGE;
@@ -164,12 +161,10 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, lw, cs));
 	Vector2i origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x), pos, yx;
 
-	assert(gridw);
-
 	pos = abs2rel(oldp, origin);
 	yx = pos2yx(pos, lw, cs, o);
 
-	if (yx.y < 0 || yx.y >= GRID_SC_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_SC_VIEW_SIZE) {
+	if (yx.y < 0 || yx.y >= GRID_SCRL_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_SCRL_VIEW_SIZE) {
 		return;
 	}
 
@@ -182,10 +177,10 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 
 void scroll_grid(Grid *grid, int dy, int dx)
 {
-	int gs = grid->size, n = GRID_SC_VIEW_SIZE;
+	int gs = grid->size, n = GRID_SCRL_VIEW_SIZE;
 	int newy = gridscrl.y+dy, newx = gridscrl.x+dx, clamp = max(gs/2-n/2, 0);
 
-	if (!is_scrl_on) {
+	if (!gridscrl.enabled) {
 		return;
 	}
 
