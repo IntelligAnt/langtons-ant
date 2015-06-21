@@ -75,7 +75,7 @@ int main(void)
 			cnt = 0;
 		}
 		if (input_delay == 0) {
-			if (grid_resolve_key(grid, getch()) != ERR) { // TODO apparently getch() refreshes the screen - optimize
+			if (grid_key_command(grid, ant, getch()) != ERR) { // TODO apparently getch() refreshes the screen - optimize
 				draw_grid_full(grid);
 			}
 			input_delay += INPUT_DELAY;

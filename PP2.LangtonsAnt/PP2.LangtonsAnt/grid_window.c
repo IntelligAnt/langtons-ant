@@ -177,22 +177,26 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 
 void scroll_grid(Grid *grid, int dy, int dx)
 {
-	int gs = grid->size, n = GRID_SCRL_VIEW_SIZE;
-	int newy = gridscrl.y+dy, newx = gridscrl.x+dx, clamp = max(gs/2-n/2, 0);
+	set_scroll(grid, gridscrl.y+dy, gridscrl.x+dx);
+}
+
+void set_scroll(Grid *grid, int y, int x)
+{
+	int gs = grid->size, n = GRID_SCRL_VIEW_SIZE, clamp = max(gs/2-n/2, 0);
 
 	if (!gridscrl.enabled) {
 		return;
 	}
 
-	if (abs(newy) > clamp) {
-		newy = (newy < 0) ? -clamp : clamp;
+	if (abs(y) > clamp) {
+		y = (y < 0) ? -clamp : clamp;
 	}
-	if (abs(newx) > clamp) {
-		newx = (newx < 0) ? -clamp : clamp;
+	if (abs(x) > clamp) {
+		x = (x < 0) ? -clamp : clamp;
 	}
-	
-	gridscrl.y = newy;
-	gridscrl.x = newx;
-	gridscrl.hcenter = (int)(gridscrl.scale * newx);
-	gridscrl.vcenter = (int)(gridscrl.scale * newy);
+
+	gridscrl.y = y;
+	gridscrl.x = x;
+	gridscrl.hcenter = (int)(gridscrl.scale * x);
+	gridscrl.vcenter = (int)(gridscrl.scale * y);
 }

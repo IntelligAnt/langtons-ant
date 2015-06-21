@@ -74,9 +74,9 @@
 #define ORIGIN_POS(gs, vs, scy, scx) (Vector2i) { ORIGIN_COORD(gs, vs, scy), ORIGIN_COORD(gs, vs, scx) }
 
 typedef struct scroll_info {
+	bool enabled;
 	int y, x, hcenter, vcenter;
 	double scale;
-	bool enabled;
 } ScrollInfo;
 
 /*** Menu window attributes ***/
@@ -106,9 +106,10 @@ void end_grid_window(void);
 void draw_grid_full(Grid *grid);
 void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp);
 void scroll_grid(Grid *grid, int dy, int dx);
+void set_scroll(Grid *grid, int y, int x);
 
 /* grid_controls.c */
 
-int grid_resolve_key(Grid *grid, int key);
+int grid_key_command(Grid *grid, Ant *ant, int key);
 
 #endif

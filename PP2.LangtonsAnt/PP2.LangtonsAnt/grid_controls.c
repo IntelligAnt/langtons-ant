@@ -1,7 +1,10 @@
 #include "graphics.h"
 
-int grid_resolve_key(Grid *grid, int key)
+int grid_key_command(Grid *grid, Ant *ant, int key)
 {
+	int mid = grid->size / 2;
+	Vector2i rel;
+
 	switch (key) {
 		/* Arrow keys */
 	case KEY_UP:
@@ -29,6 +32,17 @@ int grid_resolve_key(Grid *grid, int key)
 		break;
 	case KEY_END:
 		scroll_grid(grid, 0,  GRID_SCRL_VIEW_SIZE);
+		break;
+
+		/* A - Move to ant */
+	case 'A': case 'a':
+		rel = abs2rel(ant->pos, (Vector2i) { mid, mid });
+		set_scroll(grid, rel.y, rel.x);
+		break;
+
+		/* S - Move to origin */
+	case 'S': case 's':
+		set_scroll(grid, 0, 0);
 		break;
 
 	default:
