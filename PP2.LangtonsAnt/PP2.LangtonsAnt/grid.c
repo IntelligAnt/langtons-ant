@@ -84,28 +84,16 @@ static bool is_in_old_matrix_row(int y, size_t old_size)
 static void grid_expand_n(Grid *grid)
 {
 	size_t old = grid->size, size = old*GRID_MUL, i;
-	size_t pre = (GRID_MUL/2)*old, post = (GRID_MUL/2+1)*old;
-	/*unsigned char **c = malloc(size * sizeof(unsigned char*));
-
-	for (i = 0; i < size; ++i) {
-		c[i] = malloc(size * sizeof(unsigned char));
-		for (j = 0; j < size; ++j) {
-			c[i][j] = is_in_old_matrix(i, j, old) ? grid->c[i-old][j-old] : grid->def_color;
-		}
-	}
-	grid_delete_n(grid);
-	grid->c = c;
-	grid->size = size;*/
+	size_t pre = old*(GRID_MUL/2), post = old*(GRID_MUL/2+1);
+	
 	grid_silent_expand_it_because_i_can(grid);
 	for (i = 0; i < size; ++i) {
 		memset(grid->temp_buffer[i], grid->def_color, size);
 		if (i >= pre && i < post) {
-			memcpy(&grid->temp_buffer[old+i][old], grid->c[i-old], old);
+			memcpy(&grid->temp_buffer[i][pre], grid->c[i-pre], old);
 		}
-		/*for (j = 0; j < size; ++j) {
-			grid->temp_buffer[i][j] = is_in_old_matrix(i, j, old) ? grid->c[i-old][j-old] : grid->def_color;
-		}*/
 	}
+	
 	grid_delete_n(grid);
 	grid->c = grid->temp_buffer;
 	grid->temp_buffer = NULL;
