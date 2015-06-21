@@ -29,13 +29,14 @@ typedef struct colors {
 
 #define GRID_MUL 3
 #define GRID_SIZE_THRESHOLD    19682 // 3^9 - 1
+#define GRID_USAGE_THRESHOLD   0.5
 #define GRID_MAX_SILENT_EXPAND (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
 
-#define GRID_SIZE_SMALL(g)  (g)->init_size // 2, 3, 4, 5, 6
-#define GRID_SIZE_MEDIUM(g) (GRID_SIZE_SMALL(g) * GRID_MUL)
-#define GRID_SIZE_LARGE(g)  (GRID_SIZE_MEDIUM(g) * GRID_MUL)
-#define IS_GRID_LARGE(g)    ((g)->size >= GRID_SIZE_LARGE(g))
-#define GRID_COLOR_AT(g, p) (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
+#define GRID_SIZE_SMALL(g)     (g)->init_size // 2, 3, 4, 5, 6
+#define GRID_SIZE_MEDIUM(g)    (GRID_SIZE_SMALL(g) * GRID_MUL)
+#define GRID_SIZE_LARGE(g)     (GRID_SIZE_MEDIUM(g) * GRID_MUL)
+#define IS_GRID_LARGE(g)       ((g)->size >= GRID_SIZE_LARGE(g))
+#define GRID_COLOR_AT(g, p)    (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
 
 typedef struct cell {
 	size_t column;
@@ -46,7 +47,8 @@ typedef struct cell {
 typedef struct grid {
 	unsigned char **c, **tmp, def_color;
 	Cell **csr;
-	size_t size, init_size, tmp_size;
+	size_t size, init_size, tmp_size, used;
+	Vector2i top_left, bottom_right;
 } Grid;
 
 /* logic.c */

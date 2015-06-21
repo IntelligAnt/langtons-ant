@@ -19,7 +19,8 @@ void ant_delete(Ant *ant)
 	free(ant);
 }
 
-static void ant_dir_turn(Ant *ant, int turn){
+static void ant_dir_turn(Ant *ant, int turn)
+{
 	switch (ant->dir) {
 	case UP:
 		ant->pos.x += turn;
@@ -37,16 +38,36 @@ static void ant_dir_turn(Ant *ant, int turn){
 	ant->dir = (ant->dir + turn + 4) % 4;
 }
 
+static void update_bounding_box(Vector2i pos, Vector2i *tl, Vector2i *br)
+{
+	tl->y = min(tl->y, pos.y);
+	tl->x = min(tl->x, pos.x);
+	br->y = max(br->y, pos.y);
+	br->x = max(br->x, pos.x);
+}
+
+static bool is_grid_usage_low(Grid *grid)
+{
+	int b = (grid->bottom_right.y - grid->top_left.y + 1)*(grid->bottom_right.y - grid->top_left.y + 1);
+	return (double)grid->used / b < GRID_USAGE_THRESHOLD;
+}
+
 static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
-	if (grid->c[y][x] == colors->def) {
+	bool is_def = grid->c[y][x] == colors->def;
+	if (is_def) {
 		grid->c[y][x] = (unsigned char)colors->first;
+		grid->used++;
+		update_bounding_box(ant->pos, &grid->top_left, &grid->bottom_right);
 	}
 	turn = colors->turn[grid->c[y][x]];
 	assert(abs(turn) == 1);
 	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
-	ant_dir_turn(ant, turn);
+	ant_dir_turn(ant, turn); 
+	if (is_def && IS_GRID_LARGE(grid) && is_grid_usage_low(grid)){
+		grid_make_sparse(grid);
+	}
 }
 
 static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)

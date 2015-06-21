@@ -20,6 +20,9 @@ Grid *grid_new(size_t size, Colors *colors)
 	grid->tmp = NULL;
 	grid->tmp_size = 0;
 	grid->def_color = (unsigned char)colors->def;
+	grid->top_left.y = grid->top_left.x = grid->size / 2;
+	grid->bottom_right = grid->top_left;
+	grid->used = 0;
 	return grid;
 }
 
@@ -63,10 +66,10 @@ void grid_delete(Grid *grid)
 	free(grid);
 }
 
-static void transfer_ant(Ant *ant, size_t old_size)
+static void transfer_vector(Vector2i *v, size_t old_size)
 {
-	ant->pos.y += old_size;
-	ant->pos.x += old_size;
+	v->y += old_size;
+	v->x += old_size;
 }
 
 static bool is_in_old_matrix(int y, int x, size_t old_size)
@@ -139,9 +142,13 @@ static void grid_expand_s(Grid *grid)
 
 void grid_expand(Grid *grid, Ant *ant)
 {
-	transfer_ant(ant, grid->size);
-	if (!is_grid_sparse(grid) && grid->size*GRID_MUL > GRID_SIZE_THRESHOLD) {
-		grid_make_sparse(grid);
+	transfer_vector(&ant->pos, grid->size);
+	if (!is_grid_sparse(grid)) {
+		transfer_vector(&grid->top_left, grid->size);
+		transfer_vector(&grid->bottom_right, grid->size);
+		if (grid->size*GRID_MUL > GRID_SIZE_THRESHOLD) {
+			grid_make_sparse(grid);
+		}
 	}
 	if (is_grid_sparse(grid)) {
 		grid_expand_s(grid);
