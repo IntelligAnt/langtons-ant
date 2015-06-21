@@ -43,12 +43,9 @@ typedef struct cell {
 }Cell;
 
 typedef struct grid {
-	unsigned char **c, def_color;
-	Cell **rows;
-	size_t size, init_size;
-	// SuperPak
-	unsigned char **temp_buffer;
-	size_t temp_buffer_size, temp_buffer_allocated_rows;
+	unsigned char **c, **tmp, def_color;
+	Cell **csr;
+	size_t size, init_size, tmp_size;
 } Grid;
 
 /* logic.c */
@@ -67,17 +64,14 @@ bool color_exists(Colors *colors, short c);
 bool has_enough_colors(Colors *colors);
 
 /* grid.c */
-// SuperPak
-void grid_silent_expand(Grid*);
-void grid_silent_expand_it_because_i_can(Grid*);
 
 Grid *grid_new(size_t size, Colors *colors);
 void grid_delete(Grid *grid);
+void grid_silent_expand(Grid*);
 void grid_expand(Grid *grid, Ant *ant);
 void grid_make_sparse(Grid *grid);
 bool is_grid_sparse(Grid *grid);
 void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
-
 
 #endif

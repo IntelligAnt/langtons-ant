@@ -52,7 +52,7 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
-	Cell **t = grid->rows+y;
+	Cell **t = grid->csr+y;
 
 	while (*t && (*t)->column < x) {
 		t = &((*t)->next);
