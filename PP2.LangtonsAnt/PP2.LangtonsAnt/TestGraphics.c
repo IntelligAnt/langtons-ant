@@ -6,7 +6,7 @@
 #include "graphics.h"
 
 #define DRAW_EVERY 1
-#define INPUT_DELAY 5000
+#define INPUT_DELAY 10000
 #define SCROLL_INC 10
 
 int main(void)
@@ -63,6 +63,7 @@ int main(void)
 	while (1) {
 		oldp = ant->pos;
 		ant_move(ant, grid, colors);
+		grid_silent_expand(grid);
 		if (is_ant_out_of_bounds(ant, grid)) {
 			grid_expand(grid, ant);
 			mvprintw(10, GRID_WINDOW_SIZE+10, "%d", ++i);
