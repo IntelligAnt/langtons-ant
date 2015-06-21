@@ -115,6 +115,8 @@ static void grid_expand_n(Grid *grid)
 	grid->tmp = NULL;
 	grid->tmp_size = 0;
 	grid->size = size;
+	transfer_vector(&grid->top_left, grid->size);
+	transfer_vector(&grid->bottom_right, grid->size);
 }
 
 static void grid_expand_s(Grid *grid)
@@ -144,16 +146,14 @@ void grid_expand(Grid *grid, Ant *ant)
 {
 	transfer_vector(&ant->pos, grid->size);
 	if (!is_grid_sparse(grid)) {
-		transfer_vector(&grid->top_left, grid->size);
-		transfer_vector(&grid->bottom_right, grid->size);
 		if (grid->size*GRID_MUL > GRID_SIZE_THRESHOLD) {
 			grid_make_sparse(grid);
+			grid_expand_s(grid);
+		} else {
+			grid_expand_n(grid);
 		}
-	}
-	if (is_grid_sparse(grid)) {
-		grid_expand_s(grid);
 	} else {
-		grid_expand_n(grid);
+		grid_expand_s(grid);
 	}
 }
 

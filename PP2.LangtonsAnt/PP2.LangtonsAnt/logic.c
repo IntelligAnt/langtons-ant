@@ -48,7 +48,7 @@ static void update_bounding_box(Vector2i pos, Vector2i *tl, Vector2i *br)
 
 static bool is_grid_usage_low(Grid *grid)
 {
-	int b = (grid->bottom_right.y - grid->top_left.y + 1)*(grid->bottom_right.y - grid->top_left.y + 1);
+	int b = (grid->bottom_right.y - grid->top_left.y + 1)*(grid->bottom_right.x - grid->top_left.x + 1);
 	return (double)grid->used / b < GRID_USAGE_THRESHOLD;
 }
 
