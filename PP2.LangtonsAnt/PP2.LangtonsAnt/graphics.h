@@ -79,7 +79,7 @@ typedef struct scroll_info {
 
 /*** Menu window attributes ***/
 
-#define MENU_WINDOW_SIZE 28
+#define MENU_WINDOW_SIZE 41
 
 /* graphics.c */
 

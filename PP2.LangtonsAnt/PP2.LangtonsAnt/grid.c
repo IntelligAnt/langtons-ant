@@ -82,25 +82,14 @@ static bool is_in_old_matrix_row(int y, size_t old_size)
 void grid_silent_expand(Grid *grid)
 {
 	int size = grid->size*GRID_MUL, i;
-	if (is_grid_sparse(grid) || grid->tmp_size == size) {
+	if (is_grid_sparse(grid) || grid->tmp_size >= size) {
 		return;
 	}
 	if (!grid->tmp) {
 		grid->tmp = malloc(size * sizeof(unsigned char*));
 		grid->tmp_size = 0;
 	}
-	for (i = 0; i < GRID_SILENT_EXPAND_STEP; i++) {
-		if (grid->tmp_size == size) {
-			return;
-		}
-		grid->tmp[grid->tmp_size++] = malloc(size);
-	}
-}
-
-static void grid_fill_tmp(Grid *grid)
-{
-	int size = grid->size * GRID_MUL;
-	while (grid->tmp_size < size) {
+	for (i = 0; i < GRID_MAX_SILENT_EXPAND && grid->tmp_size < size; i++) {
 		grid->tmp[grid->tmp_size++] = malloc(size);
 	}
 }
@@ -110,7 +99,7 @@ static void grid_expand_n(Grid *grid)
 	size_t old = grid->size, size = old*GRID_MUL, i;
 	size_t pre = old*(GRID_MUL/2), post = old*(GRID_MUL/2+1);
 	
-	grid_fill_tmp(grid);
+	//grid_fill_tmp(grid);
 	for (i = 0; i < size; ++i) {
 		memset(grid->tmp[i], grid->def_color, size);
 		if (i >= pre && i < post) {
@@ -151,7 +140,7 @@ static void grid_expand_s(Grid *grid)
 void grid_expand(Grid *grid, Ant *ant)
 {
 	transfer_ant(ant, grid->size);
-	if (!is_grid_sparse(grid) && grid->size*GRID_MUL > GRID_SPARSE_THRESHOLD) {
+	if (!is_grid_sparse(grid) && grid->size*GRID_MUL > GRID_SIZE_THRESHOLD) {
 		grid_make_sparse(grid);
 	}
 	if (is_grid_sparse(grid)) {
