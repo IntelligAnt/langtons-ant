@@ -96,12 +96,24 @@ void grid_silent_expand(Grid *grid)
 	}
 }
 
+static void grid_fill_tmp(Grid *grid)
+{
+	int size = grid->size * GRID_MUL;
+	if (!grid->tmp) {
+		grid->tmp = malloc(size * sizeof(unsigned char*));
+		grid->tmp_size = 0;
+	}
+	while (grid->tmp_size < size) {
+		grid->tmp[grid->tmp_size++] = malloc(size);
+	}
+}
+
 static void grid_expand_n(Grid *grid)
 {
 	size_t old = grid->size, size = old*GRID_MUL, i;
 	size_t pre = old*(GRID_MUL/2), post = old*(GRID_MUL/2+1);
 	
-	//grid_fill_tmp(grid);
+	grid_fill_tmp(grid);
 	for (i = 0; i < size; ++i) {
 		memset(grid->tmp[i], grid->def_color, size);
 		if (i >= pre && i < post) {

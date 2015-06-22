@@ -3,11 +3,11 @@
 
 #include <stddef.h>
 
-#define DEBUG 1
-#ifdef DEBUG
+#define DEBUG 0
+#if DEBUG
 #include <assert.h>
 #else
-#define assert(e) 
+#define assert(e) (e)
 #endif
 
 #define COLOR_COUNT 16

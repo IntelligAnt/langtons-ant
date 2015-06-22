@@ -40,7 +40,7 @@ static void draw_buffer_zone(int width)
 	}
 }
 
-static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
+static void draw_scrollbars(short sb_fg_color, short sb_bg_color)
 {
 	int n = GRID_VIEW_SIZE, mid = n/2;
 	int size = (int)(max((n-2)*gridscrl.scale, SLIDER_MIN_SIZE));
@@ -51,7 +51,7 @@ static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 	v -= v > mid;
 
 	/* Scrollbar background */
-	wattrset(gridw, sb_bg_pair);
+	wattrset(gridw, get_pair_for(sb_bg_color));
 	mvwhline(gridw, n, 0, GRID_CELL, n);
 	mvwvline(gridw, 0, n, GRID_CELL, n);
 
@@ -63,7 +63,7 @@ static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 	mvwaddch(gridw, n-1, n,   ACS_DARROW);
 
 	/* Scrollbar sliders */
-	wattrset(gridw, sb_fg_pair); // TODO fix sliders drawing over right/bottom arrows
+	wattrset(gridw, get_pair_for(sb_fg_color)); // TODO fix sliders drawing over right/bottom arrows
 	mvwhline(gridw, n, h, GRID_CELL, size);
 	mvwvline(gridw, v, n, GRID_CELL, size);
 }
@@ -107,6 +107,8 @@ static void borderless(Grid *grid)
 	int cs = CELL_SIZE(vgs, 0);
 	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, 0, cs));
 	Vector2i pos, yx, origin = { 0, 0 };
+	short sb_fg_color = (grid->def_color == COLOR_WHITE) ? COLOR_SILVER : COLOR_WHITE;
+	short sb_bg_color = (grid->def_color == COLOR_GRAY)  ? COLOR_SILVER : COLOR_GRAY;
 
 	/* Draw background edge buffer zone */
 	wattrset(gridw, get_pair_for(grid->def_color));
@@ -119,7 +121,7 @@ static void borderless(Grid *grid)
 		gridscrl.scale = GRID_VIEW_SIZE / (double)gs;
 		gridscrl.hcenter = (int)(gridscrl.scale * gridscrl.x);
 		gridscrl.vcenter = (int)(gridscrl.scale * gridscrl.y);
-		draw_scrollbars(get_pair_for(COLOR_WHITE), get_pair_for(COLOR_GRAY));
+		draw_scrollbars(sb_fg_color, sb_bg_color);
 	}
 
 	/* Draw cells */
