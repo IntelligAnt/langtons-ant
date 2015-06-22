@@ -14,6 +14,8 @@
 
 typedef unsigned char bool;
 
+extern bool silent_error, alloc_error;
+
 typedef struct vector2i {
 	int y, x;
 } Vector2i;
@@ -78,6 +80,8 @@ void remove_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
 bool color_exists(Colors *colors, short c);
 bool has_enough_colors(Colors *colors);
+
+void delete_all(Grid *grid, Ant *ant, Colors *colors);
 
 /* grid.c */
 

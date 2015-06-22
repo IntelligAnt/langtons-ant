@@ -18,6 +18,14 @@ int main(void)
 	Colors *colors = colors_new(COLOR_SILVER);
 	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
+
+	if (alloc_error) {
+		delete_all(grid, ant, colors);
+		printf("Greska pri alociranju memorije\n");
+		getchar();
+		return;
+	}
+
 	int i = 1;
 	short c, turn;
 	//grid_make_sparse(grid);
@@ -61,9 +69,25 @@ int main(void)
 		mvprintw(9, GRID_WINDOW_SIZE+10, "%d", steps);
 		oldp = ant->pos;
 		ant_move(ant, grid, colors);
+
+		if (alloc_error) {
+			delete_all(grid, ant, colors);
+			printf("Greska pri alociranju memorije\n");
+			getchar();
+			return;
+		}
+
 		//grid_silent_expand(grid);
 		if (is_ant_out_of_bounds(ant, grid)) {
 			grid_expand(grid, ant);
+
+			if (alloc_error) {
+				delete_all(grid, ant, colors);
+				printf("Greska pri alociranju memorije\n");
+				getchar();
+				return;
+			}
+
 			mvprintw(10, GRID_WINDOW_SIZE+10, "%d", ++i);
 			mvprintw(11, GRID_WINDOW_SIZE+10, "%d", grid->size);
 			if (is_grid_sparse(grid)) {
@@ -88,9 +112,7 @@ int main(void)
 	}
 
 exit:
-	colors_delete(colors);
-	grid_delete(grid);
-	ant_delete(ant);
+	delete_all(grid, ant, colors);
 	end_graphics();
 	freopen("memleaks.dmp", "w", stdout);
 	return 0;

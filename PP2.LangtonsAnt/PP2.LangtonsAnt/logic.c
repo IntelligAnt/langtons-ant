@@ -3,11 +3,20 @@
 
 #include "logic.h"
 
+bool silent_error=0, alloc_error=0;
+
 /* Ant functions */
 
 Ant *ant_new(Grid *grid, Direction dir)
 {
+	if (alloc_error) {
+		return NULL;
+	}
 	Ant *ant = malloc(sizeof(Ant));
+	if (!ant) {
+		alloc_error = 1;
+		return NULL;
+	}
 	ant->pos.y = ant->pos.x = grid->size / 2;
 	ant->dir = dir;
 	return ant;
@@ -15,7 +24,9 @@ Ant *ant_new(Grid *grid, Direction dir)
 
 void ant_delete(Ant *ant)
 {
-	free(ant);
+	if (ant) {
+		free(ant);
+	}
 }
 
 static void ant_dir_turn(Ant *ant, int turn)
@@ -79,6 +90,9 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	}
 	if (!*t || CELL_GET_COLUMN(*t) != x) {
 		new_cell(t, x, (unsigned char)colors->first);
+		if (alloc_error){
+			return;
+		}
 	}
 
 	turn = colors->turn[CELL_GET_COLOR(*t)];
@@ -93,6 +107,9 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors) // TODO have ant_move return
 		ant_move_s(ant, grid, colors);
 	} else {
 		ant_move_n(ant, grid, colors);
+	}
+	if (alloc_error){
+		return;
 	}
 	return !is_ant_out_of_bounds(ant, grid);
 }
@@ -109,6 +126,10 @@ Colors *colors_new(short def)
 {
 	assert(def >= 0 && def < COLOR_COUNT);
 	Colors *colors = malloc(sizeof(Colors));
+	if (!colors) {
+		alloc_error = 1;
+		return NULL;
+	}
 	int i;
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		colors->next[i] = def;
@@ -122,7 +143,9 @@ Colors *colors_new(short def)
 
 void colors_delete(Colors *colors)
 {
-	free(colors);
+	if (colors) {
+		free(colors);
+	}
 }
 
 void add_color(Colors *colors, short c, short turn)
@@ -181,4 +204,13 @@ bool color_exists(Colors *colors, short c)
 bool has_enough_colors(Colors *colors)
 {
 	return colors->n >= 2;
+}
+
+
+
+void delete_all(Grid *grid, Ant *ant, Colors *colors)
+{
+	grid_delete(grid);
+	ant_delete(ant);
+	colors_delete(colors);
 }
