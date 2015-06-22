@@ -9,9 +9,9 @@ void init_graphics(short fg_color, short bg_color)
 	curs_set(0);
 	
 	cbreak();
+	noecho();
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
-	noecho();
 
 	start_color();
 	init_def_pairs(fg_color, bg_color);
@@ -54,6 +54,18 @@ chtype get_pair_for(short color)
 	return COLOR_PAIR(pair);
 }
 
+void draw_box(WINDOW *window, Vector2i top_left, int size)
+{
+	int i;
+	if (size == 1) {
+		mvwaddch(window, top_left.y, top_left.x, GRID_CELL);
+		return;
+	}
+	for (i = 0; i < size; ++i) {
+		mvwhline(window, top_left.y+i, top_left.x, GRID_CELL, size);
+	}
+}
+
 Vector2i rel2abs(Vector2i rel, Vector2i origin)
 {
 	return (Vector2i) {
@@ -70,14 +82,7 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin)
 	};
 }
 
-void draw_box(WINDOW *window, Vector2i top_left, int size)
+int sgn(int x)
 {
-	int i;
-	if (size == 1) {
-		mvwaddch(window, top_left.y, top_left.x, GRID_CELL);
-		return;
-	}
-	for (i = 0; i < size; ++i) {
-		mvwhline(window, top_left.y+i, top_left.x, GRID_CELL, size);
-	}
+	return (x > 0) - (x < 0);
 }

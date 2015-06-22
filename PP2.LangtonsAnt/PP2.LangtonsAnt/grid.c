@@ -25,9 +25,16 @@ Grid *grid_new(size_t size, Colors *colors)
 	return grid;
 }
 
+static void grid_delete_tmp(Grid *grid)
+{
+	free(grid->tmp);
+	grid->tmp_size = 0;
+}
+
 static void grid_delete_n(Grid *grid)
 {
 	int i;
+	grid_delete_tmp(grid);
 	for (i = 0; i < grid->size; ++i) {
 		free(grid->c[i]);
 	}
@@ -48,19 +55,12 @@ static void grid_delete_s(Grid *grid)
 	free(grid->csr);
 }
 
-static void grid_delete_tmp(Grid *grid)
-{
-	free(grid->tmp);
-	grid->tmp_size = 0;
-}
-
 void grid_delete(Grid *grid)
 {
 	if (is_grid_sparse(grid)) {
 		grid_delete_s(grid);
 	} else {
 		grid_delete_n(grid);
-		grid_delete_tmp(grid);
 	}
 	free(grid);
 }
@@ -106,10 +106,11 @@ static void grid_expand_n(Grid *grid)
 		memset(grid->tmp[i], grid->def_color, size);
 		if (i >= pre && i < post) {
 			memcpy(&grid->tmp[i][pre], grid->c[i-pre], old);
+			free(grid->c[i-pre]);
 		}
 	}
+	free(grid->c);
 	
-	grid_delete_n(grid);
 	grid->c = grid->tmp;
 	grid->tmp = NULL;
 	grid->tmp_size = 0;

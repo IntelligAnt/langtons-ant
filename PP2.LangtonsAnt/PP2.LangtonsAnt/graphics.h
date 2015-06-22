@@ -57,7 +57,7 @@
 /*** Grid window attributes and types ***/
 
 #define GRID_WINDOW_SIZE    109
-#define GRID_SCRL_VIEW_SIZE (GRID_WINDOW_SIZE - 1)
+#define GRID_VIEW_SIZE      (GRID_WINDOW_SIZE - 1)
 #define GRID_BUFFER_ZONE    2
 #define GRID_CELL           ACS_BLOCK
 #define LINE_WIDTH_SMALL    2
@@ -65,6 +65,7 @@
 #define LINE_WIDTH_LARGE    0
 #define SLIDER_MIN_SIZE     1
 #define SCROLL_STEP         10
+#define SCROLL_STEP_BIG     GRID_VIEW_SIZE
 
 #define CELL_SIZE(gs, lw)      ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
 #define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
@@ -95,9 +96,10 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
 chtype get_pair_for(short color);
+void draw_box(WINDOW *window, Vector2i top_left, int size);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
-void draw_box(WINDOW *window, Vector2i top_left, int size);
+int sgn(int x);
 
 /* grid_window.c */
 
@@ -111,6 +113,6 @@ void set_scroll(Grid *grid, int y, int x);
 /* grid_controls.c */
 
 int grid_key_command(Grid *grid, Ant *ant, int key);
-int grid_mouse_command(Grid *grid);
+void grid_mouse_command(Grid *grid);
 
 #endif

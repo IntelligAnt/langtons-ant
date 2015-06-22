@@ -4,8 +4,8 @@
 #include "logic.h"
 #include "graphics.h"
 
-#define DRAW_EVERY 100
-#define INPUT_DELAY 1000
+#define DRAW_EVERY 1
+#define INPUT_DELAY 100
 
 int main(void)
 {
@@ -15,7 +15,7 @@ int main(void)
 	assert(init_size == 2 || init_size == 3 || init_size == 4 || init_size == 5 || init_size == 6);
 	system("cls");
 
-	Colors *colors = colors_new(COLOR_WHITE);
+	Colors *colors = colors_new(COLOR_SILVER);
 	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1;
@@ -58,7 +58,7 @@ int main(void)
 
 	i = 0;
 	while (1) {
-		if (steps == 100000) goto exit;
+		mvprintw(9, GRID_WINDOW_SIZE+10, "%d", steps);
 		oldp = ant->pos;
 		ant_move(ant, grid, colors);
 		grid_silent_expand(grid);
@@ -77,7 +77,7 @@ int main(void)
 			}
 		}
 		if (input_delay == 0) {
-			if (grid_key_command(grid, ant, getch()) != ERR) { // TODO apparently getch() refreshes the screen - optimize
+			if (grid_key_command(grid, ant, wgetch(gridw)) != ERR) { // TODO wgetch refreshes
 				draw_grid_full(grid);
 			}
 			input_delay += INPUT_DELAY;

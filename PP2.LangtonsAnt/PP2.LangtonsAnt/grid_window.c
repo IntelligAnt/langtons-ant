@@ -9,6 +9,7 @@ void init_grid_window(void)
 {
 	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
 	gridscrl = (ScrollInfo) { 0 };
+	mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL); // Left and right click
 	keypad(gridw, TRUE);
 	nodelay(gridw, TRUE);
 }
@@ -41,10 +42,13 @@ static void draw_buffer_zone(int width)
 
 static void draw_scrollbars(chtype sb_fg_pair, chtype sb_bg_pair)
 {
-	int n = GRID_SCRL_VIEW_SIZE, mid = n/2;
+	int n = GRID_VIEW_SIZE, mid = n/2;
 	int size = (int)(max((n-2)*gridscrl.scale, SLIDER_MIN_SIZE));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
+
+	h -= h > mid;
+	v -= v > mid;
 
 	/* Scrollbar background */
 	wattrset(gridw, sb_bg_pair);
@@ -99,7 +103,7 @@ static void bordered(Grid *grid, int line_width)
 
 static void borderless(Grid *grid)
 {
-	int gs = grid->size, vgs = min(gs, GRID_SCRL_VIEW_SIZE), i, j;
+	int gs = grid->size, vgs = min(gs, GRID_VIEW_SIZE), i, j;
 	int cs = CELL_SIZE(vgs, 0);
 	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, 0, cs));
 	Vector2i pos, yx, origin = { 0, 0 };
@@ -112,8 +116,10 @@ static void borderless(Grid *grid)
 	gridscrl.enabled = cs == 1;
 	if (gridscrl.enabled) {
 		origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x);
-		gridscrl.scale = GRID_SCRL_VIEW_SIZE / (double)gs;
-		draw_scrollbars(get_pair_for(COLOR_SILVER), get_pair_for(COLOR_GRAY));
+		gridscrl.scale = GRID_VIEW_SIZE / (double)gs;
+		gridscrl.hcenter = (int)(gridscrl.scale * gridscrl.x);
+		gridscrl.vcenter = (int)(gridscrl.scale * gridscrl.y);
+		draw_scrollbars(get_pair_for(COLOR_WHITE), get_pair_for(COLOR_GRAY));
 	}
 
 	/* Draw cells */
@@ -152,7 +158,7 @@ void draw_grid_full(Grid *grid)
 
 void draw_grid_iter(Grid *grid, Vector2i oldp, bool refresh)
 {
-	int gs = grid->size, vgs = min(gs, GRID_SCRL_VIEW_SIZE);
+	int gs = grid->size, vgs = min(gs, GRID_VIEW_SIZE);
 	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
 		   : (gs == GRID_SIZE_MEDIUM(grid)) ? LINE_WIDTH_MEDIUM
 		   : LINE_WIDTH_LARGE;
@@ -163,7 +169,7 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, bool refresh)
 	pos = abs2rel(oldp, origin);
 	yx = pos2yx(pos, lw, cs, o);
 
-	if (yx.y < 0 || yx.y >= GRID_SCRL_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_SCRL_VIEW_SIZE) {
+	if (yx.y < 0 || yx.y >= GRID_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_VIEW_SIZE) {
 		return;
 	}
 
@@ -183,18 +189,14 @@ void scroll_grid(Grid *grid, int dy, int dx)
 
 void set_scroll(Grid *grid, int y, int x)
 {
-	int gs = grid->size, n = GRID_SCRL_VIEW_SIZE, clamp = max(gs/2-n/2, 0);
+	int gs = grid->size, n = GRID_VIEW_SIZE, clamp = max(gs/2-n/2, 0);
 
 	if (!gridscrl.enabled) {
 		return;
 	}
 
-	if (abs(y) > clamp) {
-		y = (y < 0) ? -clamp : clamp;
-	}
-	if (abs(x) > clamp) {
-		x = (x < 0) ? -clamp : clamp;
-	}
+	y = sgn(y) * min(abs(y), clamp);
+	x = sgn(x) * min(abs(x), clamp);
 
 	gridscrl.y = y;
 	gridscrl.x = x;
