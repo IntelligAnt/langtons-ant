@@ -83,11 +83,16 @@ typedef struct scroll_info {
 /*** Menu window attributes ***/
 
 #define MENU_WINDOW_SIZE 41
+#define KEY_ESC          0x1B
+
+typedef struct menu_info {
+	Colors *colors;
+} MenuInfo;
 
 /*** Globals ***/
 
 extern chtype fg_pair, bg_pair;
-extern WINDOW *gridw;
+extern WINDOW *gridw, *menuw;
 extern ScrollInfo gridscrl;
 
 /* graphics.c */
@@ -114,5 +119,10 @@ void set_scroll(Grid *grid, int y, int x);
 
 int grid_key_command(Grid *grid, Ant *ant, int key);
 void grid_mouse_command(Grid *grid);
+
+/* menu_window.c */
+void init_menu_window(void);
+void end_menu_window(void);
+void draw_menu(void);
 
 #endif

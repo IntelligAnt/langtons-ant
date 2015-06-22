@@ -50,5 +50,11 @@
     <ClCompile Include="grid_controls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="simulation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="menu_window.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

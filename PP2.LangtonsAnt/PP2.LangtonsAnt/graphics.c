@@ -10,8 +10,8 @@ void init_graphics(short fg_color, short bg_color)
 	
 	cbreak();
 	noecho();
-	keypad(stdscr, TRUE);
-	nodelay(stdscr, TRUE);
+	//keypad(stdscr, TRUE);
+	//nodelay(stdscr, TRUE);
 
 	start_color();
 	init_def_pairs(fg_color, bg_color);
@@ -19,7 +19,7 @@ void init_graphics(short fg_color, short bg_color)
 	init_grid_window();
 	draw_grid_full(NULL);
 
-	// TODO init menus
+	init_menu_window();
 }
 
 void end_graphics(void)

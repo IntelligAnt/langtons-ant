@@ -49,6 +49,10 @@ int grid_key_command(Grid *grid, Ant *ant, int key)
 		grid_mouse_command(grid);
 		break;
 
+	case KEY_ESC: // TODO remove; should be done in menu controls instead
+		stop_simulation();
+		break;
+
 	default:
 		return ERR;
 	}
@@ -59,7 +63,7 @@ typedef enum { SB_VERTICAL, SB_HORIZONTAL } ScrollbarType;
 
 static void scrollbar_clicked(Grid *grid, MEVENT event, ScrollbarType sbtype)
 {
-	int mid = GRID_VIEW_SIZE / 2;
+	int n = GRID_VIEW_SIZE, mid = n/2, step = n-2;
 	Vector2i pos = { event.y, event.x }, rel;
 	
 	if (sbtype == SB_VERTICAL) {
@@ -70,7 +74,7 @@ static void scrollbar_clicked(Grid *grid, MEVENT event, ScrollbarType sbtype)
 
 	if (event.bstate & BUTTON1_CLICKED) {
 		rel.y -= gridscrl.vcenter, rel.x -= gridscrl.hcenter;
-		scroll_grid(grid, sgn(rel.y)*SCROLL_STEP_BIG, sgn(rel.x)*SCROLL_STEP_BIG);
+		scroll_grid(grid, sgn(rel.y)*step, sgn(rel.x)*step);
 	} else if (event.bstate & BUTTON3_CLICKED) {
 		if (sbtype == SB_VERTICAL) {
 			set_scroll(grid, (int)(rel.y/gridscrl.scale), gridscrl.x);

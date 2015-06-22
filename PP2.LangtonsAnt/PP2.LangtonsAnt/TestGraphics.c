@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <vld.h>
+#include <vld.h>
 #include "logic.h"
 #include "graphics.h"
 
@@ -49,43 +49,9 @@ int main(void)
 		}
 		system("cls");
 	}
-	
-	Vector2i oldp;
-	int steps = 0, cnt = DRAW_EVERY-1, input_delay = 0, scrl_inc;
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE); // TODO fix flicker with bg colors other than white
-	draw_grid_full(grid);
-
-	i = 0;
-	while (1) {
-		mvprintw(9, GRID_WINDOW_SIZE+10, "%d", steps);
-		oldp = ant->pos;
-		ant_move(ant, grid, colors);
-		//grid_silent_expand(grid);
-		if (is_ant_out_of_bounds(ant, grid)) {
-			grid_expand(grid, ant);
-			mvprintw(10, GRID_WINDOW_SIZE+10, "%d", ++i);
-			mvprintw(11, GRID_WINDOW_SIZE+10, "%d", grid->size);
-			if (is_grid_sparse(grid)) {
-				mvaddstr(12, GRID_WINDOW_SIZE+10, "SPARSE");
-			}
-			draw_grid_full(grid);
-		} else {
-			draw_grid_iter(grid, oldp, ++cnt == DRAW_EVERY);
-			if (cnt > DRAW_EVERY) {
-				cnt = 0;
-			}
-		}
-		if (input_delay == 0) {
-			if (grid_key_command(grid, ant, wgetch(gridw)) != ERR) { // TODO wgetch refreshes
-				draw_grid_full(grid);
-			}
-			input_delay += INPUT_DELAY;
-		} else {
-			--input_delay;
-		}
-		++steps;
-	}
+	run_simulation(ant, grid, colors);
 
 exit:
 	colors_delete(colors);
