@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdlib.h>
 #include <math.h>
 #include "graphics.h"
@@ -151,7 +150,7 @@ void draw_grid_full(Grid *grid)
 	wrefresh(gridw);
 }
 
-void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
+void draw_grid_iter(Grid *grid, Vector2i oldp, bool refresh)
 {
 	int gs = grid->size, vgs = min(gs, GRID_SCRL_VIEW_SIZE);
 	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
@@ -172,7 +171,9 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp)
 	draw_box(gridw, yx, cs);
 	// TODO draw ant transition
 
-	wrefresh(gridw);
+	if (refresh) {
+		wrefresh(gridw);
+	}
 }
 
 void scroll_grid(Grid *grid, int dy, int dx)

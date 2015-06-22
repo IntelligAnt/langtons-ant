@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -147,7 +146,7 @@ void grid_expand(Grid *grid, Ant *ant)
 {
 	transfer_vector(&ant->pos, grid->size);
 	if (!is_grid_sparse(grid)) {
-		if (grid->size*GRID_MUL > GRID_SIZE_THRESHOLD) {
+		if (grid->size*GRID_MUL > GRID_SIZE_THRESHOLD && GRID_EFFICIENCY(grid) < 1) {
 			grid_make_sparse(grid);
 			grid_expand_s(grid);
 		} else {

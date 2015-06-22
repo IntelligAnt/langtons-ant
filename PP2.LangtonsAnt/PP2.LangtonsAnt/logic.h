@@ -3,6 +3,13 @@
 
 #include <stddef.h>
 
+#define DEBUG 1
+#ifdef DEBUG
+#include <assert.h>
+#else
+#define assert(e) 
+#endif
+
 #define COLOR_COUNT 16
 
 typedef unsigned char bool;
@@ -27,16 +34,17 @@ typedef struct colors {
 
 /*** Grid attributes and types ***/
 
-#define GRID_MUL 3
-#define GRID_SIZE_THRESHOLD    2000 // 19682 // 3^9 - 1
-#define GRID_USAGE_THRESHOLD   0.5
-#define GRID_MAX_SILENT_EXPAND (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
+#define GRID_MUL                3
+#define GRID_SIZE_THRESHOLD     19682 // 3^9 - 1
+#define GRID_USAGE_THRESHOLD    0.5
+#define GRID_MAX_SILENT_EXPAND  (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
 
-#define GRID_SIZE_SMALL(g)     (g)->init_size // 2, 3, 4, 5, 6
-#define GRID_SIZE_MEDIUM(g)    (GRID_SIZE_SMALL(g) * GRID_MUL)
-#define GRID_SIZE_LARGE(g)     (GRID_SIZE_MEDIUM(g) * GRID_MUL)
-#define IS_GRID_LARGE(g)       ((g)->size >= GRID_SIZE_LARGE(g))
-#define GRID_COLOR_AT(g, p)    (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
+#define GRID_SIZE_SMALL(g)      (g)->init_size // 2, 3, 4, 5, 6
+#define GRID_SIZE_MEDIUM(g)     (GRID_SIZE_SMALL(g) * GRID_MUL)
+#define GRID_SIZE_LARGE(g)      (GRID_SIZE_MEDIUM(g) * GRID_MUL)
+#define IS_GRID_LARGE(g)        ((g)->size >= GRID_SIZE_LARGE(g))
+#define GRID_EFFICIENCY(g)      ((g)->size*(g)->size / ((double)sizeof(Cell)*(g)->used))
+#define GRID_COLOR_AT(g, p)     (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
 
 #define CELL_COLOR_MASK         (0xF << 28)
 #define CELL_GET_COLOR(c)	    (((c)->col_packed & CELL_COLOR_MASK) >> 28)

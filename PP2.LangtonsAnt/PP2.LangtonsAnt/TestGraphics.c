@@ -1,23 +1,15 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 //#include <vld.h>
 #include "logic.h"
 #include "graphics.h"
 
-#define DRAW_EVERY 1
+#define DRAW_EVERY 100
 #define INPUT_DELAY 1000
 
 int main(void)
 {
 	int init_size;
-
-	printf("%x\n", CELL_COLOR_MASK);
-	Cell *cell = calloc(1, sizeof(Cell));
-	CELL_SET_COLUMN(cell, 1038);
-	CELL_SET_COLOR(cell, 11);
-	printf("%d %d\n", CELL_GET_COLOR(cell), CELL_GET_COLUMN(cell));
-
 	printf("Pocetna velicina (2, 3, 4, 5, 6): ");
 	scanf("%d", &init_size);
 	assert(init_size == 2 || init_size == 3 || init_size == 4 || init_size == 5 || init_size == 6);
@@ -66,6 +58,7 @@ int main(void)
 
 	i = 0;
 	while (1) {
+		if (steps == 100000) goto exit;
 		oldp = ant->pos;
 		ant_move(ant, grid, colors);
 		grid_silent_expand(grid);
@@ -77,9 +70,11 @@ int main(void)
 				mvaddstr(12, GRID_WINDOW_SIZE+10, "SPARSE");
 			}
 			draw_grid_full(grid);
-		} else if (++cnt == DRAW_EVERY) {
-			draw_grid_iter(grid, oldp, ant->pos);
-			cnt = 0;
+		} else {
+			draw_grid_iter(grid, oldp, ++cnt == DRAW_EVERY);
+			if (cnt > DRAW_EVERY) {
+				cnt = 0;
+			}
 		}
 		if (input_delay == 0) {
 			if (grid_key_command(grid, ant, getch()) != ERR) { // TODO apparently getch() refreshes the screen - optimize

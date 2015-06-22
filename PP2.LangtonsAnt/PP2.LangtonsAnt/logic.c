@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -88,7 +87,7 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	ant_dir_turn(ant, turn);
 }
 
-bool ant_move(Ant *ant, Grid *grid, Colors *colors)
+bool ant_move(Ant *ant, Grid *grid, Colors *colors) // TODO have ant_move return move direction (either relative or absolute)
 {
 	if (is_grid_sparse(grid)) {
 		ant_move_s(ant, grid, colors);

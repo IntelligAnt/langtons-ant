@@ -104,7 +104,7 @@ void draw_box(WINDOW *window, Vector2i top_left, int size);
 void init_grid_window(void);
 void end_grid_window(void);
 void draw_grid_full(Grid *grid);
-void draw_grid_iter(Grid *grid, Vector2i oldp, Vector2i newp);
+void draw_grid_iter(Grid *grid, Vector2i oldp, bool refresh);
 void scroll_grid(Grid *grid, int dy, int dx);
 void set_scroll(Grid *grid, int y, int x);
 
