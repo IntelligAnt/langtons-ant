@@ -59,7 +59,6 @@
 #define GRID_WINDOW_SIZE    109
 #define GRID_VIEW_SIZE      (GRID_WINDOW_SIZE - 1)
 #define GRID_BUFFER_ZONE    2
-#define GRID_CELL           ACS_BLOCK
 #define LINE_WIDTH_SMALL    2
 #define LINE_WIDTH_MEDIUM   1
 #define LINE_WIDTH_LARGE    0
@@ -82,18 +81,22 @@ typedef struct scroll_info {
 
 /*** Menu window attributes ***/
 
-#define MENU_WINDOW_SIZE 41
-#define KEY_ESC          0x1B
+#define MENU_WINDOW_SIZE  42
+#define MENU_BORDER_COLOR COLOR_BLUE
 
-typedef struct menu_info {
+#define KEY_ESC 0x1B
+
+typedef struct settings {
 	Colors *colors;
-} MenuInfo;
+	size_t steps;
+} Settings;
 
 /*** Globals ***/
 
 extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw;
 extern ScrollInfo gridscrl;
+extern Settings settings;
 
 /* graphics.c */
 
@@ -101,7 +104,9 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
 chtype get_pair_for(short color);
-void draw_box(WINDOW *window, Vector2i top_left, int size);
+void draw_box(WINDOW *w, Vector2i top_left, int size);
+void draw_bitmap(WINDOW *w, Vector2i top_left,
+				 unsigned char *bitmap, size_t width, size_t height);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
 int sgn(int x);
@@ -124,5 +129,6 @@ void grid_mouse_command(Grid *grid);
 void init_menu_window(void);
 void end_menu_window(void);
 void draw_menu(void);
+void draw_menu_steps(size_t steps);
 
 #endif

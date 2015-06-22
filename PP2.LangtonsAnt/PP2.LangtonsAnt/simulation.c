@@ -21,7 +21,7 @@ static void handle_input(Ant *ant, Grid *grid)
 
 void run_simulation(Ant *ant, Grid *grid, Colors *colors)
 {
-	static int steps = 0, cnt = DRAW_EVERY-1;
+	static size_t steps = 0, cnt = DRAW_EVERY-1;
 	Vector2i oldp;
 
 	assert(ant && grid && colors);
@@ -33,7 +33,7 @@ void run_simulation(Ant *ant, Grid *grid, Colors *colors)
 		oldp = ant->pos;
 		ant_move(ant, grid, colors);
 		grid_silent_expand(grid);
-
+		
 		if (is_ant_out_of_bounds(ant, grid)) {
 			grid_expand(grid, ant);
 			draw_grid_full(grid);
@@ -45,7 +45,7 @@ void run_simulation(Ant *ant, Grid *grid, Colors *colors)
 		}
 
 		handle_input(ant, grid);
-		++steps;
+		++settings.steps;
 	}
 }
 

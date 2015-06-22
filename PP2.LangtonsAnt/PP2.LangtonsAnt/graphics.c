@@ -20,6 +20,7 @@ void init_graphics(short fg_color, short bg_color)
 	draw_grid_full(NULL);
 
 	init_menu_window();
+	draw_menu();
 }
 
 void end_graphics(void)
@@ -34,9 +35,9 @@ void init_def_pairs(short fg_color, short bg_color)
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		init_pair(i+1, i, bg_color);
 		if (i == fg_color) {
-			fg_pair = i+1;
+			fg_pair = COLOR_PAIR(i+1);
 		} else if (i == bg_color) {
-			bg_pair = i+1;
+			bg_pair = COLOR_PAIR(i+1);
 		}
 	}
 }
@@ -54,15 +55,27 @@ chtype get_pair_for(short color)
 	return COLOR_PAIR(pair);
 }
 
-void draw_box(WINDOW *window, Vector2i top_left, int size)
+void draw_box(WINDOW *w, Vector2i top_left, int size)
 {
 	int i;
 	if (size == 1) {
-		mvwaddch(window, top_left.y, top_left.x, GRID_CELL);
+		mvwaddch(w, top_left.y, top_left.x, ACS_BLOCK);
 		return;
 	}
 	for (i = 0; i < size; ++i) {
-		mvwhline(window, top_left.y+i, top_left.x, GRID_CELL, size);
+		mvwhline(w, top_left.y+i, top_left.x, ACS_BLOCK, size);
+	}
+}
+
+void draw_bitmap(WINDOW *w, Vector2i top_left,
+				 unsigned char *bitmap, size_t width, size_t height)
+{
+	size_t read, y, x;
+	unsigned char bit;
+	for (read = 0; read < width*height; ++read) {
+		bit = bitmap[read/8] >> (7-read%8) & 0x1;
+		y = read/width, x = read%width;
+		mvwaddch(w, top_left.y+y, top_left.x+x, bit ? ACS_BLOCK : ' ');
 	}
 }
 

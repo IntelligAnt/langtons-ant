@@ -8,7 +8,6 @@ ScrollInfo gridscrl;
 void init_grid_window(void)
 {
 	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
-	gridscrl = (ScrollInfo) { 0 };
 	mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL); // Left and right click
 	keypad(gridw, TRUE);
 	nodelay(gridw, TRUE);
@@ -33,10 +32,10 @@ static void draw_buffer_zone(int width)
 	const int n = GRID_WINDOW_SIZE;
 	int i;
 	for (i = 0; i < width; ++i) {
-		mvwhline(gridw, i, i, GRID_CELL, n-i);
-		mvwhline(gridw, n-1-i, i, GRID_CELL, n-i);
-		mvwvline(gridw, i, i, GRID_CELL, n-i);
-		mvwvline(gridw, i, n-1-i, GRID_CELL, n-i);
+		mvwhline(gridw, i,     i,     ACS_BLOCK, n-i);
+		mvwhline(gridw, n-1-i, i,     ACS_BLOCK, n-i);
+		mvwvline(gridw, i,     i,     ACS_BLOCK, n-i);
+		mvwvline(gridw, i,     n-1-i, ACS_BLOCK, n-i);
 	}
 }
 
@@ -52,20 +51,20 @@ static void draw_scrollbars(short sb_fg_color, short sb_bg_color)
 
 	/* Scrollbar background */
 	wattrset(gridw, get_pair_for(sb_bg_color));
-	mvwhline(gridw, n, 0, GRID_CELL, n);
-	mvwvline(gridw, 0, n, GRID_CELL, n);
+	mvwhline(gridw, n, 0, ACS_BLOCK, n);
+	mvwvline(gridw, 0, n, ACS_BLOCK, n);
 
 	/* Scrollbar arrows */
 	wattron(gridw, A_REVERSE);
-	mvwaddch(gridw, n,   0,   ACS_LARROW);
-	mvwaddch(gridw, n,   n-1, ACS_RARROW);
 	mvwaddch(gridw, 0,   n,   ACS_UARROW);
 	mvwaddch(gridw, n-1, n,   ACS_DARROW);
+	mvwaddch(gridw, n,   0,   ACS_LARROW);
+	mvwaddch(gridw, n,   n-1, ACS_RARROW);
 
 	/* Scrollbar sliders */
 	wattrset(gridw, get_pair_for(sb_fg_color)); // TODO fix sliders drawing over right/bottom arrows
-	mvwhline(gridw, n, h, GRID_CELL, size);
-	mvwvline(gridw, v, n, GRID_CELL, size);
+	mvwhline(gridw, n, h, ACS_BLOCK, size);
+	mvwvline(gridw, v, n, ACS_BLOCK, size);
 }
 
 static void bordered(Grid *grid, int line_width)
@@ -78,15 +77,15 @@ static void bordered(Grid *grid, int line_width)
 
 	/* Draw background edge buffer zone */
 	assert(o <= GRID_BUFFER_ZONE);
-	wattrset(gridw, COLOR_PAIR(bg_pair));
+	wattrset(gridw, bg_pair);
 	draw_buffer_zone(GRID_BUFFER_ZONE);
 
 	/* Draw grid lines */
-	wattrset(gridw, COLOR_PAIR(fg_pair));
+	wattrset(gridw, fg_pair);
 	for (i = 0; i < GRID_WINDOW_SIZE; i += cs+line_width) {
 		for (j = 0; j < line_width; ++j) {
-			mvwhline(gridw, o+i+j, o,     GRID_CELL, total);
-			mvwvline(gridw, o,     o+i+j, GRID_CELL, total);
+			mvwhline(gridw, o+i+j, o,     ACS_BLOCK, total);
+			mvwvline(gridw, o,     o+i+j, ACS_BLOCK, total);
 		}
 	}
 	
@@ -149,9 +148,9 @@ void draw_grid_full(Grid *grid)
 			borderless(grid);
 		}
 	} else {
-		wattrset(gridw, COLOR_PAIR(bg_pair));
+		wattrset(gridw, bg_pair);
 		for (i = 0; i < GRID_WINDOW_SIZE; ++i) {
-			mvwhline(gridw, i, 0, GRID_CELL, GRID_WINDOW_SIZE);
+			mvwhline(gridw, i, 0, ACS_BLOCK, GRID_WINDOW_SIZE);
 		}
 	}
 
