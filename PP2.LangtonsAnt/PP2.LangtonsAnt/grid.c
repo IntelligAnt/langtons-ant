@@ -12,7 +12,7 @@ Grid *grid_new(size_t size, Colors *colors)
 	size_t i, j;
 	grid->c = malloc(size * sizeof(unsigned char*));
 	for (i = 0; i < size; ++i) {
-		grid->c[i] = malloc(size * sizeof(unsigned char));
+		grid->c[i] = malloc(size);
 		memset(grid->c[i], (unsigned char)colors->def, size);
 	}
 	grid->csr = NULL;
@@ -114,9 +114,9 @@ static void grid_expand_n(Grid *grid)
 	grid->c = grid->tmp;
 	grid->tmp = NULL;
 	grid->tmp_size = 0;
-	grid->size = size;
 	transfer_vector(&grid->top_left, grid->size);
 	transfer_vector(&grid->bottom_right, grid->size);
+	grid->size = size;
 }
 
 static void grid_expand_s(Grid *grid)
@@ -130,13 +130,14 @@ static void grid_expand_s(Grid *grid)
 			grid->csr[i-old] = NULL;
 			t = new[i];
 			while (t) {
-				t->column += old;
+				CELL_SET_COLUMN(t, CELL_GET_COLUMN(t) + old);
 				t = t->next;
 			}
 		} else {
 			new[i] = NULL;
 		}
 	}
+
 	free(grid->csr);
 	grid->csr = new;
 	grid->size = size;
@@ -162,10 +163,12 @@ void grid_make_sparse(Grid *grid)
 	size_t size = grid->size;
 	int i, j;
 	Cell **cur;
-	char c;
-	grid->csr = malloc(size * sizeof(Cell*));
+	unsigned char c;
+
+	grid_delete_tmp(grid);
+
+	grid->csr = calloc(size, sizeof(Cell*));
 	for (i = 0; i < size; i++) {
-		grid->csr[i] = NULL;
 		cur = grid->csr + i;
 		for (j = 0; j < size; j++) {
 			c = grid->c[i][j];
@@ -174,9 +177,9 @@ void grid_make_sparse(Grid *grid)
 				cur = &((*cur)->next);
 			}
 		}
+		free(grid->c[i]);
 	}
-	grid_delete_n(grid);
-	grid_delete_tmp(grid);
+	free(grid->c);
 	grid->c = NULL;
 }
 
@@ -188,8 +191,8 @@ bool is_grid_sparse(Grid *grid)
 void new_cell(Cell **cur, unsigned column, unsigned char c)
 {
 	Cell *new = malloc(sizeof(Cell));
-	new->column = column;
-	new->c = c;
+	CELL_SET_COLUMN(new, column);
+	CELL_SET_COLOR(new, c);
 	new->next = *cur;
 	*cur = new;
 }
@@ -197,8 +200,8 @@ void new_cell(Cell **cur, unsigned column, unsigned char c)
 unsigned char color_at_s(Grid *grid, Vector2i p)
 {
 	Cell *t = grid->csr[p.y];
-	while (t && t->column < p.x) {
+	while (t && CELL_GET_COLUMN(t) < p.x) {
 		t = t->next;
 	}
-	return (!t || t->column != p.x) ? grid->def_color : t->c;
+	return (!t || CELL_GET_COLUMN(t) != p.x) ? grid->def_color : CELL_GET_COLOR(t);
 }

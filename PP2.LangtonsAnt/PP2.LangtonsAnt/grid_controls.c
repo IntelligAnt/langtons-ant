@@ -45,8 +45,17 @@ int grid_key_command(Grid *grid, Ant *ant, int key)
 		set_scroll(grid, 0, 0);
 		break;
 
+	case KEY_MOUSE:
+		key = grid_mouse_command(grid);
+		break;
+
 	default:
 		return ERR;
 	}
 	return key;
+}
+
+int grid_mouse_command(Grid *grid)
+{
+
 }

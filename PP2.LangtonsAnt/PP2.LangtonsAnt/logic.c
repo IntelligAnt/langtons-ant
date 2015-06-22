@@ -75,16 +75,16 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	Cell **t = grid->csr+y;
 
-	while (*t && (*t)->column < x) {
+	while (*t && CELL_GET_COLUMN(*t) < x) {
 		t = &((*t)->next);
 	}
-	if (!*t || (*t)->column != x) {
+	if (!*t || CELL_GET_COLUMN(*t) != x) {
 		new_cell(t, x, (unsigned char)colors->first);
 	}
 
-	turn = colors->turn[(*t)->c];
+	turn = colors->turn[CELL_GET_COLOR(*t)];
 	assert(abs(turn) == 1);
-	(*t)->c = (unsigned char)colors->next[(*t)->c];
+	CELL_SET_COLOR(*t, (unsigned char)colors->next[CELL_GET_COLOR(*t)]);
 	ant_dir_turn(ant, turn);
 }
 

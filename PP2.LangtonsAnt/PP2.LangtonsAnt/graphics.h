@@ -111,5 +111,6 @@ void set_scroll(Grid *grid, int y, int x);
 /* grid_controls.c */
 
 int grid_key_command(Grid *grid, Ant *ant, int key);
+int grid_mouse_command(Grid *grid);
 
 #endif

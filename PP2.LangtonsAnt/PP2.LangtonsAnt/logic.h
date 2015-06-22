@@ -28,7 +28,7 @@ typedef struct colors {
 /*** Grid attributes and types ***/
 
 #define GRID_MUL 3
-#define GRID_SIZE_THRESHOLD    19682 // 3^9 - 1
+#define GRID_SIZE_THRESHOLD    2000 // 19682 // 3^9 - 1
 #define GRID_USAGE_THRESHOLD   0.5
 #define GRID_MAX_SILENT_EXPAND (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
 
@@ -38,9 +38,14 @@ typedef struct colors {
 #define IS_GRID_LARGE(g)       ((g)->size >= GRID_SIZE_LARGE(g))
 #define GRID_COLOR_AT(g, p)    (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
 
+#define CELL_COLOR_MASK         (0xF << 28)
+#define CELL_GET_COLOR(c)	    (((c)->col_packed & CELL_COLOR_MASK) >> 28)
+#define CELL_SET_COLOR(c, col)	((c)->col_packed = (c)->col_packed & ~CELL_COLOR_MASK | ((col) << 28))
+#define CELL_GET_COLUMN(c)	    ((c)->col_packed & ~CELL_COLOR_MASK)
+#define CELL_SET_COLUMN(c, col)	((c)->col_packed = (c)->col_packed & CELL_COLOR_MASK | (col) & ~CELL_COLOR_MASK)
+
 typedef struct cell {
-	size_t column;
-	unsigned char c;
+	size_t col_packed;
 	struct cell *next;
 } Cell;
 
