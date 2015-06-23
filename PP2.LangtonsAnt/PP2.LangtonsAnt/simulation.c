@@ -1,7 +1,7 @@
 #include "logic.h"
 #include "graphics.h"
 
-#define DRAW_EVERY 1
+#define DRAW_EVERY 100
 #define INPUT_DELAY 100
 
 static bool running;
@@ -33,15 +33,21 @@ void run_simulation(Ant *ant, Grid *grid, Colors *colors)
 		oldp = ant->pos;
 		ant_move(ant, grid, colors);
 		grid_silent_expand(grid);
-		
+
 		if (is_ant_out_of_bounds(ant, grid)) {
 			grid_expand(grid, ant);
+			stgs.is_sparse = is_grid_sparse(grid);
+			stgs.size = grid->size;
+			draw_menu();
 			draw_grid_full(grid);
+			doupdate();
 		} else {
-			draw_grid_iter(grid, oldp, ++cnt == DRAW_EVERY);
-			if (cnt > DRAW_EVERY) {
+			draw_grid_iter(grid, oldp);
+			if (++cnt == DRAW_EVERY) {
+				draw_menu();
 				cnt = 0;
 			}
+			doupdate();
 		}
 
 		handle_input(ant, grid);

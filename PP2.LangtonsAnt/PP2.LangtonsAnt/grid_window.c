@@ -4,11 +4,11 @@
 
 WINDOW *gridw;
 ScrollInfo gridscrl;
-const Vector2i grid_origin = { 0, 0 };
+const Vector2i grid_pos = { 0, 0 };
 
 void init_grid_window(void)
 {
-	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, grid_origin.y, grid_origin.x);
+	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, grid_pos.y, grid_pos.x);
 	keypad(gridw, TRUE);
 	nodelay(gridw, TRUE);
 }
@@ -154,10 +154,10 @@ void draw_grid_full(Grid *grid)
 		}
 	}
 
-	wrefresh(gridw);
+	wnoutrefresh(gridw);
 }
 
-void draw_grid_iter(Grid *grid, Vector2i oldp, bool refresh)
+void draw_grid_iter(Grid *grid, Vector2i oldp)
 {
 	int gs = grid->size, vgs = min(gs, GRID_VIEW_SIZE);
 	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
@@ -178,9 +178,7 @@ void draw_grid_iter(Grid *grid, Vector2i oldp, bool refresh)
 	draw_box(gridw, yx, cs);
 	// TODO draw ant transition
 
-	if (refresh) {
-		wrefresh(gridw);
-	}
+	wnoutrefresh(gridw);
 }
 
 void scroll_grid(Grid *grid, int dy, int dx)
