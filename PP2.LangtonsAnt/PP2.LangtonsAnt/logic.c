@@ -48,7 +48,7 @@ static void update_bounding_box(Vector2i pos, Vector2i *tl, Vector2i *br)
 static bool is_grid_usage_low(Grid *grid)
 {
 	int b = (grid->bottom_right.y - grid->top_left.y + 1)*(grid->bottom_right.x - grid->top_left.x + 1);
-	return (double)grid->used / b < GRID_USAGE_THRESHOLD;
+	return (double)grid->colored / b < GRID_USAGE_THRESHOLD;
 }
 
 static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
@@ -58,7 +58,7 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 
 	if (is_def) {
 		grid->c[y][x] = (unsigned char)colors->first;
-		grid->used++;
+		grid->colored++;
 		update_bounding_box(ant->pos, &grid->top_left, &grid->bottom_right);
 	}
 
@@ -87,6 +87,9 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	}
 	if (!*t || CELL_GET_COLUMN(*t) != x) {
 		new_cell(t, x, (unsigned char)colors->first);
+		grid->colored++;
+		update_bounding_box(ant->pos, &grid->top_left, &grid->bottom_right);
+
 	}
 
 	// In-place color changing
