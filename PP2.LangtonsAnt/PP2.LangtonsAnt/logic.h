@@ -7,10 +7,16 @@
 #if DEBUG
 #include <assert.h>
 #else
-#define assert(e) (e)
+#define assert(e) 1
 #endif
 
 #define COLOR_COUNT 16
+#define COLOR_EMPTY -1
+#define TURN_LEFT -1
+#define TURN_RIGHT 1
+
+#define COLOR_NEXT(cs, c) (cs)->next[c]
+#define COLOR_TURN(cs, c) (cs)->turn[c]
 
 typedef unsigned char bool;
 
@@ -28,9 +34,6 @@ typedef struct ant {
 typedef struct colors {
 	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def;
 } Colors;
-
-#define COLOR_NEXT(cs, c) (cs)->next[c]
-#define COLOR_TURN(cs, c) (cs)->turn[c]
 
 /*** Grid attributes and types ***/
 

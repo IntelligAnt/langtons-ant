@@ -53,11 +53,6 @@
 #ifndef COLOR_COUNT
 #define COLOR_COUNT 16
 #endif
-#ifndef COLOR_EMPTY
-#define COLOR_EMPTY -1
-#endif
-
-#define AVAILABLE_FG_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
 
 /*** Grid window attributes and types ***/
 
@@ -89,11 +84,9 @@ typedef struct scroll_info {
 /*** Menu window attributes ***/
 
 #define MENU_WINDOW_SIZE    42
-#define MENU_LOGO_SIZE      15
 #define MENU_BORDER_COLOR   COLOR_BLUE
-#define MENU_BORDER_COLOR_S COLOR_MAROON
 #define MENU_TILE_SIZE      7
-#define MENU_TILE_HSEP      3
+#define MENU_TILE_HSEP      4
 #define MENU_TILE_VSEP      2
 #define MENU_TILE_COLUMNS   2
 #define MENU_TILES_PER_COL  7
@@ -109,8 +102,7 @@ typedef struct scroll_info {
 
 typedef struct settings {
 	Colors *colors;
-	size_t init_size, size, steps;
-	bool is_sparse;
+	size_t steps;
 } Settings;
 
 /*** Globals ***/
@@ -119,8 +111,7 @@ extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
 extern Settings stgs;
-extern const Vector2i grid_pos, menu_pos;
-extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
+extern const Vector2i grid_origin, menu_origin;
 extern Vector2i dialog_origin;
 
 /* graphics.c */
@@ -133,7 +124,7 @@ short get_color_for(chtype pair);
 void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,
-                 const unsigned char *bitmap, size_t width, size_t height);
+				 const unsigned char *bitmap, size_t width, size_t height);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
 int sgn(int x);
@@ -143,7 +134,7 @@ int sgn(int x);
 void init_grid_window(void);
 void end_grid_window(void);
 void draw_grid_full(Grid *grid);
-void draw_grid_iter(Grid *grid, Vector2i oldp);
+void draw_grid_iter(Grid *grid, Vector2i oldp, bool refresh);
 void scroll_grid(Grid *grid, int dy, int dx);
 void set_scroll(Grid *grid, int y, int x);
 

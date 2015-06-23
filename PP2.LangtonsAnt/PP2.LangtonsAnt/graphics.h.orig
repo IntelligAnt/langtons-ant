@@ -119,9 +119,15 @@ extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
 extern Settings stgs;
+<<<<<<< HEAD
+extern const Vector2i grid_origin, menu_origin;
+extern Vector2i dialog_origin;
+||||||| merged common ancestors
+extern const Vector2i grid_origin, menu_origin;
+=======
 extern const Vector2i grid_pos, menu_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
-extern Vector2i dialog_origin;
+>>>>>>> origin/master
 
 /* graphics.c */
 
@@ -133,7 +139,7 @@ short get_color_for(chtype pair);
 void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,
-                 const unsigned char *bitmap, size_t width, size_t height);
+				 const unsigned char *bitmap, size_t width, size_t height);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
 int sgn(int x);
