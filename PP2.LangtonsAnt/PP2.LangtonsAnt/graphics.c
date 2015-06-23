@@ -61,9 +61,9 @@ short get_color_for(chtype pair)
 	return PAIR_NUMBER(pair) - 1;
 }
 
-void draw_box(WINDOW *w, Vector2i top_left, int size)
+void draw_box(WINDOW *w, Vector2i top_left, size_t size)
 {
-	int i;
+	size_t i;
 	if (size == 1) {
 		mvwaddch(w, top_left.y, top_left.x, ACS_BLOCK);
 		return;
@@ -72,6 +72,19 @@ void draw_box(WINDOW *w, Vector2i top_left, int size)
 		mvwhline(w, top_left.y+i, top_left.x, ACS_BLOCK, size);
 	}
 }
+
+void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height)
+{
+	size_t i;
+	if (width == 1 && height == 1) {
+		mvwaddch(w, top_left.y, top_left.x, ACS_BLOCK);
+		return;
+	}
+	for (i = 0; i < height; ++i) {
+		mvwhline(w, top_left.y + i, top_left.x, ACS_BLOCK, width);
+	}
+}
+
 
 void draw_bitmap(WINDOW *w, Vector2i top_left,
 				 const unsigned char *bitmap, size_t width, size_t height)

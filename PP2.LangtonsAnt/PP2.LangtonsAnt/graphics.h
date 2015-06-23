@@ -73,6 +73,8 @@
 #define ORIGIN_COORD(gs, vs, sc)     max((gs)/2-(vs)/2+(sc), 0)
 #define ORIGIN_POS(gs, vs, scy, scx) (Vector2i) { ORIGIN_COORD(gs, vs, scy), ORIGIN_COORD(gs, vs, scx) }
 
+#define AVAILABLE_FG_COLOR(def, c) (((def) != (c)) ? (c) : COLOR_SILVER)
+
 typedef struct scroll_info {
 	bool enabled;
 	int y, x, hcenter, vcenter;
@@ -92,6 +94,12 @@ typedef struct scroll_info {
 
 #define KEY_ESC 0x1B
 
+/*** Dialog window attributes ***/
+
+#define DIALOG_TILE_SIZE 3
+#define DIALOG_WINDOW_HEIGHT (3*DIALOG_TILE_SIZE + 4)
+#define DIALOG_WINDOW_WIDTH  (5*DIALOG_TILE_SIZE + 2)
+
 typedef struct settings {
 	Colors *colors;
 	size_t steps;
@@ -104,6 +112,7 @@ extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
 extern Settings stgs;
 extern const Vector2i grid_origin, menu_origin;
+extern Vector2i dialog_origin;
 
 /* graphics.c */
 
@@ -112,7 +121,8 @@ void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
 chtype get_pair_for(short color);
 short get_color_for(chtype pair);
-void draw_box(WINDOW *w, Vector2i top_left, int size);
+void draw_box(WINDOW *w, Vector2i top_left, size_t size);
+void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,
 				 const unsigned char *bitmap, size_t width, size_t height);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
