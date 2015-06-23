@@ -104,40 +104,56 @@ Vector2i get_dialog_tile_pos(int index)
 
 Vector2i get_dialog_button_pos(int button)
 {
-	switch (button){
-	case -1: break;
-	case 1: break;
-	}
+	return (Vector2i) {
+		2 + DIALOG_ROWS*DIALOG_TILE_SIZE,
+			button == -1 ? 1 : DIALOG_BUTTON_WIDTH + 2
+	};
 }
 
-void dialog_mouse_command(int key)
+void dialog_mouse_command(MEVENT event)
 {
-	if (key!=KEY_MOUSE){
-		return;
-	}
-
-	MEVENT event;
 	int i;
-	Vector2i tile_pos;
+	Vector2i top_left;
 
-	nc_getmouse(&event);
 	if (!(event.bstate & BUTTON1_CLICKED)) {
 		return;
 	}
 
 	for (i = 0; i < COLOR_COUNT; i++) {
-		tile_pos = get_dialog_tile_pos(i);
-		if (event.y >= tile_pos.y && event.y < tile_pos.y + DIALOG_TILE_SIZE &&
-			event.x >= tile_pos.x && event.x < tile_pos.x + DIALOG_TILE_SIZE){
+		top_left = get_dialog_tile_pos(i);
+		if (event.y >= top_left.y && event.y < top_left.y + DIALOG_TILE_SIZE &&
+			event.x >= top_left.x && event.x < top_left.x + DIALOG_TILE_SIZE){
 			picked_color = i;
 			goto exit;
 		}
 	}
-
-
-
-exit: if (picked_color != -1 && picked_turn != 0) {
-	add_color(stgs.colors, picked_color, picked_turn);
-	close_dialog();
+	for (i = -1; i <= 1; i += 2){
+		top_left = get_dialog_button_pos(i);
+		if (event.y >= top_left.y && event.y < top_left.y + DIALOG_BUTTON_HEIGHT &&
+			event.x >= top_left.x && event.x < top_left.x + DIALOG_BUTTON_WIDTH){
+			picked_turn = i;
+			goto exit;
+		}
+	}
+	
+exit: switch (cidx){
+case CIDX_NEWCOLOR:
+	if (picked_color != -1 && picked_turn != 0) {
+		add_color(stgs.colors, picked_color, picked_turn);
+		close_dialog();
+	}
+	break;
+case CIDX_DEFAULT:
+	if (picked_color != -1){
+		colors_delete(stgs.colors);
+		stgs.colors = colors_new(picked_color);
+		close_dialog();
+	}
+	break;
+default:
+	if (cidx >= 0 && cidx < COLOR_COUNT && picked_color != -1 && picked_turn != 0){
+		set_color(stgs.colors, cidx, picked_color, picked_turn);
+		close_dialog();
+	}
 }
 }

@@ -182,7 +182,7 @@ void menu_mouse_command();
 void open_dialog(Vector2i pos, int color_index);
 void close_dialog(void);
 Vector2i get_dialog_tile_pos(int index);
-Vector2i get_dialog_button_pos(int index);
-void dialog_mouse_command(int key);
+Vector2i get_dialog_button_pos(int button);
+void dialog_mouse_command(MEVENT event);
 
 #endif
