@@ -10,6 +10,7 @@ void init_graphics(short fg_color, short bg_color)
 	
 	cbreak();
 	noecho();
+	mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL); // Left and right click
 	//keypad(stdscr, TRUE);
 	//nodelay(stdscr, TRUE);
 
@@ -73,7 +74,7 @@ void draw_box(WINDOW *w, Vector2i top_left, int size)
 }
 
 void draw_bitmap(WINDOW *w, Vector2i top_left,
-				 unsigned char *bitmap, size_t width, size_t height)
+				 const unsigned char *bitmap, size_t width, size_t height)
 {
 	size_t read, y, x;
 	unsigned char bit;

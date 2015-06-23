@@ -8,7 +8,6 @@ ScrollInfo gridscrl;
 void init_grid_window(void)
 {
 	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
-	mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL); // Left and right click
 	keypad(gridw, TRUE);
 	nodelay(gridw, TRUE);
 }

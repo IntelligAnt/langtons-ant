@@ -5,29 +5,32 @@
 WINDOW *menuw;
 Settings stgs;
 
-unsigned char logo_bitmap[] = {
-	0xE0, 0x00, 0x04, 0x00, 0x10, 0x40, 0x00, 0x04, 0x00,
-	0x13, 0x41, 0xDC, 0x77, 0x33, 0x84, 0x42, 0x52, 0x94,
-	0x4A, 0x47, 0x4A, 0x52, 0x94, 0x4A, 0x41, 0xF9, 0xD2,
-	0x73, 0x32, 0x46, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00,
-	0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+//unsigned char logo_bitmap[] = {
+//	0xE0, 0x00, 0x04, 0x00, 0x10, 0x40, 0x00, 0x04, 0x00,
+//	0x13, 0x41, 0xDC, 0x77, 0x33, 0x84, 0x42, 0x52, 0x94,
+//	0x4A, 0x47, 0x4A, 0x52, 0x94, 0x4A, 0x41, 0xF9, 0xD2,
+//	0x73, 0x32, 0x46, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00,
+//	0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+//};
 
-unsigned char digit_bitmaps[][2] = {
+const unsigned char digit_bitmaps[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
 };
 
-unsigned char inf_bitmap[] = {
+const unsigned char inf_bitmap[] = {
 	0x00, 0x00, 0x03, 0x8e, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00,
 	0x04, 0x21, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00, 0x03, 0x8e
 };
+
+const Vector2i steps_origin = { GRID_WINDOW_SIZE-8, MENU_WINDOW_SIZE-1 };
+const Vector2i steps_msg_origin = { GRID_WINDOW_SIZE-4, 2 };
+const Vector2i tiles_origin = { 20, 20 };
 
 void init_menu_window(void)
 {
 	menuw = newwin(GRID_WINDOW_SIZE, MENU_WINDOW_SIZE, 0, GRID_WINDOW_SIZE);
 	wbkgd(menuw, bg_pair);
-	mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL); // Left and right click
 	keypad(gridw, TRUE);
 	nodelay(gridw, TRUE);
 }
@@ -37,10 +40,6 @@ void end_menu_window(void)
 	delwin(gridw);
 	gridw = NULL;
 }
-
-const Vector2i steps_origin = { GRID_WINDOW_SIZE-8, MENU_WINDOW_SIZE-1 };
-const Vector2i steps_msg_origin = { GRID_WINDOW_SIZE-4, 2 };
-const Vector2i tiles_origin = { 20, 20 };
 
 Vector2i get_menu_tile_pos(int index)
 {
@@ -60,25 +59,6 @@ Vector2i get_menu_tile_pos(int index)
 
 	return pos;
 }
-
-//static void draw_color_arrows(Vector2i top_left, int list_size)
-//{
-//	int i, dy;
-//	Vector2i pos1, pos2 = top_left;
-//	wattrset(menuw, get_pair_for(stgs.colors->def));
-//	for (i = 1; i < list_size; ++i) {
-//		if (i != list_size-1) {
-//			pos1 = pos2;
-//			pos2 = get_menu_tile_pos(i);
-//		}
-//		dy = abs(pos2.y - pos1.x);
-//		if ((i / MENU_TILES_PER_COL) % 2) {
-//			mvwvline(menuw, pos2.y, pos2.x+MENU_TILE_SIZE/2, ACS_VLINE, dy);
-//		} else {
-//			mvwvline(menuw, pos1.y, pos1.x+MENU_TILE_SIZE/2, ACS_VLINE, dy);
-//		}
-//	}
-//}
 
 static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 {
@@ -135,6 +115,7 @@ static void draw_color_tile(Vector2i top_left, short c)
 	}
 	draw_box(menuw, top_left, s);
 
+	/* Draw frame */
 	wattrset(menuw, is_def ? pair : fg_pair);
 	mvwhline(menuw, y, x, ACS_BLOCK, s);
 	mvwvline(menuw, y, x, ACS_BLOCK, s);
