@@ -85,8 +85,9 @@
     <ClInclude Include="logic.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dialog_window.c" />
+    <ClCompile Include="dialog.c" />
     <ClCompile Include="grid_controls.c" />
+    <ClCompile Include="menu_controls.c" />
     <ClCompile Include="menu_window.c" />
     <ClCompile Include="rules_io.c" />
     <ClCompile Include="graphics.c" />

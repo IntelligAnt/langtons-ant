@@ -49,10 +49,6 @@ int grid_key_command(Grid *grid, Ant *ant, int key)
 		grid_mouse_command(grid);
 		break;
 
-	case KEY_ESC: // TODO remove; should be done in menu controls instead
-		stop_simulation();
-		break;
-
 	default:
 		return ERR;
 	}

@@ -7,6 +7,7 @@ Settings stgs = { .init_size = 4 };
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
 const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
+const Vector2i menu_play_pos  = { 0, 2 };
 
 const char *isz_msg    = "INITIAL SIZE:";
 const char *steps_msg  = "STEPS:";
@@ -124,7 +125,7 @@ static void draw_color_tile(Vector2i top_left, short c)
 	short fg;
 
 	/* Draw tile */
-	wattrset(menuw, pair = get_pair_for(c));
+	wattrset(menuw, pair = GET_PAIR_FOR(c));
 	if (is_def) {
 		wattron(menuw, A_REVERSE);
 	}
@@ -132,11 +133,11 @@ static void draw_color_tile(Vector2i top_left, short c)
 
 	/* Draw direction arrow*/
 	if (!is_def) {
-		fg = AVAILABLE_FG_COLOR(get_color_for(bg_pair), c, COLOR_GRAY);
+		fg = AVAILABLE_FG_COLOR(GET_COLOR_FOR(bg_pair), c, COLOR_GRAY);
 		if (fg == c) {
 			wattron(menuw, A_REVERSE);
 		} else {
-			wattrset(menuw, get_pair_for(fg));
+			wattrset(menuw, GET_PAIR_FOR(fg));
 		}
 		mvwaddch(menuw, y+s/2, x+s/2, (stgs.colors->turn[c] == TURN_LEFT) ? '<' : '>');
 	}
@@ -185,11 +186,17 @@ static void draw_color_list(void)
 	}
 }
 
+static void draw_control_buttons(void)
+{
+	short fg = AVAILABLE_FG_COLOR(stgs.colors->def, COLOR_SILVER, COLOR_WHITE);
+	wattrset(menuw, GET_PAIR_FOR(fg));
+}
+
 static void draw_size(void)
 {
 	char size_str[29];
 	int len = (int)log10(stgs.size)+1;
-	wattrset(menuw, get_pair_for(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 	sprintf(size_str, "%28d", stgs.size);
 	mvwaddstr(menuw, size_pos.y, size_pos.x-28, size_str);
 }
@@ -197,7 +204,7 @@ static void draw_size(void)
 static void draw_init_size(void)
 {
 	assert(stgs.init_size >= 2 && stgs.init_size <= 6);
-	wattrset(menuw, get_pair_for(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 	mvwaddch(menuw, menu_isz_u_pos.y,   menu_isz_u_pos.x, ACS_UARROW);
 	mvwaddch(menuw, menu_isz_u_pos.y+1, menu_isz_u_pos.x, ACS_VLINE);
 	mvwaddch(menuw, menu_isz_d_pos.y,   menu_isz_d_pos.x, ACS_VLINE);
@@ -238,17 +245,17 @@ void draw_menu(void)
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
 
 	if (stgs.is_sparse) {
-		wattrset(menuw, get_pair_for(MENU_BORDER_COLOR_S));
+		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
 		mvwaddstr(menuw, sparse_msg_pos.y, sparse_msg_pos.x, sparse_msg);
 	} else {
-		wattrset(menuw, get_pair_for(MENU_BORDER_COLOR));
+		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 	}
 	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
 	mvwvline(menuw, 0,   0,   ACS_BLOCK, v);
 	mvwhline(menuw, v-1, 0,   ACS_BLOCK, h);
 	mvwvline(menuw, 0,   h-1, ACS_BLOCK, v);
 
-	wattrset(menuw, get_pair_for(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 	mvwaddstr(menuw, isz_msg_pos.y,   isz_msg_pos.x,   isz_msg);
 	mvwaddstr(menuw, tiles_msg_pos.y, tiles_msg_pos.x, tiles_msg);
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);

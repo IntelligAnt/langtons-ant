@@ -57,6 +57,8 @@
 #define COLOR_EMPTY -1
 #endif
 
+#define GET_PAIR_FOR(c)  (COLOR_PAIR(c+1))
+#define GET_COLOR_FOR(p) (PAIR_NUMBER(p)-1)
 #define AVAILABLE_FG_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
 
 /*** Grid window attributes and types ***/
@@ -97,6 +99,7 @@ typedef struct scroll_info {
 #define MENU_TILE_COLUMNS   2
 #define MENU_TILES_PER_COL  7
 #define MENU_TILE_COUNT     (MENU_TILE_COLUMNS * MENU_TILES_PER_COL)
+#define MENU_BUTTON_SIZE    7
 
 #define KEY_ESC 0x1B
 
@@ -132,8 +135,6 @@ extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
-chtype get_pair_for(short color);
-short get_color_for(chtype pair);
 void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,
@@ -162,7 +163,15 @@ void end_menu_window(void);
 void draw_menu(void);
 Vector2i get_menu_tile_pos(int index);
 
-/* dialog_window.c */
-void open_dialog(Vector2i pos);
+/* menu_controls.c */
+int menu_key_command(int key);
+void menu_mouse_command();
+
+/* dialog.c */
+void open_dialog(Vector2i pos, int color_index);
+void close_dialog(void);
+Vector2i get_dialog_tile_pos(int index);
+Vector2i get_dialog_button_pos(int index);
+void dialog_mouse_command(int key);
 
 #endif

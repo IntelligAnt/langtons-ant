@@ -11,8 +11,8 @@ void init_graphics(short fg_color, short bg_color)
 	cbreak();
 	noecho();
 	mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL); // Left and right click
-	//keypad(stdscr, TRUE);
-	//nodelay(stdscr, TRUE);
+	keypad(stdscr, TRUE);
+	nodelay(stdscr, TRUE);
 
 	start_color();
 	init_def_pairs(fg_color, bg_color);
@@ -22,9 +22,6 @@ void init_graphics(short fg_color, short bg_color)
 
 	init_menu_window();
 	draw_menu();
-
-	open_dialog((Vector2i) { 15, 2 });
-	wrefresh(dialogw);
 }
 
 void end_graphics(void)
@@ -46,26 +43,26 @@ void init_def_pairs(short fg_color, short bg_color)
 	}
 }
 
-chtype get_pair_for(short color)
-{
-	short pair = color+1, i = 0, fg, bg;
-	if (color < 0 || color >= COLOR_COUNT) {
-		return COLOR_EMPTY;
-	}
-	pair_content(pair, &fg, &bg);
-	if (fg != color) {
-		do {
-			pair_content(++i, &fg, &bg);
-		} while (fg != color);
-		pair = (fg == color) ? i : 0;
-	}
-	return COLOR_PAIR(pair);
-}
-
-short get_color_for(chtype pair)
-{
-	return PAIR_NUMBER(pair) - 1;
-}
+//chtype get_pair_for(short color)
+//{
+//	short pair = color+1, i = 0, fg, bg;
+//	if (color < 0 || color >= COLOR_COUNT) {
+//		return COLOR_EMPTY;
+//	}
+//	pair_content(pair, &fg, &bg);
+//	if (fg != color) {
+//		do {
+//			pair_content(++i, &fg, &bg);
+//		} while (fg != color);
+//		pair = (fg == color) ? i : 0;
+//	}
+//	return COLOR_PAIR(pair);
+//}
+//
+//short get_pair_for(chtype pair)
+//{
+//	return PAIR_NUMBER(pair) - 1;
+//}
 
 void draw_box(WINDOW *w, Vector2i top_left, size_t size)
 {

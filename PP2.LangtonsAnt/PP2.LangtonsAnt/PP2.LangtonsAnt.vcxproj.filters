@@ -56,7 +56,10 @@
     <ClCompile Include="menu_window.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dialog_window.c">
+    <ClCompile Include="menu_controls.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dialog.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

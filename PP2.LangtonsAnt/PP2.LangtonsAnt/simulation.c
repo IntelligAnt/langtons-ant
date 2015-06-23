@@ -9,10 +9,13 @@ static bool running;
 static void handle_input(Ant *ant, Grid *grid)
 {
 	static int input_delay = 0;
+	int ch;
 	if (input_delay == 0) {
-		if (grid_key_command(grid, ant, wgetch(gridw)) != ERR) { // TODO wgetch refreshes
+		ch = getch();
+		if (grid_key_command(grid, ant, ch) != ERR) { // TODO wgetch refreshes
 			draw_grid_full(grid);
 		}
+		menu_key_command(ch);
 		input_delay += INPUT_DELAY;
 	} else {
 		--input_delay;
@@ -58,4 +61,9 @@ void run_simulation(Ant *ant, Grid *grid, Colors *colors)
 void stop_simulation(void)
 {
 	running = FALSE;
+}
+
+bool is_running(void)
+{
+	return running;
 }

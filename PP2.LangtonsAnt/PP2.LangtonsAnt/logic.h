@@ -40,6 +40,8 @@ typedef struct colors {
 #define GRID_MUL                3
 #define GRID_SIZE_THRESHOLD     19682 // 3^9 - 1
 #define GRID_USAGE_THRESHOLD    0.5
+#define GRID_MAX_INIT_SIZE      6
+#define GRID_MIN_INIT_SIZE      2
 #define GRID_MAX_SILENT_EXPAND  (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
 
 #define GRID_SIZE_SMALL(g)      (g)->init_size // 2, 3, 4, 5, 6
@@ -97,5 +99,6 @@ unsigned char color_at_s(Grid *grid, Vector2i p);
 
 void run_simulation(Ant *ant, Grid *grid, Colors *colors);
 void stop_simulation(void);
+bool is_running(void);
 
 #endif

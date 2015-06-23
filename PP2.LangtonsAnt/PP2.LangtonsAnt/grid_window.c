@@ -50,7 +50,7 @@ static void draw_scrollbars(short sb_fg_color, short sb_bg_color)
 	v -= v > mid;
 
 	/* Scrollbar background */
-	wattrset(gridw, get_pair_for(sb_bg_color));
+	wattrset(gridw, GET_PAIR_FOR(sb_bg_color));
 	mvwhline(gridw, n, 0, ACS_BLOCK, n);
 	mvwvline(gridw, 0, n, ACS_BLOCK, n);
 
@@ -62,7 +62,7 @@ static void draw_scrollbars(short sb_fg_color, short sb_bg_color)
 	mvwaddch(gridw, n,   n-1, ACS_RARROW);
 
 	/* Scrollbar sliders */
-	wattrset(gridw, get_pair_for(sb_fg_color)); // TODO fix sliders drawing over right/bottom arrows
+	wattrset(gridw, GET_PAIR_FOR(sb_fg_color)); // TODO fix sliders drawing over right/bottom arrows
 	mvwhline(gridw, n, h, ACS_BLOCK, size);
 	mvwvline(gridw, v, n, ACS_BLOCK, size);
 }
@@ -94,7 +94,7 @@ static void bordered(Grid *grid, int line_width)
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, line_width, cs, o);
-			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, pos)));
+			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, pos)));
 			draw_box(gridw, yx, cs);
 		}
 	}
@@ -110,7 +110,7 @@ static void borderless(Grid *grid)
 	short sb_bg_color = AVAILABLE_FG_COLOR(grid->def_color, COLOR_GRAY,  COLOR_SILVER);
 
 	/* Draw background edge buffer zone */
-	wattrset(gridw, get_pair_for(grid->def_color));
+	wattrset(gridw, GET_PAIR_FOR(grid->def_color));
 	draw_buffer_zone(o + 1);
 
 	/* Draw scrollbars in case of largest grid */
@@ -128,7 +128,7 @@ static void borderless(Grid *grid)
 		for (j = 0; j < vgs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
-			wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
+			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
 			draw_box(gridw, yx, cs);
 		}
 	}
@@ -174,7 +174,7 @@ void draw_grid_iter(Grid *grid, Vector2i oldp)
 		return;
 	}
 
-	wattrset(gridw, get_pair_for(GRID_COLOR_AT(grid, oldp)));
+	wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, oldp)));
 	draw_box(gridw, yx, cs);
 	// TODO draw ant transition
 
