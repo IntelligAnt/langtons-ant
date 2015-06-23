@@ -83,6 +83,7 @@
     <ClInclude Include="include\curses.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="logic.h" />
+    <ClInclude Include="simulation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dialog.c" />

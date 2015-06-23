@@ -179,17 +179,29 @@ void remove_color(Colors *colors, short c)
 
 void set_color(Colors *colors, short index, short c, short turn)
 {
-	short i = colors->first, prev = colors->last;
+	short prev = colors->last, i = colors->first, j;
 	assert(index >= 0 && index < colors->n);
 	while (index--) {
 		prev = i;
 		i = colors->next[i];
 	}
+	
 	colors->next[prev] = c;
 	colors->next[c] = colors->next[i];
 	colors->turn[c] = turn;
 	colors->next[i] = c; // Special
+	for (j = 0; j < COLOR_COUNT; ++j) {
+		if (colors->next[j] == i) {
+			colors->next[j] = c;
+		}
+	}
 	colors->turn[i] = 0;
+	if (i == colors->first) {
+		colors->first = c;
+	}
+	if (i == colors->last) {
+		colors->last = c;
+	}
 }
 
 bool color_exists(Colors *colors, short c)
