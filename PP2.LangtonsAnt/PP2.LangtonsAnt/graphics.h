@@ -152,6 +152,7 @@ void draw_bitmap(WINDOW *w, Vector2i top_left,
 				 bool overwrite);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i needle);
 int sgn(int x);
 
 /* grid_window.c */
@@ -181,6 +182,7 @@ void menu_mouse_command();
 /* dialog.c */
 void open_dialog(Vector2i pos, int color_index);
 void close_dialog(void);
+void draw_dialog(void);
 Vector2i get_dialog_tile_pos(int index);
 Vector2i get_dialog_button_pos(int button);
 void dialog_mouse_command(MEVENT event);

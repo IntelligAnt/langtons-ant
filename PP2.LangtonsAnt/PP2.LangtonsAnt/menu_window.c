@@ -288,4 +288,8 @@ void draw_menu(void)
 	draw_steps();
 
 	wnoutrefresh(menuw);
+
+	if (dialogw) {
+		draw_dialog();
+	}
 }

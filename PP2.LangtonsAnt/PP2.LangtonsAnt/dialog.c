@@ -22,11 +22,9 @@ static void draw_tiles(Vector2i top_left)
 			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
 			wattrset(dialogw, GET_PAIR_FOR(i));
 			draw_box(dialogw, inner, DIALOG_TILE_SIZE - 2);
-			wrefresh(dialogw);
 		} else {
 			wattrset(dialogw, GET_PAIR_FOR(i));
 			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
-			wrefresh(dialogw);
 		}
 		if (outer.x + DIALOG_TILE_SIZE + 1 >= DIALOG_WINDOW_WIDTH) {
 			outer.y += DIALOG_TILE_SIZE, outer.x = top_left.x;
@@ -53,21 +51,15 @@ static void draw_buttons(Vector2i top_left)
 void open_dialog(Vector2i pos, int color_index)
 {
 	cidx = color_index;
+
 	if (pos.x + DIALOG_WINDOW_WIDTH >= MENU_WINDOW_WIDTH) {
 		pos.x += DIALOG_WINDOW_WIDTH - MENU_WINDOW_WIDTH - 2;
 	}
 	dialog_pos = rel2abs(pos, menu_pos);
 
 	dialogw = newwin(DIALOG_WINDOW_HEIGHT, DIALOG_WINDOW_WIDTH, dialog_pos.y, dialog_pos.x);
-	wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
-	draw_rect(dialogw, (Vector2i) { 0, 0 }, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT);
 	keypad(dialogw, TRUE);
 	nodelay(dialogw, TRUE);
-
-	draw_tiles((Vector2i) { 1, 1 });
-	draw_buttons((Vector2i) { 2+DIALOG_ROWS*DIALOG_TILE_SIZE, 1 });
-
-	wrefresh(dialogw);
 }
 
 void close_dialog(void)
@@ -76,6 +68,17 @@ void close_dialog(void)
 	dialogw = NULL;
 	picked_color = -1;
 	picked_turn = 0;
+}
+
+void draw_dialog(void)
+{
+	wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
+	draw_rect(dialogw, (Vector2i) { 0, 0 }, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT);
+
+	draw_tiles((Vector2i) { 1, 1 });
+	draw_buttons((Vector2i) { 2+DIALOG_ROWS*DIALOG_TILE_SIZE, 1 });
+
+	wnoutrefresh(dialogw);
 }
 
 Vector2i get_dialog_tile_pos(int index)

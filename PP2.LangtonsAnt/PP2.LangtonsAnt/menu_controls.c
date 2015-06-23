@@ -42,22 +42,20 @@ void isz_button_clicked(int i)
 	}
 }
 
-static bool is_tile_clicked(Vector2i pos, Vector2i click)
-{
-	return (click.y >= pos.y && click.y < pos.y+MENU_TILE_SIZE
-		 && click.x >= pos.x && click.x < pos.x+MENU_TILE_SIZE);
-}
-
 void menu_mouse_command(void)
 {
 	MEVENT event;
-	Vector2i pos;
+	Vector2i pos, tile;
 	int dy, dx, i;
 
 	nc_getmouse(&event);
 	if (event.bstate & BUTTON1_CLICKED) {
 		pos = abs2rel((Vector2i) { event.y, event.x }, menu_pos);
+
 		if (dialogw) {
+			if (area_contains(dialog_pos, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT, pos)) {
+				dialog_mouse_command(event);
+			}
 			close_dialog();
 		}
 
@@ -77,7 +75,9 @@ void menu_mouse_command(void)
 
 		/* Color tiles clicked */
 		for (i = 0; i < MENU_TILE_COUNT; ++i) {
-			if (is_tile_clicked(get_menu_tile_pos(i), pos)) {
+			tile = get_menu_tile_pos(i);
+			if (i <= stgs.colors->n &&
+				area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
 				open_dialog(pos, i);
 				break;
 			}
