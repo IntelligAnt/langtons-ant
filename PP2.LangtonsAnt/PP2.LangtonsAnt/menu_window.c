@@ -5,8 +5,8 @@
 WINDOW *menuw;
 Settings stgs = { .init_size = 4 };
 const Vector2i menu_pos = { 0, MENU_WINDOW_HEIGHT };
-const Vector2i menu_isz_u_pos = { MENU_LOGO_WIDTH,   MENU_WINDOW_WIDTH-7 };
-const Vector2i menu_isz_d_pos = { MENU_LOGO_WIDTH+3, MENU_WINDOW_WIDTH-7 };
+const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-7 };
+const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
 
 const char *isz_msg    = "INITIAL SIZE:";
 const char *steps_msg  = "STEPS:";
@@ -14,12 +14,12 @@ const char *tiles_msg  = "RULES:";
 const char *size_msg   = "GRID SIZE:";
 const char *sparse_msg = "SPARSE MATRIX";
 
-const Vector2i isz_pos        = { MENU_LOGO_WIDTH+3,     MENU_WINDOW_WIDTH-5 };
-const Vector2i isz_msg_pos    = { MENU_LOGO_WIDTH+3,     MENU_WINDOW_WIDTH-21 };
+const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+3,    MENU_WINDOW_WIDTH-5 };
+const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT+3,    MENU_WINDOW_WIDTH-21 };
 const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  MENU_WINDOW_WIDTH-5 };
 const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
-const Vector2i tiles_pos      = { MENU_LOGO_WIDTH+5,     MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
-const Vector2i tiles_msg_pos  = { MENU_LOGO_WIDTH,       2 };
+const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+5,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
+const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
 const Vector2i sparse_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
 const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
