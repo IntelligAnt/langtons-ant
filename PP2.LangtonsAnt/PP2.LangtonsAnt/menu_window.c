@@ -8,7 +8,7 @@ const Vector2i menu_origin = { 0, GRID_WINDOW_SIZE };
 
 const Vector2i steps_origin = { GRID_WINDOW_SIZE-8, MENU_WINDOW_SIZE-1 };
 const Vector2i steps_msg_origin = { GRID_WINDOW_SIZE-4, 2 };
-const Vector2i tiles_origin = { 20, 2*MENU_TILE_HSEP+MENU_TILE_SIZE+1 };
+const Vector2i tiles_origin = { 20, 2*MENU_TILE_HSEP+MENU_TILE_SIZE };
 
 //unsigned char logo_bitmap[] = {
 //	0xE0, 0x00, 0x04, 0x00, 0x10, 0x40, 0x00, 0x04, 0x00,
@@ -107,6 +107,7 @@ static void draw_color_tile(Vector2i top_left, short c)
 	chtype pair;
 	bool is_def = c == stgs.colors->def;
 	int y = top_left.y, x = top_left.x, s = MENU_TILE_SIZE;
+	short fg;
 
 	/* Draw tile */
 	wattrset(menuw, pair = get_pair_for(c));
@@ -114,6 +115,17 @@ static void draw_color_tile(Vector2i top_left, short c)
 		wattron(menuw, A_REVERSE);
 	}
 	draw_box(menuw, top_left, s);
+
+	/* Draw direction arrow*/
+	if (!is_def) {
+		fg = AVAILABLE_FG_COLOR(get_color_for(bg_pair), c, COLOR_GRAY);
+		if (fg == c) {
+			wattron(menuw, A_REVERSE);
+		} else {
+			wattrset(menuw, get_pair_for(fg));
+		}
+		mvwaddch(menuw, y+s/2, x+s/2, (stgs.colors->turn[c] == TURN_LEFT) ? '<' : '>');
+	}
 
 	/* Draw frame */
 	wattrset(menuw, is_def ? pair : fg_pair);
@@ -168,7 +180,7 @@ static void draw_steps(void)
 	if (stgs.steps == 10000000) {
 		top_left.x -= 33;
 		draw_bitmap(menuw, top_left, inf_bitmap, 32, 5);
-		goto exit;
+		return;
 	} else if (stgs.steps > 10000000) {
 		return;
 	}
@@ -180,16 +192,13 @@ static void draw_steps(void)
 		digit = *p - '0';
 		draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5);
 	}
-
-exit:
-	wrefresh(menuw);
 }
 
 void draw_menu(void)
 {
 	size_t h = MENU_WINDOW_SIZE, v = GRID_WINDOW_SIZE;
 
-	wattrset(menuw, get_pair_for(MENU_BORDER_COLOR));
+	wattrset(menuw, get_pair_for(stgs.is_sparse ? MENU_BORDER_COLOR_S : MENU_BORDER_COLOR));
 	mvwhline(menuw, 0, 0, ACS_BLOCK, h);
 	mvwvline(menuw, 0, 0, ACS_BLOCK, v);
 	mvwhline(menuw, v-1, 0, ACS_BLOCK, h);
@@ -201,6 +210,7 @@ void draw_menu(void)
 	//draw_bitmap(menuw, (Vector2i) { 1, 1 }, logo_bitmap, 40, 9);
 
 	draw_color_list();
+	draw_steps();
 
 	wrefresh(menuw);
 }

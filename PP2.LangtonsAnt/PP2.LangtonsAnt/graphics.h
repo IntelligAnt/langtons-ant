@@ -57,7 +57,7 @@
 #define COLOR_EMPTY -1
 #endif
 
-#define AVAILABLE_FG_COLOR(def, c) (((def) != (c)) ? (c) : COLOR_SILVER)
+#define AVAILABLE_FG_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
 
 /*** Grid window attributes and types ***/
 
@@ -88,6 +88,7 @@ typedef struct scroll_info {
 
 #define MENU_WINDOW_SIZE    42
 #define MENU_BORDER_COLOR   COLOR_BLUE
+#define MENU_BORDER_COLOR_S COLOR_MAROON
 #define MENU_TILE_SIZE      7
 #define MENU_TILE_HSEP      4
 #define MENU_TILE_VSEP      2
@@ -100,6 +101,7 @@ typedef struct scroll_info {
 typedef struct settings {
 	Colors *colors;
 	size_t steps;
+	bool is_sparse;
 } Settings;
 
 /*** Globals ***/
