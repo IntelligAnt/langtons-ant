@@ -2,8 +2,10 @@
 
 int grid_key_command(Grid *grid, Ant *ant, int key)
 {
-	int mid = grid->size / 2;
-	Vector2i rel;
+	Vector2i center = { grid->size/2, grid->size/2 };
+	Vector2i pos = abs2rel(ant->pos, center);
+	Vector2i tl = abs2rel(grid->top_left, center), br = abs2rel(grid->bottom_right, center);
+	int o = GRID_VIEW_SIZE/2 - SCROLL_STEP/2;
 
 	switch (key) {
 		/* Arrow keys */
@@ -20,28 +22,53 @@ int grid_key_command(Grid *grid, Ant *ant, int key)
 		scroll_grid(grid, 0,  SCROLL_STEP);
 		break;
 
-		/* PgUp, PgDn, Home, End */
-	case KEY_PPAGE:
+		/* Numpad keys */
+	case '8':
 		scroll_grid(grid, -SCROLL_STEP_BIG, 0);
 		break;
-	case KEY_NPAGE:
+	case '2':
 		scroll_grid(grid,  SCROLL_STEP_BIG, 0);
 		break;
-	case KEY_HOME:
+	case '4':
 		scroll_grid(grid, 0, -SCROLL_STEP_BIG);
 		break;
-	case KEY_END:
+	case '6':
 		scroll_grid(grid, 0,  SCROLL_STEP_BIG);
+		break;
+	case '7':
+		scroll_grid(grid, -SCROLL_STEP_BIG, -SCROLL_STEP_BIG);
+		break;
+	case '9':
+		scroll_grid(grid, -SCROLL_STEP_BIG,  SCROLL_STEP_BIG);
+		break;
+	case '1':
+		scroll_grid(grid,  SCROLL_STEP_BIG, -SCROLL_STEP_BIG);
+		break;
+	case '3':
+		scroll_grid(grid,  SCROLL_STEP_BIG,  SCROLL_STEP_BIG);
+		break;
+
+		/* PgUp, PgDn, Home, End */
+	case KEY_PPAGE:
+		set_scroll(grid, tl.y+o, gridscrl.x);
+		break;
+	case KEY_NPAGE:
+		set_scroll(grid, br.y-o, gridscrl.x);
+		break;
+	case KEY_HOME:
+		set_scroll(grid, gridscrl.y, tl.x+o);
+		break;
+	case KEY_END:
+		set_scroll(grid, gridscrl.y, br.x-o);
 		break;
 
 		/* A - Move to ant */
 	case 'A': case 'a':
-		rel = abs2rel(ant->pos, (Vector2i) { mid, mid });
-		set_scroll(grid, rel.y, rel.x);
+		set_scroll(grid, pos.y, pos.x);
 		break;
 
 		/* S - Move to origin */
-	case 'S': case 's':
+	case 'S': case 's': case '5':
 		set_scroll(grid, 0, 0);
 		break;
 
