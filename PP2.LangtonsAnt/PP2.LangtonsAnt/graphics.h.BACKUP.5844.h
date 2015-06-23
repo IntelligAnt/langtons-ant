@@ -57,8 +57,6 @@
 #define COLOR_EMPTY -1
 #endif
 
-#define GET_PAIR_FOR(c)  (COLOR_PAIR(c+1))
-#define GET_COLOR_FOR(p) (PAIR_NUMBER(p)-1)
 #define AVAILABLE_FG_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
 
 /*** Grid window attributes and types ***/
@@ -70,7 +68,7 @@
 #define LINE_WIDTH_MEDIUM   1
 #define LINE_WIDTH_LARGE    0
 #define SLIDER_MIN_SIZE     1
-#define SCROLL_STEP         (GRID_WINDOW_SIZE / 4)
+#define SCROLL_STEP         10
 #define SCROLL_STEP_BIG     GRID_VIEW_SIZE
 
 #define CELL_SIZE(gs, lw)      ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
@@ -80,36 +78,34 @@
 #define ORIGIN_COORD(gs, vs, sc)     max((gs)/2-(vs)/2+(sc), 0)
 #define ORIGIN_POS(gs, vs, scy, scx) (Vector2i) { ORIGIN_COORD(gs, vs, scy), ORIGIN_COORD(gs, vs, scx) }
 
+#define AVAILABLE_FG_COLOR(def, c) (((def) != (c)) ? (c) : COLOR_SILVER)
+
 typedef struct scroll_info {
 	bool enabled;
 	int y, x, hcenter, vcenter;
 	double scale;
 } ScrollInfo;
 
-/*** Menu window attributes and types ***/
+/*** Menu window attributes ***/
 
-#define MENU_WINDOW_WIDTH   42
-#define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
-#define MENU_LOGO_HEIGHT    15
+#define MENU_WINDOW_SIZE    42
+#define MENU_LOGO_SIZE      15
 #define MENU_BORDER_COLOR   COLOR_BLUE
 #define MENU_BORDER_COLOR_S COLOR_MAROON
-
 #define MENU_TILE_SIZE      7
 #define MENU_TILE_HSEP      3
 #define MENU_TILE_VSEP      2
 #define MENU_TILE_COLUMNS   2
 #define MENU_TILES_PER_COL  7
 #define MENU_TILE_COUNT     (MENU_TILE_COLUMNS * MENU_TILES_PER_COL)
-#define MENU_TILES_WIDTH    (MENU_TILE_COLUMNS*MENU_TILE_SIZE + (MENU_TILE_COLUMNS-1)*MENU_TILE_HSEP)
-#define MENU_TILES_HEIGHT   (MENU_TILES_PER_COL*MENU_TILE_SIZE + (MENU_TILES_PER_COL+1)*MENU_TILE_VSEP+2)
-
-#define MENU_COMMANDS_POS   87
-#define MENU_BUTTON_WIDTH   11
-#define MENU_BUTTON_HEIGHT  7
-#define MENU_PLAY_COLOR     COLOR_GREEN
-#define MENU_PAUSE_COLOR    COLOR_YELLOW
 
 #define KEY_ESC 0x1B
+
+/*** Dialog window attributes ***/
+
+#define DIALOG_TILE_SIZE 3
+#define DIALOG_WINDOW_HEIGHT (3*DIALOG_TILE_SIZE + 4)
+#define DIALOG_WINDOW_WIDTH  (5*DIALOG_TILE_SIZE + 2)
 
 typedef struct settings {
 	Colors *colors;
@@ -117,44 +113,35 @@ typedef struct settings {
 	bool is_sparse;
 } Settings;
 
-/*** Dialog window attributes ***/
-
-#define DIALOG_TILE_SIZE     3
-#define DIALOG_BUTTON_WIDTH  7
-#define DIALOG_BUTTON_HEIGHT 3
-#define DIALOG_BUTTON_COLOR  COLOR_YELLOW
-#define DIALOG_ROWS          3
-#define DIALOG_COLS          5
-#define DIALOG_WINDOW_WIDTH  (DIALOG_COLS*DIALOG_TILE_SIZE + 2)
-#define DIALOG_WINDOW_HEIGHT (DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT + 3)
-
-#define CIDX_NEWCOLOR -1
-#define CIDX_DEFAULT  -2
-
 /*** Globals ***/
 
 extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
 extern Settings stgs;
+<<<<<<< HEAD
+extern const Vector2i grid_origin, menu_origin;
+extern Vector2i dialog_origin;
+||||||| merged common ancestors
+extern const Vector2i grid_origin, menu_origin;
+=======
 extern const Vector2i grid_pos, menu_pos;
-extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
-extern const Vector2i menu_play_pos, menu_pause_pos;
+>>>>>>> origin/master
 
 /* graphics.c */
 
 void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
+chtype get_pair_for(short color);
+short get_color_for(chtype pair);
 void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,
-				 const unsigned char *bitmap, size_t width, size_t height,
-				 bool overwrite);
+				 const unsigned char *bitmap, size_t width, size_t height);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i needle);
 int sgn(int x);
 
 /* grid_window.c */
@@ -176,17 +163,5 @@ void init_menu_window(void);
 void end_menu_window(void);
 void draw_menu(void);
 Vector2i get_menu_tile_pos(int index);
-
-/* menu_controls.c */
-int menu_key_command(int key);
-void menu_mouse_command();
-
-/* dialog.c */
-void open_dialog(Vector2i pos, int color_index);
-void close_dialog(void);
-void draw_dialog(void);
-Vector2i get_dialog_tile_pos(int index);
-Vector2i get_dialog_button_pos(int index);
-void dialog_mouse_command(MEVENT event);
 
 #endif

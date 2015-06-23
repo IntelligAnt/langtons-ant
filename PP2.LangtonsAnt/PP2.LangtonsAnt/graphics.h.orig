@@ -70,7 +70,7 @@
 #define LINE_WIDTH_MEDIUM   1
 #define LINE_WIDTH_LARGE    0
 #define SLIDER_MIN_SIZE     1
-#define SCROLL_STEP         (GRID_WINDOW_SIZE / 4)
+#define SCROLL_STEP         10
 #define SCROLL_STEP_BIG     GRID_VIEW_SIZE
 
 #define CELL_SIZE(gs, lw)      ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
@@ -100,8 +100,6 @@ typedef struct scroll_info {
 #define MENU_TILE_COLUMNS   2
 #define MENU_TILES_PER_COL  7
 #define MENU_TILE_COUNT     (MENU_TILE_COLUMNS * MENU_TILES_PER_COL)
-#define MENU_TILES_WIDTH    (MENU_TILE_COLUMNS*MENU_TILE_SIZE + (MENU_TILE_COLUMNS-1)*MENU_TILE_HSEP)
-#define MENU_TILES_HEIGHT   (MENU_TILES_PER_COL*MENU_TILE_SIZE + (MENU_TILES_PER_COL+1)*MENU_TILE_VSEP+2)
 
 #define MENU_COMMANDS_POS   87
 #define MENU_BUTTON_WIDTH   11
@@ -186,7 +184,15 @@ void open_dialog(Vector2i pos, int color_index);
 void close_dialog(void);
 void draw_dialog(void);
 Vector2i get_dialog_tile_pos(int index);
+<<<<<<< HEAD
+Vector2i get_dialog_button_pos(int button);
+void dialog_mouse_command(MEVENT event);
+||||||| merged common ancestors
+Vector2i get_dialog_button_pos(int index);
+void dialog_mouse_command(int key);
+=======
 Vector2i get_dialog_button_pos(int index);
 void dialog_mouse_command(MEVENT event);
+>>>>>>> origin/master
 
 #endif

@@ -40,8 +40,21 @@ Grid *grid_new(size_t size, Colors *colors)
 	return grid;
 }
 
-static void grid_tmp_delete(Grid *grid)
+static void grid_delete_tmp(Grid *grid)
 {
+<<<<<<< HEAD
+	int i;
+	if (grid->tmp){
+		for (i = 0; i < grid->tmp_size; i++) {
+			if (grid->tmp[i]){
+				free(grid->tmp[i]);
+			}
+		}
+		free(grid->tmp);
+	}
+||||||| merged common ancestors
+	free(grid->tmp);
+=======
 	int i;
 	if (grid->tmp) {
 		for (i = 0; i < grid->tmp_size; i++) {
@@ -51,13 +64,14 @@ static void grid_tmp_delete(Grid *grid)
 		}
 		free(grid->tmp);
 	}
+>>>>>>> origin/master
 	grid->tmp_size = 0;
 }
 
 static void grid_delete_n(Grid *grid)
 {
 	int i;
-	grid_tmp_delete(grid);
+	grid_delete_tmp(grid);
 	for (i = 0; i < grid->size; ++i) {
 		if (grid->c[i]){
 			free(grid->c[i]);
@@ -109,7 +123,7 @@ static bool is_in_old_matrix_row(int y, size_t old_size)
 {
 	return y >= old_size && y < 2 * old_size;
 }
-static void grid_tmp_new(Grid *grid)
+static void grid_new_tmp(Grid *grid)
 {
 	int size = grid->size*GRID_MUL;
 	grid->tmp = malloc(size * sizeof(unsigned char*));
@@ -126,7 +140,7 @@ void grid_silent_expand(Grid *grid)
 		return;
 	}
 	if (!grid->tmp) {
-		grid_tmp_new(grid);
+		grid_new_tmp(grid);
 		if (silent_error) {
 			return;
 		}
@@ -146,7 +160,7 @@ static void grid_fill_tmp(Grid *grid)
 	int size = grid->size * GRID_MUL;
 
 	if (!grid->tmp) {
-		grid_tmp_new(grid);
+		grid_new_tmp(grid);
 		if (silent_error){
 			alloc_error = 1;
 			return;
@@ -248,7 +262,7 @@ void grid_make_sparse(Grid *grid)
 	Cell **cur;
 	unsigned char c;
 
-	grid_tmp_delete(grid);
+	grid_delete_tmp(grid);
 
 	grid->csr = calloc(size, sizeof(Cell*));
 	if (!grid->csr) {

@@ -83,14 +83,19 @@
     <ClInclude Include="include\curses.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="logic.h" />
+    <ClInclude Include="simulation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dialog.c" />
     <ClCompile Include="grid_controls.c" />
+    <ClCompile Include="menu_controls.c" />
+    <ClCompile Include="menu_window.c" />
     <ClCompile Include="rules_io.c" />
     <ClCompile Include="graphics.c" />
     <ClCompile Include="grid.c" />
     <ClCompile Include="grid_window.c" />
     <ClCompile Include="logic.c" />
+    <ClCompile Include="simulation.c" />
     <ClCompile Include="TestGraphics.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,14 +3,27 @@
 
 #include <stddef.h>
 
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <assert.h>
 #else
-#define assert(e) (e)
+#define assert(e) 1
 #endif
 
 #define COLOR_COUNT 16
+#define COLOR_EMPTY -1
+#define TURN_LEFT -1
+#define TURN_RIGHT 1
+
+#define COLOR_NEXT(cs, c) (cs)->next[c]
+#define COLOR_TURN(cs, c) (cs)->turn[c]
+
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef TRUE
+#define TRUE 1
+#endif
 
 typedef unsigned char bool;
 
@@ -31,14 +44,13 @@ typedef struct colors {
 	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def;
 } Colors;
 
-#define COLOR_NEXT(cs, c) (cs)->next[c]
-#define COLOR_TURN(cs, c) (cs)->turn[c]
-
 /*** Grid attributes and types ***/
 
 #define GRID_MUL                3
 #define GRID_SIZE_THRESHOLD     19682 // 3^9 - 1
 #define GRID_USAGE_THRESHOLD    0.5
+#define GRID_MAX_INIT_SIZE      6
+#define GRID_MIN_INIT_SIZE      2
 #define GRID_MAX_SILENT_EXPAND  (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
 
 #define GRID_SIZE_SMALL(g)      (g)->init_size // 2, 3, 4, 5, 6
@@ -79,6 +91,7 @@ void add_color(Colors *colors, short c, short turn);
 void remove_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
 bool color_exists(Colors *colors, short c);
+bool is_color_special(Colors *colors, short c);
 bool has_enough_colors(Colors *colors);
 
 void delete_all(Grid *grid, Ant *ant, Colors *colors);
@@ -93,5 +106,11 @@ void grid_make_sparse(Grid *grid);
 bool is_grid_sparse(Grid *grid);
 void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
+
+/* simulation.c */
+
+void run_simulation(Ant *ant, Grid *grid, Colors *colors);
+void stop_simulation(void);
+bool is_running(void);
 
 #endif
