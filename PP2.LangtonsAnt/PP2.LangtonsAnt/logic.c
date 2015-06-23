@@ -204,6 +204,17 @@ void set_color(Colors *colors, short index, short c, short turn)
 	}
 }
 
+void set_turn(Colors *colors, short index, short turn)
+{
+	short i = colors->first;
+	assert(index >= 0 && index < colors->n);
+	while (index--) {
+		i = colors->next[i];
+	}
+
+	colors->turn[i] = turn;
+}
+
 bool color_exists(Colors *colors, short c)
 {
 	return colors->turn[c] != 0;
