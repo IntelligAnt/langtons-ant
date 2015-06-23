@@ -106,8 +106,8 @@ static void borderless(Grid *grid)
 	int cs = CELL_SIZE(vgs, 0);
 	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, 0, cs));
 	Vector2i pos, yx, origin = { 0, 0 };
-	short sb_fg_color = (grid->def_color == COLOR_WHITE) ? COLOR_SILVER : COLOR_WHITE;
-	short sb_bg_color = (grid->def_color == COLOR_GRAY)  ? COLOR_SILVER : COLOR_GRAY;
+	short sb_fg_color = AVAILABLE_FG_COLOR(grid->def_color, COLOR_WHITE);
+	short sb_bg_color = AVAILABLE_FG_COLOR(grid->def_color, COLOR_GRAY);
 
 	/* Draw background edge buffer zone */
 	wattrset(gridw, get_pair_for(grid->def_color));

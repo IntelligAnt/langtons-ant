@@ -21,7 +21,8 @@ int main(void)
 	Ant *ant = ant_new(grid, UP);
 	int i = 1;
 	short c, turn;
-	//grid_make_sparse(grid);
+
+	//add_color(colors, COLOR_WHITE, 1);
 
 	while (i) {
 		printf("1. Nova boja.\n2. Izbrisi boju.\n0 za crtanje\n");

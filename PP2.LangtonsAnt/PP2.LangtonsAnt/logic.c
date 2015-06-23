@@ -115,7 +115,7 @@ Colors *colors_new(short def)
 		colors->turn[i] = 0;
 	}
 	colors->n = 0;
-	colors->first = colors->last = -1;
+	colors->first = colors->last = COLOR_EMPTY;
 	colors->def = def;
 	return colors;
 }
@@ -127,15 +127,16 @@ void colors_delete(Colors *colors)
 
 void add_color(Colors *colors, short c, short turn)
 {
-	if (c < 0 || c >= COLOR_COUNT) {
+	if (c < 0 || c >= COLOR_COUNT || c == colors->def) {
 		return;
 	}
-	if (colors->first == -1) {
+	if (colors->first == COLOR_EMPTY) {
+		assert(colors->last == COLOR_EMPTY);
 		colors->first = c;
-	} else {
-		colors->next[colors->last] = c;
-		colors->next[c] = colors->first;
+		colors->last = c;
 	}
+	colors->next[colors->last] = c;
+	colors->next[c] = colors->first;
 	colors->last = c;
 	colors->turn[c] = turn;
 	++colors->n;
@@ -144,11 +145,12 @@ void add_color(Colors *colors, short c, short turn)
 void remove_color(Colors *colors, short c)
 {
 	short i;
-	assert(c != colors->def);
-	--colors->n;
+	if (c < 0 || c >= COLOR_COUNT || c == colors->def) {
+		return;
+	}
 	colors->turn[c] = 0;
 	if (colors->n == 0) {
-		colors->first = colors->last = -1;
+		colors->first = colors->last = COLOR_EMPTY;
 	} else if (colors->first == c) {
 		colors->first = colors->next[colors->last] = colors->next[c];
 	} else {
@@ -159,6 +161,7 @@ void remove_color(Colors *colors, short c)
 		}
 	}
 	colors->next[c] = colors->def;
+	--colors->n;
 }
 
 void set_color(Colors *colors, short index, short c, short turn)

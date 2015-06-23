@@ -53,6 +53,11 @@
 #ifndef COLOR_COUNT
 #define COLOR_COUNT 16
 #endif
+#ifndef COLOR_EMPTY
+#define COLOR_EMPTY -1
+#endif
+
+#define AVAILABLE_FG_COLOR(def, c) (((def) != (c)) ? (c) : COLOR_SILVER)
 
 /*** Grid window attributes and types ***/
 

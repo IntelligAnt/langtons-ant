@@ -46,6 +46,9 @@ void init_def_pairs(short fg_color, short bg_color)
 chtype get_pair_for(short color)
 {
 	short pair = color+1, i = 0, fg, bg;
+	if (color < 0 || color >= COLOR_COUNT) {
+		return COLOR_EMPTY;
+	}
 	pair_content(pair, &fg, &bg);
 	if (fg != color) {
 		do {
