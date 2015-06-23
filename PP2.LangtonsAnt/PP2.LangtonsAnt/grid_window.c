@@ -4,10 +4,11 @@
 
 WINDOW *gridw;
 ScrollInfo gridscrl;
+const Vector2i grid_origin = { 0, 0 };
 
 void init_grid_window(void)
 {
-	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, 0, 0);
+	gridw = newwin(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE, grid_origin.y, grid_origin.x);
 	keypad(gridw, TRUE);
 	nodelay(gridw, TRUE);
 }

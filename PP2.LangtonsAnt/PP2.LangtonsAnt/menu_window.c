@@ -4,6 +4,7 @@
 
 WINDOW *menuw;
 Settings stgs;
+const Vector2i menu_origin = { 0, GRID_WINDOW_SIZE };
 
 //unsigned char logo_bitmap[] = {
 //	0xE0, 0x00, 0x04, 0x00, 0x10, 0x40, 0x00, 0x04, 0x00,
@@ -29,7 +30,7 @@ const Vector2i tiles_origin = { 20, 20 };
 
 void init_menu_window(void)
 {
-	menuw = newwin(GRID_WINDOW_SIZE, MENU_WINDOW_SIZE, 0, GRID_WINDOW_SIZE);
+	menuw = newwin(GRID_WINDOW_SIZE, MENU_WINDOW_SIZE, menu_origin.y, menu_origin.x);
 	wbkgd(menuw, bg_pair);
 	keypad(gridw, TRUE);
 	nodelay(gridw, TRUE);

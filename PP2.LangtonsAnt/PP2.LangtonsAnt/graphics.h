@@ -103,6 +103,7 @@ extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
 extern Settings stgs;
+extern const Vector2i grid_origin, menu_origin;
 
 /* graphics.c */
 

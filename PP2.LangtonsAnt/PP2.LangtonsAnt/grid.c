@@ -27,7 +27,15 @@ Grid *grid_new(size_t size, Colors *colors)
 
 static void grid_delete_tmp(Grid *grid)
 {
-	free(grid->tmp);
+	int i;
+	if (grid->tmp) {
+		for (i = 0; i < grid->tmp_size; i++) {
+			if (grid->tmp[i]) {
+				free(grid->tmp[i]);
+			}
+		}
+		free(grid->tmp);
+	}
 	grid->tmp_size = 0;
 }
 

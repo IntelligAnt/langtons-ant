@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <vld.h>
+//#include <vld.h>
 #include "logic.h"
 #include "graphics.h"
 
