@@ -2,6 +2,7 @@
 #define __LOGIC_H__
 
 #include <stddef.h>
+#include <time.h>
 
 #define DEBUG 1
 #if DEBUG
