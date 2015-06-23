@@ -126,6 +126,9 @@ typedef struct settings {
 #define DIALOG_WINDOW_WIDTH  (DIALOG_COLS*DIALOG_TILE_SIZE + 2)
 #define DIALOG_WINDOW_HEIGHT (DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT + 3)
 
+#define CIDX_NEWCOLOR -1
+#define CIDX_DEFAULT  -2
+
 /*** Globals ***/
 
 extern chtype fg_pair, bg_pair;

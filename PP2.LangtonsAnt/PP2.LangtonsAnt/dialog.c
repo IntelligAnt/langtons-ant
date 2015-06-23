@@ -13,7 +13,7 @@ static void draw_tiles(Vector2i top_left)
 	Vector2i outer = top_left, inner;
 
 	for (i = 0; i < COLOR_COUNT; i++) {
-		if (i == fg || i == stgs.colors->def) {
+		if (cidx != CIDX_DEFAULT && (i == fg || i == stgs.colors->def)) {
 			continue;
 		}
 		if (color_exists(stgs.colors, i) || i == stgs.colors->def) {
