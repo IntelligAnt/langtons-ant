@@ -16,6 +16,7 @@ int main(void)
 	system("cls");
 
 	Colors *colors = colors_new(COLOR_SILVER);
+	stgs.colors = colors;
 	Grid *grid = grid_new(init_size, colors);
 	Ant *ant = ant_new(grid, UP);
 	int i = 1;

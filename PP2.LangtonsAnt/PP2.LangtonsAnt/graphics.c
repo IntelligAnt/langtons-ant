@@ -55,6 +55,11 @@ chtype get_pair_for(short color)
 	return COLOR_PAIR(pair);
 }
 
+short get_color_for(chtype pair)
+{
+	return PAIR_NUMBER(pair) - 1;
+}
+
 void draw_box(WINDOW *w, Vector2i top_left, int size)
 {
 	int i;

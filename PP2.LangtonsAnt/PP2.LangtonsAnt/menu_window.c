@@ -1,8 +1,9 @@
+#include <math.h>
 #include <string.h>
 #include "graphics.h"
 
 WINDOW *menuw;
-Settings settings;
+Settings stgs;
 
 unsigned char logo_bitmap[] = {
 	0xE0, 0x00, 0x04, 0x00, 0x10, 0x40, 0x00, 0x04, 0x00,
@@ -39,40 +40,142 @@ void end_menu_window(void)
 
 const Vector2i steps_origin = { GRID_WINDOW_SIZE-8, MENU_WINDOW_SIZE-1 };
 const Vector2i steps_msg_origin = { GRID_WINDOW_SIZE-4, 2 };
+const Vector2i tiles_origin = { 20, 20 };
 
-void draw_menu(void)
+Vector2i get_menu_tile_pos(int index)
 {
-	size_t h = MENU_WINDOW_SIZE, v = GRID_WINDOW_SIZE;
+	int index_y, index_x;
+	Vector2i pos;
 
-	wattrset(menuw, get_pair_for(MENU_BORDER_COLOR));
-	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
-	mvwvline(menuw, 0,   0,   ACS_BLOCK, v);
-	mvwhline(menuw, v-1, 0,   ACS_BLOCK, h);
-	mvwvline(menuw, 0,   h-1, ACS_BLOCK, v);
+	assert(index >= 0 && index < MENU_TILE_COUNT);
 
-	mvwaddstr(menuw, v-4, 2, "STEPS:");
+	index_y = index % MENU_TILES_PER_COL;
+	index_x = index / MENU_TILES_PER_COL;
+	if (index_x % 2) {
+		index_y = MENU_TILES_PER_COL - index_y - 1;
+	}
 
-	wattron(menuw, A_REVERSE);
-	draw_bitmap(menuw, (Vector2i) { 1, 1 }, logo_bitmap, 40, 9);
+	pos.y = tiles_origin.y + index_y*(MENU_TILE_SIZE+MENU_TILE_VSEP);
+	pos.x = tiles_origin.x - index_x*(MENU_TILE_SIZE+MENU_TILE_HSEP);
 
-	wrefresh(menuw);
+	return pos;
 }
 
-static void draw_menu_steps(void)
+//static void draw_color_arrows(Vector2i top_left, int list_size)
+//{
+//	int i, dy;
+//	Vector2i pos1, pos2 = top_left;
+//	wattrset(menuw, get_pair_for(stgs.colors->def));
+//	for (i = 1; i < list_size; ++i) {
+//		if (i != list_size-1) {
+//			pos1 = pos2;
+//			pos2 = get_menu_tile_pos(i);
+//		}
+//		dy = abs(pos2.y - pos1.x);
+//		if ((i / MENU_TILES_PER_COL) % 2) {
+//			mvwvline(menuw, pos2.y, pos2.x+MENU_TILE_SIZE/2, ACS_VLINE, dy);
+//		} else {
+//			mvwvline(menuw, pos1.y, pos1.x+MENU_TILE_SIZE/2, ACS_VLINE, dy);
+//		}
+//	}
+//}
+
+static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
+{
+	int dy, dx, o = MENU_TILE_SIZE/2;
+	
+	assert(pos1.y != pos2.y || pos1.x != pos2.x);
+	wattrset(menuw, fg_pair);
+	
+	if (pos1.x == pos2.x) {
+		dy = abs(pos1.y - pos2.y);
+		mvwvline(menuw, min(pos1.y, pos2.y), pos1.x+o, ACS_VLINE, dy);
+		if (pos1.y < pos2.y) {
+			mvwaddch(menuw, pos2.y-1, pos1.x+o, ACS_DARROW);
+		} else {
+			mvwaddch(menuw, pos2.y+MENU_TILE_SIZE, pos1.x+o, ACS_UARROW);
+		}
+	} else if (pos1.y == pos2.y) {
+		dx = abs(pos1.x - pos2.x);
+		if (pos1.x > pos2.x) {
+			dy = MENU_TILE_SIZE+MENU_TILE_VSEP;
+			mvwvline(menuw, pos1.y,    pos1.x+o, ACS_VLINE, dy);
+			mvwhline(menuw, pos1.y+dy, pos2.x+o, ACS_HLINE, dx);
+			mvwvline(menuw, pos1.y,    pos2.x+o, ACS_VLINE, dy);
+			mvwaddch(menuw, pos1.y+dy, pos1.x+o, ACS_LRCORNER);
+			mvwaddch(menuw, pos1.y+dy, pos2.x+o, ACS_LLCORNER);
+			mvwaddch(menuw, pos1.y+MENU_TILE_SIZE, pos2.x+o, ACS_UARROW);
+		} else {
+			dy = MENU_TILE_VSEP;
+			mvwvline(menuw, pos1.y-dy, pos1.x+o, ACS_VLINE, dy);
+			mvwhline(menuw, pos1.y-dy, pos1.x+o, ACS_HLINE, dx);
+			mvwvline(menuw, pos1.y-dy, pos2.x+o, ACS_VLINE, dy);
+			mvwaddch(menuw, pos1.y-dy, pos1.x+o, ACS_ULCORNER);
+			mvwaddch(menuw, pos1.y-dy, pos2.x+o, ACS_URCORNER);
+			mvwaddch(menuw, pos1.y-1, pos2.x+o, ACS_DARROW);
+		}
+	} else {
+		dy = pos1.y - pos2.y;
+		mvwvline(menuw, pos2.y, pos1.x+o, ACS_VLINE, dy);
+		pos1.y = pos2.y;
+		draw_color_arrow(pos1, pos2);
+	}
+}
+
+static void draw_color_tile(Vector2i top_left, short c)
+{
+	chtype pair;
+	bool is_def = c == stgs.colors->def;
+	int y = top_left.y, x = top_left.x, s = MENU_TILE_SIZE;
+
+	/* Draw tile */
+	wattrset(menuw, pair = get_pair_for(c));
+	if (is_def) {
+		wattron(menuw, A_REVERSE);
+	}
+	draw_box(menuw, top_left, s);
+
+	wattrset(menuw, is_def ? pair : fg_pair);
+	mvwhline(menuw, y, x, ACS_BLOCK, s);
+	mvwvline(menuw, y, x, ACS_BLOCK, s);
+	mvwhline(menuw, y+s-1, x, ACS_BLOCK, s);
+	mvwvline(menuw, y, x+s-1, ACS_BLOCK, s);
+}
+
+static void draw_color_list(void)
+{
+	short c, i = 0;
+	Vector2i pos1, pos2;
+	if (!stgs.colors) {
+		return;
+	}
+	for (c = stgs.colors->first; c != stgs.colors->last; c = stgs.colors->next[c]) {
+		pos1 = get_menu_tile_pos(i++);
+		pos2 = get_menu_tile_pos(i);
+		draw_color_arrow(pos1, pos2);
+		draw_color_tile(pos1, c);
+		if (c != stgs.colors->last) {
+			draw_color_tile(pos2, stgs.colors->def);
+		}
+	}
+	draw_color_arrow(pos2, get_menu_tile_pos(0));
+}
+
+static void draw_steps(void)
 {
 	char digits[9], *p;
 	size_t digit;
 	Vector2i top_left = steps_origin;
 
-	if (settings.steps == 10000000) {
+	if (stgs.steps == 10000000) {
 		top_left.x -= 33;
 		draw_bitmap(menuw, top_left, inf_bitmap, 32, 5);
 		goto exit;
-	} else if (settings.steps > 10000000) {
+	} else if (stgs.steps > 10000000) {
 		return;
 	}
 
-	sprintf(digits, "%8d", settings.steps);
+	sprintf(digits, "%8d", stgs.steps);
 	wattrset(menuw, fg_pair);
 	for (p = digits+7; p > 0 && *p != ' '; --p) {
 		top_left.x -= 4;
@@ -81,5 +184,25 @@ static void draw_menu_steps(void)
 	}
 
 exit:
+	wrefresh(menuw);
+}
+
+void draw_menu(void)
+{
+	size_t h = MENU_WINDOW_SIZE, v = GRID_WINDOW_SIZE;
+
+	wattrset(menuw, get_pair_for(MENU_BORDER_COLOR));
+	mvwhline(menuw, 0, 0, ACS_BLOCK, h);
+	mvwvline(menuw, 0, 0, ACS_BLOCK, v);
+	mvwhline(menuw, v-1, 0, ACS_BLOCK, h);
+	mvwvline(menuw, 0, h-1, ACS_BLOCK, v);
+
+	mvwaddstr(menuw, v-4, 2, "STEPS:");
+
+	wattron(menuw, A_REVERSE);
+	//draw_bitmap(menuw, (Vector2i) { 1, 1 }, logo_bitmap, 40, 9);
+
+	draw_color_list();
+
 	wrefresh(menuw);
 }

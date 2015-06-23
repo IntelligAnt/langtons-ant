@@ -81,8 +81,14 @@ typedef struct scroll_info {
 
 /*** Menu window attributes ***/
 
-#define MENU_WINDOW_SIZE  42
-#define MENU_BORDER_COLOR COLOR_BLUE
+#define MENU_WINDOW_SIZE    42
+#define MENU_BORDER_COLOR   COLOR_BLUE
+#define MENU_TILE_SIZE      6
+#define MENU_TILE_HSEP      4
+#define MENU_TILE_VSEP      2
+#define MENU_TILE_COLUMNS   2
+#define MENU_TILES_PER_COL  7
+#define MENU_TILE_COUNT     (MENU_TILE_COLUMNS * MENU_TILES_PER_COL)
 
 #define KEY_ESC 0x1B
 
@@ -96,7 +102,7 @@ typedef struct settings {
 extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw;
 extern ScrollInfo gridscrl;
-extern Settings settings;
+extern Settings stgs;
 
 /* graphics.c */
 
@@ -104,6 +110,7 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
 chtype get_pair_for(short color);
+short get_color_for(chtype pair);
 void draw_box(WINDOW *w, Vector2i top_left, int size);
 void draw_bitmap(WINDOW *w, Vector2i top_left,
 				 unsigned char *bitmap, size_t width, size_t height);
@@ -129,6 +136,5 @@ void grid_mouse_command(Grid *grid);
 void init_menu_window(void);
 void end_menu_window(void);
 void draw_menu(void);
-void draw_menu_steps(size_t steps);
 
 #endif

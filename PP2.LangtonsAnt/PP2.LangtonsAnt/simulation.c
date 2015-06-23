@@ -45,7 +45,7 @@ void run_simulation(Ant *ant, Grid *grid, Colors *colors)
 		}
 
 		handle_input(ant, grid);
-		++settings.steps;
+		++stgs.steps;
 	}
 }
 
