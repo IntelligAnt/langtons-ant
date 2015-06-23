@@ -13,10 +13,10 @@ static void draw_tiles(Vector2i top_left)
 	Vector2i outer = top_left, inner;
 
 	for (i = 0; i < COLOR_COUNT; i++) {
-		if (cidx != CIDX_DEFAULT && (i == fg || i == stgs.colors->def)) {
+		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
 			continue;
 		}
-		if (color_exists(stgs.colors, i) || i == stgs.colors->def) {
+		if (color_exists(stgs.colors, i)) {
 			inner.y = outer.y + 1, inner.x = outer.x + 1;
 			wattrset(dialogw, border_pair);
 			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
@@ -83,40 +83,40 @@ void draw_dialog(void)
 
 Vector2i get_dialog_tile_pos(int index)
 {
-	int i=0, fg = GET_COLOR_FOR(fg_pair);
-	Vector2i pos = dialog_pos;
-	++pos.y, ++pos.x;
+	int i, fg = GET_COLOR_FOR(fg_pair);
+	Vector2i pos = { 1, 1 };
 
 	if (index == fg) {
-		return (Vector2i){ -1, -1 };
+		return (Vector2i) { -1, -1 };
 	}
-	while (i < index) {
-		if (i != fg) {
-			if (pos.x + DIALOG_TILE_SIZE + 1 < dialog_pos.x + DIALOG_WINDOW_WIDTH) {
-				pos.x += DIALOG_TILE_SIZE;
-			}
-			else {
-				pos.x = dialog_pos.x + 1;
-				pos.y = dialog_pos.y + DIALOG_TILE_SIZE + 1;
-			}
+
+	for (i = 0; i < index; ++i) {
+		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
+			continue;
 		}
-		++i;
+		if (pos.x + DIALOG_TILE_SIZE + 1 < DIALOG_WINDOW_WIDTH) {
+			pos.x += DIALOG_TILE_SIZE;
+		} else {
+			pos.x = 1;
+			pos.y += DIALOG_TILE_SIZE;
+		}
 	}
+
 	return pos;
 }
 
-Vector2i get_dialog_button_pos(int button)
+Vector2i get_dialog_button_pos(int index)
 {
 	return (Vector2i) {
-		2 + DIALOG_ROWS*DIALOG_TILE_SIZE,
-			button == -1 ? 1 : DIALOG_BUTTON_WIDTH + 2
+		.y = 2 + DIALOG_ROWS*DIALOG_TILE_SIZE,
+		.x = (index == -1) ? 1 : DIALOG_BUTTON_WIDTH + 2
 	};
 }
 
 void dialog_mouse_command(MEVENT event)
 {
 	int i;
-	Vector2i top_left;
+	Vector2i pos = abs2rel((Vector2i) { event.y, event.x }, dialog_pos), top_left;
 
 	if (!(event.bstate & BUTTON1_CLICKED)) {
 		return;
@@ -124,39 +124,39 @@ void dialog_mouse_command(MEVENT event)
 
 	for (i = 0; i < COLOR_COUNT; i++) {
 		top_left = get_dialog_tile_pos(i);
-		if (event.y >= top_left.y && event.y < top_left.y + DIALOG_TILE_SIZE &&
-			event.x >= top_left.x && event.x < top_left.x + DIALOG_TILE_SIZE){
+		if (!color_exists(stgs.colors, i) &&
+				area_contains(top_left, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE, pos)) {
 			picked_color = i;
 			goto exit;
 		}
 	}
-	for (i = -1; i <= 1; i += 2){
+	for (i = -1; i <= 1; i += 2) {
 		top_left = get_dialog_button_pos(i);
-		if (event.y >= top_left.y && event.y < top_left.y + DIALOG_BUTTON_HEIGHT &&
-			event.x >= top_left.x && event.x < top_left.x + DIALOG_BUTTON_WIDTH){
+		if (area_contains(top_left, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT, pos)) {
 			picked_turn = i;
 			goto exit;
 		}
 	}
 	
-exit: switch (cidx){
-case CIDX_NEWCOLOR:
-	if (picked_color != -1 && picked_turn != 0) {
-		add_color(stgs.colors, picked_color, picked_turn);
-		close_dialog();
+exit:
+	switch (cidx) {
+	case CIDX_NEWCOLOR:
+		if (picked_color != -1 && picked_turn != 0) {
+			add_color(stgs.colors, picked_color, picked_turn);
+			close_dialog();
+		}
+		break;
+	case CIDX_DEFAULT:
+		if (picked_color != -1) {
+			colors_delete(stgs.colors);
+			stgs.colors = colors_new(picked_color);
+			close_dialog();
+		}
+		break;
+	default:
+		if (cidx >= 0 && cidx < COLOR_COUNT && picked_color != -1 && picked_turn != 0) {
+			set_color(stgs.colors, cidx, picked_color, picked_turn);
+			close_dialog();
+		}
 	}
-	break;
-case CIDX_DEFAULT:
-	if (picked_color != -1){
-		colors_delete(stgs.colors);
-		stgs.colors = colors_new(picked_color);
-		close_dialog();
-	}
-	break;
-default:
-	if (cidx >= 0 && cidx < COLOR_COUNT && picked_color != -1 && picked_turn != 0){
-		set_color(stgs.colors, cidx, picked_color, picked_turn);
-		close_dialog();
-	}
-}
 }

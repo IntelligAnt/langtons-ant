@@ -165,6 +165,11 @@ static void draw_color_list(void)
 		return;
 	}
 
+	pos1.y = tiles_pos.y - MENU_TILE_VSEP - 1;
+	pos1.x = tiles_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
+	wattrset(menuw, bg_pair);
+	draw_rect(menuw, pos1, MENU_TILES_WIDTH, MENU_TILES_HEIGHT);
+
 	/* Draw color tiles */
 	for (c = stgs.colors->first; do_for; c = stgs.colors->next[c]) {
 		pos1 = pos2 = get_menu_tile_pos(i++);

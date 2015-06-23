@@ -55,16 +55,24 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	bool is_def = grid->c[y][x] == colors->def;
+
 	if (is_def) {
 		grid->c[y][x] = (unsigned char)colors->first;
 		grid->used++;
 		update_bounding_box(ant->pos, &grid->top_left, &grid->bottom_right);
 	}
+
+	// In-place color changing
+	if (is_color_special(colors, grid->c[y][x])) {
+		grid->c[y][x] = colors->next[grid->c[y][x]];
+	}
+
 	turn = colors->turn[grid->c[y][x]];
 	assert(abs(turn) == 1);
 	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
-	ant_dir_turn(ant, turn); 
-	if (is_def && IS_GRID_LARGE(grid) && is_grid_usage_low(grid)){
+	ant_dir_turn(ant, turn);
+
+	if (is_def && IS_GRID_LARGE(grid) && is_grid_usage_low(grid)) {
 		grid_make_sparse(grid);
 	}
 }
@@ -79,6 +87,11 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	}
 	if (!*t || CELL_GET_COLUMN(*t) != x) {
 		new_cell(t, x, (unsigned char)colors->first);
+	}
+
+	// In-place color changing
+	if (is_color_special(colors, CELL_GET_COLOR(*t))) {
+		CELL_SET_COLOR(*t, colors->next[CELL_GET_COLOR(*t)]);
 	}
 
 	turn = colors->turn[CELL_GET_COLOR(*t)];
@@ -173,12 +186,20 @@ void set_color(Colors *colors, short index, short c, short turn)
 		i = colors->next[i];
 	}
 	colors->next[prev] = c;
-	colors->turn[i] = turn;
+	colors->next[c] = colors->next[i];
+	colors->turn[c] = turn;
+	colors->next[i] = c; // Special
+	colors->turn[i] = 0;
 }
 
 bool color_exists(Colors *colors, short c)
 {
-	return c == colors->def || colors->turn[c];
+	return colors->turn[c] != 0;
+}
+
+bool is_color_special(Colors *colors, short c)
+{
+	return colors->next[c] != colors->def && colors->turn[c] == 0;
 }
 
 bool has_enough_colors(Colors *colors)

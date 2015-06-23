@@ -19,28 +19,28 @@ Colors* load_rules(char *name)
     w = 1;
     short r = 0;
     short k = 0;
-    while(( n != 0 ) || ( w == 1 )){
-        if ((n == 0) && (t == 2)){
+    while((n != 0) || (w == 1)) {
+        if ((n == 0) && (t == 2)) {
             w = 0;
         }
         fscanf(in, "%s", buff);
-        if ( t == 1 ){
+        if (t == 1) {
             s = atoi(buff);
             r = s;
             t = t + 1;
         }
         else
-            if ( t == 2){
+            if (t == 2) {
             int y = atoi(buff);
             k = y;
-            if ( r == 0){
+            if (r == 0) {
                 r = -1;
             }
             add_color(rule_set, k, r);
             t = 0;
         }
         else
-            if ( t == 0){
+            if (t == 0) {
             n = atoi(buff);
             t = t + 1;
         }
@@ -60,7 +60,7 @@ void save_rule(Colors *rule_set)
     p = rule_set->turn[rule_set->first];
     w = 1;
     int i;
-    while ((q != rule_set->next[rule_set->last]) || (w == 1)){
+    while ((q != rule_set->next[rule_set->last]) || (w == 1)) {
             w = 0;
             q = rule_set->next[q];
             p = rule_set->turn[q];
@@ -70,7 +70,7 @@ void save_rule(Colors *rule_set)
     p = rule_set->turn[rule_set->first];
     w = 1;
     fprintf(out, "%d\n", rule_set->def);
-    while ((q != rule_set->next[rule_set->last]) || (w == 1)){
+    while ((q != rule_set->next[rule_set->last]) || (w == 1)) {
             w = 0;
             if (p == -1)
                 p = 0;

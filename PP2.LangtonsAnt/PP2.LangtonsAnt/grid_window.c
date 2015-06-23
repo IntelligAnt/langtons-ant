@@ -139,9 +139,9 @@ void draw_grid_full(Grid *grid)
 	int i;
 
 	if (grid) {
-		if (grid->size == GRID_SIZE_SMALL(grid)){
+		if (grid->size == GRID_SIZE_SMALL(grid)) {
 			bordered(grid, LINE_WIDTH_SMALL);
-		} else if (grid->size == GRID_SIZE_MEDIUM(grid)){
+		} else if (grid->size == GRID_SIZE_MEDIUM(grid)) {
 			bordered(grid, LINE_WIDTH_MEDIUM);
 		} else {
 			assert(IS_GRID_LARGE(grid));
