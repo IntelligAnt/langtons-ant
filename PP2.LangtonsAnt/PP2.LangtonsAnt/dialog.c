@@ -86,7 +86,7 @@ Vector2i get_dialog_tile_pos(int index)
 	int i, fg = GET_COLOR_FOR(fg_pair);
 	Vector2i pos = { 1, 1 };
 
-	if (index == fg) {
+	if (index == fg || cidx != CIDX_DEFAULT && index == stgs.colors->def) {
 		return (Vector2i) { -1, -1 };
 	}
 
@@ -154,8 +154,12 @@ exit:
 		}
 		break;
 	default:
-		if (cidx >= 0 && cidx < COLOR_COUNT && picked_color != -1 && picked_turn != 0) {
-			set_color(stgs.colors, cidx, picked_color, picked_turn);
+		if (cidx >= 0 && cidx < COLOR_COUNT && picked_turn != 0) {
+			if (picked_color != -1) {
+				set_color(stgs.colors, cidx, picked_color, picked_turn);
+			} else {
+				set_turn(stgs.colors, cidx, picked_turn);
+			}
 			close_dialog();
 		}
 	}

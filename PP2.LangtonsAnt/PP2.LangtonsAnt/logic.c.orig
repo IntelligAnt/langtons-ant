@@ -98,11 +98,16 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	}
 	if (!*t || CELL_GET_COLUMN(*t) != x) {
 		new_cell(t, x, (unsigned char)colors->first);
+<<<<<<< HEAD
 		if (alloc_error){
 			return;
 		}
+||||||| merged common ancestors
+=======
 		grid->colored++;
 		update_bounding_box(ant->pos, &grid->top_left, &grid->bottom_right);
+
+>>>>>>> origin/master
 	}
 
 	// In-place color changing

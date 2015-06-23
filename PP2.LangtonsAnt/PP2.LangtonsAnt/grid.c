@@ -36,7 +36,7 @@ Grid *grid_new(size_t size, Colors *colors)
 	grid->def_color = (unsigned char)colors->def;
 	grid->top_left.y = grid->top_left.x = grid->size / 2;
 	grid->bottom_right = grid->top_left;
-	grid->used = 0;
+	grid->colored = 0;
 	return grid;
 }
 

@@ -57,7 +57,7 @@ typedef struct colors {
 #define GRID_SIZE_MEDIUM(g)     (GRID_SIZE_SMALL(g) * GRID_MUL)
 #define GRID_SIZE_LARGE(g)      (GRID_SIZE_MEDIUM(g) * GRID_MUL)
 #define IS_GRID_LARGE(g)        ((g)->size >= GRID_SIZE_LARGE(g))
-#define GRID_EFFICIENCY(g)      ((g)->size*(g)->size / ((double)sizeof(Cell)*(g)->used))
+#define GRID_EFFICIENCY(g)      ((g)->size*(g)->size / ((double)sizeof(Cell)*(g)->colored))
 #define GRID_COLOR_AT(g, p)     (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
 
 #define CELL_COLOR_MASK         (0xF << 28)
@@ -74,7 +74,7 @@ typedef struct cell {
 typedef struct grid {
 	unsigned char **c, **tmp, def_color;
 	Cell **csr;
-	size_t size, init_size, tmp_size, used;
+	size_t size, init_size, tmp_size, colored;
 	Vector2i top_left, bottom_right;
 } Grid;
 
@@ -90,6 +90,7 @@ void colors_delete(Colors *colors);
 void add_color(Colors *colors, short c, short turn);
 void remove_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
+void set_turn(Colors *colors, short index, short turn);
 bool color_exists(Colors *colors, short c);
 bool is_color_special(Colors *colors, short c);
 bool has_enough_colors(Colors *colors);
