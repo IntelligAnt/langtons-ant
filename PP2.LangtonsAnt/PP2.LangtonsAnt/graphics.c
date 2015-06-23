@@ -22,6 +22,9 @@ void init_graphics(short fg_color, short bg_color)
 
 	init_menu_window();
 	draw_menu();
+
+	open_dialog((Vector2i) { 15, 2 });
+	wrefresh(dialogw);
 }
 
 void end_graphics(void)

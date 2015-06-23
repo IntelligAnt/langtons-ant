@@ -78,15 +78,13 @@
 #define ORIGIN_COORD(gs, vs, sc)     max((gs)/2-(vs)/2+(sc), 0)
 #define ORIGIN_POS(gs, vs, scy, scx) (Vector2i) { ORIGIN_COORD(gs, vs, scy), ORIGIN_COORD(gs, vs, scx) }
 
-#define AVAILABLE_FG_COLOR(def, c) (((def) != (c)) ? (c) : COLOR_SILVER)
-
 typedef struct scroll_info {
 	bool enabled;
 	int y, x, hcenter, vcenter;
 	double scale;
 } ScrollInfo;
 
-/*** Menu window attributes ***/
+/*** Menu window attributes and types ***/
 
 #define MENU_WINDOW_WIDTH   42
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
@@ -102,17 +100,22 @@ typedef struct scroll_info {
 
 #define KEY_ESC 0x1B
 
-/*** Dialog window attributes ***/
-
-#define DIALOG_TILE_SIZE 3
-#define DIALOG_WINDOW_HEIGHT (3*DIALOG_TILE_SIZE + 4)
-#define DIALOG_WINDOW_WIDTH  (5*DIALOG_TILE_SIZE + 2)
-
 typedef struct settings {
 	Colors *colors;
 	size_t init_size, size, steps;
 	bool is_sparse;
 } Settings;
+
+/*** Dialog window attributes ***/
+
+#define DIALOG_TILE_SIZE     3
+#define DIALOG_BUTTON_WIDTH  7
+#define DIALOG_BUTTON_HEIGHT 3
+#define DIALOG_BUTTON_COLOR  COLOR_YELLOW
+#define DIALOG_ROWS          3
+#define DIALOG_COLS          5
+#define DIALOG_WINDOW_WIDTH  (DIALOG_COLS*DIALOG_TILE_SIZE + 2)
+#define DIALOG_WINDOW_HEIGHT (DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT + 3)
 
 /*** Globals ***/
 
@@ -121,7 +124,7 @@ extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
 extern Settings stgs;
 extern const Vector2i grid_pos, menu_pos;
-extern Vector2i dialog_origin;
+extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 
 /* graphics.c */
@@ -158,5 +161,8 @@ void init_menu_window(void);
 void end_menu_window(void);
 void draw_menu(void);
 Vector2i get_menu_tile_pos(int index);
+
+/* dialog_window.c */
+void open_dialog(Vector2i pos);
 
 #endif

@@ -4,7 +4,7 @@
 
 WINDOW *menuw;
 Settings stgs = { .init_size = 4 };
-const Vector2i menu_pos = { 0, MENU_WINDOW_HEIGHT };
+const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
 const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
 
