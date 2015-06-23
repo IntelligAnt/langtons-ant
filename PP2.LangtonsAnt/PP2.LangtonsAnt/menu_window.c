@@ -161,10 +161,6 @@ static void draw_color_list(void)
 	bool do_for = TRUE;
 	Vector2i pos1, pos2;
 
-	if (!stgs.colors) {
-		return;
-	}
-
 	pos1.y = tiles_pos.y - MENU_TILE_VSEP - 1;
 	pos1.x = tiles_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
 	wattrset(menuw, bg_pair);
@@ -176,14 +172,18 @@ static void draw_color_list(void)
 		if (c == COLOR_EMPTY) {
 			break;
 		}
-		pos2 = get_menu_tile_pos(i);
-		draw_color_arrow(pos1, pos2);
+		if (i < MENU_TILE_COUNT) {
+			pos2 = get_menu_tile_pos(i);
+			draw_color_arrow(pos1, pos2);
+		}
 		draw_color_tile(pos1, c);
 		do_for = c != stgs.colors->last;
 	}
-
-	/* Draw placeholder tile */
-	draw_color_tile(pos2, stgs.colors->def);
+	
+	/* Draw placeholder title */
+	if (i < MENU_TILE_COUNT) {
+		draw_color_tile(pos2, stgs.colors->def);
+	}
 
 	/* Draw arrow back to first tile */
 	if (i >= MENU_TILES_PER_COL) {
