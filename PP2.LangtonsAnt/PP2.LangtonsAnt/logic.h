@@ -96,10 +96,4 @@ bool is_grid_sparse(Grid *grid);
 void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
 
-/* simulation.c */
-
-void run_simulation(Ant *ant, Grid *grid, Colors *colors);
-void stop_simulation(void);
-bool is_running(void);
-
 #endif

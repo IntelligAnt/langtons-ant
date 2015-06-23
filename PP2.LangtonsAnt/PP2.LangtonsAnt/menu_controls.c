@@ -25,16 +25,16 @@ int menu_key_command(int key)
 
 void isz_button_clicked(int i)
 {
-	if (!is_running()) {
+	if (!sim.is_running) {
 		switch (i) {
 		case 1:
-			if (stgs.init_size < GRID_MAX_INIT_SIZE) {
-				++stgs.init_size;
+			if (sim.grid->init_size < GRID_MAX_INIT_SIZE) {
+				++sim.grid->init_size;
 			}
 			break;
 		case -1:
-			if (stgs.init_size > GRID_MIN_INIT_SIZE) {
-				--stgs.init_size;
+			if (sim.grid->init_size > GRID_MIN_INIT_SIZE) {
+				--sim.grid->init_size;
 			}
 			break;
 		}
@@ -79,9 +79,9 @@ void menu_mouse_command(void)
 		/* Color tiles clicked */
 		for (i = 0; i < MENU_TILE_COUNT; ++i) {
 			tile = get_menu_tile_pos(i);
-			if (i <= stgs.colors->n &&
+			if (i <= sim.colors->n &&
 				area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
-				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : i);
+				open_dialog(pos, (i == sim.colors->n) ? CIDX_NEWCOLOR : i);
 				break;
 			}
 		}

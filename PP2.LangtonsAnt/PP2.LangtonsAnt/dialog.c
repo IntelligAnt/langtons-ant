@@ -9,14 +9,14 @@ static short picked_color = -1, picked_turn = 0;
 static void draw_tiles(Vector2i top_left)
 {
 	short i, fg = GET_COLOR_FOR(fg_pair);
-	chtype border_pair = GET_PAIR_FOR(stgs.colors->def);
+	chtype border_pair = GET_PAIR_FOR(sim.colors->def);
 	Vector2i outer = top_left, inner;
 
 	for (i = 0; i < COLOR_COUNT; i++) {
-		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
+		if (i == fg || cidx != CIDX_DEFAULT && i == sim.colors->def) {
 			continue;
 		}
-		if (color_exists(stgs.colors, i)) {
+		if (color_exists(sim.colors, i)) {
 			inner.y = outer.y + 1, inner.x = outer.x + 1;
 			wattrset(dialogw, border_pair);
 			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
@@ -72,7 +72,7 @@ void close_dialog(void)
 
 void draw_dialog(void)
 {
-	wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
+	wattrset(dialogw, GET_PAIR_FOR(sim.colors->def));
 	draw_rect(dialogw, (Vector2i) { 0, 0 }, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT);
 
 	draw_tiles((Vector2i) { 1, 1 });
@@ -91,7 +91,7 @@ Vector2i get_dialog_tile_pos(int index)
 	}
 
 	for (i = 0; i < index; ++i) {
-		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
+		if (i == fg || cidx != CIDX_DEFAULT && i == sim.colors->def) {
 			continue;
 		}
 		if (pos.x + DIALOG_TILE_SIZE + 1 < DIALOG_WINDOW_WIDTH) {
@@ -124,7 +124,7 @@ void dialog_mouse_command(MEVENT event)
 
 	for (i = 0; i < COLOR_COUNT; i++) {
 		top_left = get_dialog_tile_pos(i);
-		if (!color_exists(stgs.colors, i) &&
+		if (!color_exists(sim.colors, i) &&
 				area_contains(top_left, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE, pos)) {
 			picked_color = i;
 			goto exit;
@@ -142,20 +142,20 @@ exit:
 	switch (cidx) {
 	case CIDX_NEWCOLOR:
 		if (picked_color != -1 && picked_turn != 0) {
-			add_color(stgs.colors, picked_color, picked_turn);
+			add_color(sim.colors, picked_color, picked_turn);
 			close_dialog();
 		}
 		break;
 	case CIDX_DEFAULT:
 		if (picked_color != -1) {
-			colors_delete(stgs.colors);
-			stgs.colors = colors_new(picked_color);
+			colors_delete(sim.colors);
+			sim.colors = colors_new(picked_color);
 			close_dialog();
 		}
 		break;
 	default:
 		if (cidx >= 0 && cidx < COLOR_COUNT && picked_color != -1 && picked_turn != 0) {
-			set_color(stgs.colors, cidx, picked_color, picked_turn);
+			set_color(sim.colors, cidx, picked_color, picked_turn);
 			close_dialog();
 		}
 	}

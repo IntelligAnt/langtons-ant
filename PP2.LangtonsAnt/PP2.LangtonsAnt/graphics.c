@@ -22,6 +22,8 @@ void init_graphics(short fg_color, short bg_color)
 
 	init_menu_window();
 	draw_menu();
+
+	refresh();
 }
 
 void end_graphics(void)

@@ -2,6 +2,7 @@
 #define __GRAPHICS_H__
 
 #include "logic.h"
+#include "simulation.h"
 #include "include/curses.h"
 
 #define max(a, b) (((a) > (b)) ? (a) : (b))
@@ -111,12 +112,6 @@ typedef struct scroll_info {
 
 #define KEY_ESC 0x1B
 
-typedef struct settings {
-	Colors *colors;
-	size_t init_size, size, steps;
-	bool is_sparse;
-} Settings;
-
 /*** Dialog window attributes ***/
 
 #define DIALOG_TILE_SIZE     3
@@ -136,7 +131,6 @@ typedef struct settings {
 extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
-extern Settings stgs;
 extern const Vector2i grid_pos, menu_pos;
 extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;

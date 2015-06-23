@@ -3,7 +3,6 @@
 #include "graphics.h"
 
 WINDOW *menuw;
-Settings stgs = { .init_size = 4 };
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
 const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
@@ -125,7 +124,7 @@ static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 static void draw_color_tile(Vector2i top_left, short c)
 {
 	chtype pair;
-	bool is_def = c == stgs.colors->def;
+	bool is_def = c == sim.colors->def;
 	int y = top_left.y, x = top_left.x, s = MENU_TILE_SIZE;
 	short fg;
 
@@ -144,7 +143,7 @@ static void draw_color_tile(Vector2i top_left, short c)
 		} else {
 			wattrset(menuw, GET_PAIR_FOR(fg));
 		}
-		mvwaddch(menuw, y+s/2, x+s/2, (stgs.colors->turn[c] == TURN_LEFT) ? '<' : '>');
+		mvwaddch(menuw, y+s/2, x+s/2, (sim.colors->turn[c] == TURN_LEFT) ? '<' : '>');
 	}
 
 	/* Draw frame */
@@ -167,7 +166,7 @@ static void draw_color_list(void)
 	draw_rect(menuw, pos1, MENU_TILES_WIDTH, MENU_TILES_HEIGHT);
 
 	/* Draw color tiles */
-	for (c = stgs.colors->first; do_for; c = stgs.colors->next[c]) {
+	for (c = sim.colors->first; do_for; c = sim.colors->next[c]) {
 		pos1 = pos2 = get_menu_tile_pos(i++);
 		if (c == COLOR_EMPTY) {
 			break;
@@ -177,12 +176,12 @@ static void draw_color_list(void)
 			draw_color_arrow(pos1, pos2);
 		}
 		draw_color_tile(pos1, c);
-		do_for = c != stgs.colors->last;
+		do_for = c != sim.colors->last;
 	}
 	
 	/* Draw placeholder title */
 	if (i < MENU_TILE_COUNT) {
-		draw_color_tile(pos2, stgs.colors->def);
+		draw_color_tile(pos2, sim.colors->def);
 	}
 
 	/* Draw arrow back to first tile */
@@ -217,29 +216,29 @@ static void draw_control_buttons(void)
 static void draw_size(void)
 {
 	char size_str[29];
-	int len = (int)log10(stgs.size)+1;
+	int len = (int)log10(sim.grid->size)+1;
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
-	sprintf(size_str, "%28d", stgs.size);
+	sprintf(size_str, "%28d", sim.grid->size);
 	mvwaddstr(menuw, size_pos.y, size_pos.x-28, size_str);
 }
 
 static void draw_init_size(void)
 {
-	assert(stgs.init_size >= 2 && stgs.init_size <= 6);
+	assert(sim.grid->init_size >= 2 && sim.grid->init_size <= 6);
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 	mvwaddch(menuw, menu_isz_u_pos.y,   menu_isz_u_pos.x, ACS_UARROW);
 	mvwaddch(menuw, menu_isz_u_pos.y+1, menu_isz_u_pos.x, ACS_VLINE);
 	mvwaddch(menuw, menu_isz_d_pos.y,   menu_isz_d_pos.x, ACS_VLINE);
 	mvwaddch(menuw, menu_isz_d_pos.y+1, menu_isz_d_pos.x, ACS_DARROW);
 	wattrset(menuw, fg_pair);
-	draw_bitmap(menuw, isz_pos, digit_bitmaps[stgs.init_size], 3, 5, TRUE);
+	draw_bitmap(menuw, isz_pos, digit_bitmaps[sim.grid->init_size], 3, 5, TRUE);
 }
 
 static void draw_steps(void)
 {
 	static bool do_draw = TRUE;
 	char digits_str[9], *p;
-	int digit, len = (int)log10(stgs.steps)+1;
+	int digit, len = (int)log10(sim.steps)+1;
 	Vector2i top_left = steps_pos;
 
 	if (!do_draw) {
@@ -254,7 +253,7 @@ static void draw_steps(void)
 		return;
 	}
 
-	sprintf(digits_str, "%8d", stgs.steps);
+	sprintf(digits_str, "%8d", sim.steps);
 	for (p = digits_str+7; p >= digits_str && *p != ' '; --p) {
 		digit = *p - '0';
 		draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5, TRUE);
@@ -266,7 +265,7 @@ void draw_menu(void)
 {
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
 
-	if (stgs.is_sparse) {
+	if (is_grid_sparse(sim.grid)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
 		mvwaddstr(menuw, sparse_msg_pos.y, sparse_msg_pos.x, sparse_msg);
 	} else {

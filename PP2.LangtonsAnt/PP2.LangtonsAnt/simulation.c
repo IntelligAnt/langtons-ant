@@ -4,7 +4,7 @@
 #define DRAW_EVERY 100
 #define INPUT_DELAY 100
 
-static bool running;
+Simulation sim;
 
 static void handle_input(Ant *ant, Grid *grid)
 {
@@ -22,30 +22,28 @@ static void handle_input(Ant *ant, Grid *grid)
 	}
 }
 
-void run_simulation(Ant *ant, Grid *grid, Colors *colors)
+void run_simulation()
 {
-	static size_t steps = 0, cnt = DRAW_EVERY-1;
+	static cnt = DRAW_EVERY-1;
 	Vector2i oldp;
 
-	assert(ant && grid && colors);
+	assert(sim.ant && sim.grid && sim.colors);
 
-	draw_grid_full(grid);
+	draw_grid_full(sim.grid);
 
-	running = TRUE;
-	while (running) {
-		oldp = ant->pos;
-		ant_move(ant, grid, colors);
-		grid_silent_expand(grid);
+	sim.is_running = TRUE;
+	while (sim.is_running) {
+		oldp = sim.ant->pos;
+		ant_move(sim.ant, sim.grid, sim.colors);
+		grid_silent_expand(sim.grid);
 
-		if (is_ant_out_of_bounds(ant, grid)) {
-			grid_expand(grid, ant);
-			stgs.is_sparse = is_grid_sparse(grid);
-			stgs.size = grid->size;
+		if (is_ant_out_of_bounds(sim.ant, sim.grid)) {
+			grid_expand(sim.grid, sim.ant);
 			draw_menu();
-			draw_grid_full(grid);
+			draw_grid_full(sim.grid);
 			doupdate();
 		} else {
-			draw_grid_iter(grid, oldp);
+			draw_grid_iter(sim.grid, oldp);
 			if (++cnt == DRAW_EVERY) {
 				draw_menu();
 				cnt = 0;
@@ -53,17 +51,12 @@ void run_simulation(Ant *ant, Grid *grid, Colors *colors)
 			doupdate();
 		}
 
-		handle_input(ant, grid);
-		++stgs.steps;
+		handle_input(sim.ant, sim.grid);
+		++sim.steps;
 	}
 }
 
-void stop_simulation(void)
+void stop_simulation()
 {
-	running = FALSE;
-}
-
-bool is_running(void)
-{
-	return running;
+	sim.is_running = FALSE;
 }
