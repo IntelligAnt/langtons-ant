@@ -16,7 +16,7 @@ void init_graphics(short fg_color, short bg_color)
 
 	start_color();
 	init_def_pairs(fg_color, bg_color);
-
+	
 	init_grid_window();
 	draw_grid_full(NULL);
 
@@ -88,7 +88,6 @@ void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 	}
 }
 
-
 void draw_bitmap(WINDOW *w, Vector2i top_left,
 				 const unsigned char *bitmap, size_t width, size_t height,
 				 bool overwrite)
@@ -120,6 +119,12 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin)
 		.y = abs.y - origin.y,
 		.x = abs.x - origin.x
 	};
+}
+
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i needle)
+{
+	return (needle.y >= top_left.y && needle.y < top_left.y+height
+		 && needle.x >= top_left.x && needle.x < top_left.x+width);
 }
 
 int sgn(int x)
