@@ -90,14 +90,19 @@ void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 
 
 void draw_bitmap(WINDOW *w, Vector2i top_left,
-				 const unsigned char *bitmap, size_t width, size_t height)
+				 const unsigned char *bitmap, size_t width, size_t height,
+				 bool overwrite)
 {
 	size_t read, y, x;
 	unsigned char bit;
 	for (read = 0; read < width*height; ++read) {
 		bit = bitmap[read/8] >> (7-read%8) & 0x1;
 		y = read/width, x = read%width;
-		mvwaddch(w, top_left.y+y, top_left.x+x, bit ? ACS_BLOCK : ' ');
+		if (overwrite) {
+			mvwaddch(w, top_left.y+y, top_left.x+x, bit ? ACS_BLOCK : ' ');
+		} else if (bit) {
+			mvwaddch(w, top_left.y+y, top_left.x+x, ACS_BLOCK);
+		}
 	}
 }
 

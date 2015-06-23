@@ -7,7 +7,8 @@ Settings stgs = { .init_size = 4 };
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
 const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
-const Vector2i menu_play_pos  = { 0, 2 };
+const Vector2i menu_play_pos  = { MENU_COMMANDS_POS,  2 };
+const Vector2i menu_pause_pos = { MENU_COMMANDS_POS,  MENU_BUTTON_WIDTH+4 };
 
 const char *isz_msg    = "INITIAL SIZE:";
 const char *steps_msg  = "STEPS:";
@@ -32,15 +33,19 @@ const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
 //	0x73, 0x32, 0x46, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00,
 //	0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 //};
-
 const unsigned char digit_bitmaps[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
 };
-
 const unsigned char inf_bitmap[] = {
 	0x00, 0x00, 0x03, 0x8e, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00,
 	0x04, 0x21, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00, 0x03, 0x8e
+};
+const unsigned char play_bitmap[] = {
+	0x9B, 0xE8
+};
+const unsigned char pause_bitmap[] = {
+	0xB6, 0xDA
 };
 
 void init_menu_window(void)
@@ -131,7 +136,7 @@ static void draw_color_tile(Vector2i top_left, short c)
 	}
 	draw_box(menuw, top_left, s);
 
-	/* Draw direction arrow*/
+	/* Draw direction arrow */
 	if (!is_def) {
 		fg = AVAILABLE_FG_COLOR(GET_COLOR_FOR(bg_pair), c, COLOR_GRAY);
 		if (fg == c) {
@@ -188,8 +193,20 @@ static void draw_color_list(void)
 
 static void draw_control_buttons(void)
 {
-	short fg = AVAILABLE_FG_COLOR(stgs.colors->def, COLOR_SILVER, COLOR_WHITE);
+	short fg = AVAILABLE_FG_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
+	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-3)/2 };
+	Vector2i pos1 = { menu_play_pos.y + o.y,  menu_play_pos.x + o.x };
+	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
+
 	wattrset(menuw, GET_PAIR_FOR(fg));
+	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_PLAY_COLOR));
+	draw_bitmap(menuw, pos1, play_bitmap,  3, 5, FALSE);
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_PAUSE_COLOR));
+	draw_bitmap(menuw, pos2, pause_bitmap, 3, 5, FALSE);
 }
 
 static void draw_size(void)
@@ -210,7 +227,7 @@ static void draw_init_size(void)
 	mvwaddch(menuw, menu_isz_d_pos.y,   menu_isz_d_pos.x, ACS_VLINE);
 	mvwaddch(menuw, menu_isz_d_pos.y+1, menu_isz_d_pos.x, ACS_DARROW);
 	wattrset(menuw, fg_pair);
-	draw_bitmap(menuw, isz_pos, digit_bitmaps[stgs.init_size], 3, 5);
+	draw_bitmap(menuw, isz_pos, digit_bitmaps[stgs.init_size], 3, 5, TRUE);
 }
 
 static void draw_steps(void)
@@ -227,7 +244,7 @@ static void draw_steps(void)
 	wattrset(menuw, fg_pair);
 	if (len >= 9) {
 		top_left.x -= 29;
-		draw_bitmap(menuw, top_left, inf_bitmap, 32, 5);
+		draw_bitmap(menuw, top_left, inf_bitmap, 32, 5, TRUE);
 		do_draw = FALSE;
 		return;
 	}
@@ -235,7 +252,7 @@ static void draw_steps(void)
 	sprintf(digits_str, "%8d", stgs.steps);
 	for (p = digits_str+7; p >= digits_str && *p != ' '; --p) {
 		digit = *p - '0';
-		draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5);
+		draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5, TRUE);
 		top_left.x -= 4;
 	}
 }
@@ -266,6 +283,7 @@ void draw_menu(void)
 
 	draw_init_size();
 	draw_color_list();
+	draw_control_buttons();
 	draw_size();
 	draw_steps();
 

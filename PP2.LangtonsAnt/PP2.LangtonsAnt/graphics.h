@@ -93,13 +93,19 @@ typedef struct scroll_info {
 #define MENU_LOGO_HEIGHT    15
 #define MENU_BORDER_COLOR   COLOR_BLUE
 #define MENU_BORDER_COLOR_S COLOR_MAROON
+
 #define MENU_TILE_SIZE      7
 #define MENU_TILE_HSEP      3
 #define MENU_TILE_VSEP      2
 #define MENU_TILE_COLUMNS   2
 #define MENU_TILES_PER_COL  7
 #define MENU_TILE_COUNT     (MENU_TILE_COLUMNS * MENU_TILES_PER_COL)
-#define MENU_BUTTON_SIZE    7
+
+#define MENU_COMMANDS_POS   87
+#define MENU_BUTTON_WIDTH   11
+#define MENU_BUTTON_HEIGHT  7
+#define MENU_PLAY_COLOR     COLOR_GREEN
+#define MENU_PAUSE_COLOR    COLOR_YELLOW
 
 #define KEY_ESC 0x1B
 
@@ -129,6 +135,7 @@ extern Settings stgs;
 extern const Vector2i grid_pos, menu_pos;
 extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
+extern const Vector2i menu_play_pos, menu_pause_pos;
 
 /* graphics.c */
 
@@ -138,7 +145,8 @@ void init_def_pairs(short fg_color, short bg_color);
 void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,
-                 const unsigned char *bitmap, size_t width, size_t height);
+				 const unsigned char *bitmap, size_t width, size_t height,
+				 bool overwrite);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
 int sgn(int x);
