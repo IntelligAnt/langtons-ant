@@ -5,7 +5,7 @@ chtype fg_pair, bg_pair;
 void init_graphics(short fg_color, short bg_color)
 {
 	initscr();
-	resize_term(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE + MENU_WINDOW_SIZE);
+	resize_term(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH);
 	curs_set(0);
 	
 	cbreak();

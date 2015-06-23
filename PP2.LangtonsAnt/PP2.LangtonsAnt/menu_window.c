@@ -14,8 +14,8 @@ const char *tiles_msg  = "RULES:";
 const char *size_msg   = "GRID SIZE:";
 const char *sparse_msg = "SPARSE MATRIX";
 
-const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+3,    MENU_WINDOW_WIDTH-5 };
-const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT+3,    MENU_WINDOW_WIDTH-21 };
+const Vector2i isz_pos        = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-5 };
+const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-21 };
 const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  MENU_WINDOW_WIDTH-5 };
 const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
 const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+5,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };

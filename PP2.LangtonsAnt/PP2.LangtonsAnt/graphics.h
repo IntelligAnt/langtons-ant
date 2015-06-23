@@ -86,8 +86,9 @@ typedef struct scroll_info {
 
 /*** Menu window attributes ***/
 
-#define MENU_WINDOW_SIZE    42
-#define MENU_LOGO_SIZE      15
+#define MENU_WINDOW_WIDTH   42
+#define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
+#define MENU_LOGO_HEIGHT    15
 #define MENU_BORDER_COLOR   COLOR_BLUE
 #define MENU_BORDER_COLOR_S COLOR_MAROON
 #define MENU_TILE_SIZE      7
