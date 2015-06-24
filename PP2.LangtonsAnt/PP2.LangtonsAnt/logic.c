@@ -180,6 +180,17 @@ void remove_color(Colors *colors, short c)
 	--colors->n;
 }
 
+void remove_all_colors(Colors *colors)
+{
+	short i;
+	for (i = 0; i < COLOR_COUNT; ++i) {
+		colors->next[i] = colors->def;
+		colors->turn[i] = 0;
+	}
+	colors->first = colors->last = COLOR_EMPTY;
+	colors->n = 0;
+}
+
 void set_color(Colors *colors, short index, short c, short turn)
 {
 	short prev = colors->last, i = colors->first, j;

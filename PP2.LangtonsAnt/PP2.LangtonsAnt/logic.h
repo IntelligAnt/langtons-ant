@@ -97,6 +97,7 @@ Colors *colors_new(short def);
 void colors_delete(Colors *colors);
 void add_color(Colors *colors, short c, short turn);
 void remove_color(Colors *colors, short c);
+void remove_all_colors(Colors *colors);
 void set_color(Colors *colors, short index, short c, short turn);
 void set_turn(Colors *colors, short index, short turn);
 bool color_exists(Colors *colors, short c);

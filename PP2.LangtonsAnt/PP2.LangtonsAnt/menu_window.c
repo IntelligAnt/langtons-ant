@@ -10,6 +10,7 @@ const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_play_pos  = { MENU_COMMANDS_POS,  2 };
 const Vector2i menu_pause_pos = { MENU_COMMANDS_POS,  MENU_BUTTON_WIDTH+4 };
+const Vector2i menu_clear_pos = { MENU_COMMANDS_POS,  2*MENU_BUTTON_WIDTH+6 };
 
 const char *isz_msg    = "INITIAL SIZE:";
 const char *steps_msg  = "STEPS:";
@@ -42,11 +43,8 @@ const unsigned char inf_bitmap[] = {
 	0x00, 0x00, 0x03, 0x8e, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00,
 	0x04, 0x21, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00, 0x03, 0x8e
 };
-const unsigned char play_bitmap[] = {
-	0x9B, 0xE8
-};
-const unsigned char pause_bitmap[] = {
-	0xB6, 0xDA
+const unsigned char button_bitmaps[][4] = {
+	{ 0x43, 0x1C, 0xC4 }, { 0x52, 0x94, 0xA5 }, { 0x47, 0x92, 0x17 }
 };
 
 void init_menu_window(void)
@@ -204,19 +202,24 @@ static void draw_color_list(void)
 static void draw_control_buttons(void)
 {
 	short fg = AVAILABLE_FG_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
-	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-3)/2 };
-	Vector2i pos1 = { menu_play_pos.y + o.y,  menu_play_pos.x + o.x };
+	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
+	Vector2i pos1 = { menu_play_pos.y + o.y, menu_play_pos.x + o.x };
 	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
+	Vector2i pos3 = { menu_clear_pos.y + o.y, menu_clear_pos.x + o.x };
 
 	wattrset(menuw, GET_PAIR_FOR(fg));
 	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	draw_rect(menuw, menu_clear_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
 	wattrset(menuw, GET_PAIR_FOR(MENU_PLAY_COLOR));
-	draw_bitmap(menuw, pos1, play_bitmap,  3, 5, FALSE);
+	draw_bitmap(menuw, pos1, button_bitmaps[0], 5, 5, FALSE);
 
 	wattrset(menuw, GET_PAIR_FOR(MENU_PAUSE_COLOR));
-	draw_bitmap(menuw, pos2, pause_bitmap, 3, 5, FALSE);
+	draw_bitmap(menuw, pos2, button_bitmaps[1], 5, 5, FALSE);
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_CLEAR_COLOR));
+	draw_bitmap(menuw, pos3, button_bitmaps[2], 5, 5, FALSE);
 }
 
 static void draw_size(void)
@@ -280,6 +283,7 @@ void draw_menu(void)
 		mvwaddstr(menuw, sparse_msg_pos.y, sparse_msg_pos.x, sparse_msg);
 	} else {
 		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+		mvwhline(menuw, sparse_msg_pos.y, sparse_msg_pos.x, ' ', MENU_WINDOW_WIDTH-2);
 	}
 	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
 	mvwvline(menuw, 0,   0,   ACS_BLOCK, v);

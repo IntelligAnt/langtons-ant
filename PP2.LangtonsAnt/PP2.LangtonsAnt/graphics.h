@@ -108,6 +108,7 @@ typedef struct scroll_info {
 #define MENU_BUTTON_HEIGHT  7
 #define MENU_PLAY_COLOR     COLOR_GREEN
 #define MENU_PAUSE_COLOR    COLOR_YELLOW
+#define MENU_CLEAR_COLOR    COLOR_TEAL
 
 #define KEY_ESC 0x1B
 
@@ -140,7 +141,7 @@ extern Settings stgs;
 extern const Vector2i grid_pos, menu_pos;
 extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
-extern const Vector2i menu_play_pos, menu_pause_pos;
+extern const Vector2i menu_play_pos, menu_pause_pos, menu_clear_pos;
 
 /* graphics.c */
 

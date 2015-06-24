@@ -1,7 +1,7 @@
 #include "graphics.h"
 
 #define DRAW_EVERY 100
-#define INPUT_DELAY 100
+#define INPUT_DELAY 10
 
 chtype fg_pair, bg_pair;
 
