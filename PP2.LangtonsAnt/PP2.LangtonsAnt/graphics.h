@@ -113,8 +113,8 @@ typedef struct scroll_info {
 
 typedef struct settings {
 	Colors *colors;
-	size_t init_size, size, steps;
-	bool is_sparse;
+	size_t init_size;
+	Simulation *linked_sim;
 } Settings;
 
 /*** Dialog window attributes ***/
@@ -147,6 +147,7 @@ extern const Vector2i menu_play_pos, menu_pause_pos;
 void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
+void draw_loop(void);
 void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,

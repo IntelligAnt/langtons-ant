@@ -10,7 +10,7 @@ int menu_key_command(int key)
 		break;
 
 	case KEY_ESC:
-		stop_simulation();
+		stop_simulation(stgs.linked_sim);
 		break;
 
 	case KEY_MOUSE:
@@ -25,20 +25,24 @@ int menu_key_command(int key)
 
 void isz_button_clicked(int i)
 {
-	if (!is_running()) {
-		switch (i) {
-		case 1:
-			if (stgs.init_size < GRID_MAX_INIT_SIZE) {
-				++stgs.init_size;
-			}
-			break;
-		case -1:
-			if (stgs.init_size > GRID_MIN_INIT_SIZE) {
-				--stgs.init_size;
-			}
-			break;
+	Simulation *sim = stgs.linked_sim;
+	switch (i) {
+	case 1:
+		if (stgs.init_size < GRID_MAX_INIT_SIZE) {
+			++stgs.init_size;
 		}
-		
+		break;
+	case -1:
+		if (stgs.init_size > GRID_MIN_INIT_SIZE) {
+			--stgs.init_size;
+		}
+		break;
+	default:
+		return;
+	}
+	if (is_simulation_valid(sim) && !sim->is_running) {
+		simulation_delete(sim);
+		stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 	}
 }
 

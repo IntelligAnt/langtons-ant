@@ -4,6 +4,7 @@
 
 WINDOW *menuw;
 Settings stgs = { .init_size = 4 };
+
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
 const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
@@ -166,6 +167,10 @@ static void draw_color_list(void)
 	wattrset(menuw, bg_pair);
 	draw_rect(menuw, pos1, MENU_TILES_WIDTH, MENU_TILES_HEIGHT);
 
+	if (!stgs.colors) {
+		return;
+	}
+
 	/* Draw color tiles */
 	for (c = stgs.colors->first; do_for; c = stgs.colors->next[c]) {
 		pos1 = pos2 = get_menu_tile_pos(i++);
@@ -216,16 +221,17 @@ static void draw_control_buttons(void)
 
 static void draw_size(void)
 {
+	Simulation *sim = stgs.linked_sim;
+	size_t size = is_simulation_valid(sim) ? sim->grid->size : 0;
 	char size_str[29];
-	int len = (int)log10(stgs.size)+1;
+	sprintf(size_str, "%28d", size);
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
-	sprintf(size_str, "%28d", stgs.size);
 	mvwaddstr(menuw, size_pos.y, size_pos.x-28, size_str);
 }
 
 static void draw_init_size(void)
 {
-	assert(stgs.init_size >= 2 && stgs.init_size <= 6);
+	assert(stgs.init_size >= GRID_MIN_INIT_SIZE && stgs.init_size <= GRID_MAX_INIT_SIZE);
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 	mvwaddch(menuw, menu_isz_u_pos.y,   menu_isz_u_pos.x, ACS_UARROW);
 	mvwaddch(menuw, menu_isz_u_pos.y+1, menu_isz_u_pos.x, ACS_VLINE);
@@ -238,8 +244,10 @@ static void draw_init_size(void)
 static void draw_steps(void)
 {
 	static bool do_draw = TRUE;
+	Simulation *sim = stgs.linked_sim;
+	size_t steps = is_simulation_valid(sim) ? sim->steps : 0;
+	int digit, len = (int)log10(steps) + 1;
 	char digits_str[9], *p;
-	int digit, len = (int)log10(stgs.steps)+1;
 	Vector2i top_left = steps_pos;
 
 	if (!do_draw) {
@@ -254,7 +262,7 @@ static void draw_steps(void)
 		return;
 	}
 
-	sprintf(digits_str, "%8d", stgs.steps);
+	sprintf(digits_str, "%8d", steps);
 	for (p = digits_str+7; p >= digits_str && *p != ' '; --p) {
 		digit = *p - '0';
 		draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5, TRUE);
@@ -264,9 +272,10 @@ static void draw_steps(void)
 
 void draw_menu(void)
 {
+	Simulation *sim = stgs.linked_sim;
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
 
-	if (stgs.is_sparse) {
+	if (is_simulation_valid(sim) && is_grid_sparse(sim->grid)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
 		mvwaddstr(menuw, sparse_msg_pos.y, sparse_msg_pos.x, sparse_msg);
 	} else {

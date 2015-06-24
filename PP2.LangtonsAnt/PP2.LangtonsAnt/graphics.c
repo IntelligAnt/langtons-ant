@@ -1,5 +1,8 @@
 #include "graphics.h"
 
+#define DRAW_EVERY 100
+#define INPUT_DELAY 100
+
 chtype fg_pair, bg_pair;
 
 void init_graphics(short fg_color, short bg_color)
@@ -22,6 +25,8 @@ void init_graphics(short fg_color, short bg_color)
 
 	init_menu_window();
 	draw_menu();
+
+	refresh();
 }
 
 void end_graphics(void)
@@ -40,6 +45,60 @@ void init_def_pairs(short fg_color, short bg_color)
 		} else if (i == bg_color) {
 			bg_pair = COLOR_PAIR(i+1);
 		}
+	}
+}
+
+static void handle_input(void)
+{
+	static int input_delay = 0;
+	Simulation *sim = stgs.linked_sim;
+	int ch;
+	if (input_delay == 0) {
+		ch = getch();
+		if (is_simulation_valid(sim)) {
+			if (grid_key_command(sim->grid, sim->ant, ch) != ERR) { // TODO wgetch refreshes
+				draw_grid_full(sim->grid);
+			}
+		}
+		menu_key_command(ch);
+		input_delay += INPUT_DELAY;
+	} else {
+		--input_delay;
+	}
+}
+
+void draw_loop(void)
+{
+	static size_t steps = 0, cnt = DRAW_EVERY-1;
+	Simulation *sim = stgs.linked_sim;
+	Vector2i oldp;
+
+	while (1) {
+		if (is_simulation_valid(sim)) {
+			if (sim->is_running) {
+				oldp = sim->ant->pos;
+				ant_move(sim->ant, sim->grid, sim->colors);
+				grid_silent_expand(sim->grid);
+
+				if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
+					grid_expand(sim->grid, sim->ant);
+					draw_grid_full(sim->grid);
+				} else {
+					draw_grid_iter(sim->grid, oldp);
+				}
+
+				++(sim->steps);
+			} else {
+				draw_grid_full(sim->grid);
+			}
+		}
+		if (++cnt == DRAW_EVERY) {
+			draw_menu();
+			cnt = 0;
+		}
+		
+		handle_input();
+		doupdate();
 	}
 }
 

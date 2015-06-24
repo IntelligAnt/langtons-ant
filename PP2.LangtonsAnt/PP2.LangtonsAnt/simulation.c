@@ -1,69 +1,36 @@
+#include <stdlib.h>
 #include "logic.h"
 #include "graphics.h"
 
-#define DRAW_EVERY 100
-#define INPUT_DELAY 100
-
-static bool running;
-
-static void handle_input(Ant *ant, Grid *grid)
+Simulation *simulation_new(Colors *colors, size_t init_size)
 {
-	static int input_delay = 0;
-	int ch;
-	if (input_delay == 0) {
-		ch = getch();
-		if (grid_key_command(grid, ant, ch) != ERR) { // TODO wgetch refreshes
-			draw_grid_full(grid);
-		}
-		menu_key_command(ch);
-		input_delay += INPUT_DELAY;
-	} else {
-		--input_delay;
-	}
+	Simulation *sim = malloc(sizeof(Simulation));
+	sim->colors = colors;
+	sim->grid = grid_new(colors, init_size);
+	sim->ant = ant_new(sim->grid, UP);
+	sim->steps = 0;
+	sim->is_running = FALSE;
+	return sim;
 }
 
-void run_simulation(Ant *ant, Grid *grid, Colors *colors)
+void simulation_delete(Simulation *sim)
 {
-	static size_t steps = 0, cnt = DRAW_EVERY-1;
-	Vector2i oldp;
-
-	assert(ant && grid && colors);
-
-	draw_grid_full(grid);
-
-	running = TRUE;
-	while (running) {
-		oldp = ant->pos;
-		ant_move(ant, grid, colors);
-		grid_silent_expand(grid);
-
-		if (is_ant_out_of_bounds(ant, grid)) {
-			grid_expand(grid, ant);
-			stgs.is_sparse = is_grid_sparse(grid);
-			stgs.size = grid->size;
-			draw_menu();
-			draw_grid_full(grid);
-			doupdate();
-		} else {
-			draw_grid_iter(grid, oldp);
-			if (++cnt == DRAW_EVERY) {
-				draw_menu();
-				cnt = 0;
-			}
-			doupdate();
-		}
-
-		handle_input(ant, grid);
-		++stgs.steps;
-	}
+	grid_delete(sim->grid);
+	ant_delete(sim->ant);
+	free(sim);
 }
 
-void stop_simulation(void)
+void run_simulation(Simulation *sim)
 {
-	running = FALSE;
+	sim->is_running = TRUE;
 }
 
-bool is_running(void)
+void stop_simulation(Simulation *sim)
 {
-	return running;
+	sim->is_running = FALSE;
+}
+
+bool is_simulation_valid(Simulation *sim)
+{
+	return (sim && sim->colors && sim->grid && sim->ant);
 }

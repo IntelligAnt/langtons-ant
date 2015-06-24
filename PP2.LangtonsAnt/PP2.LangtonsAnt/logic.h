@@ -18,6 +18,13 @@
 #define COLOR_NEXT(cs, c) (cs)->next[c]
 #define COLOR_TURN(cs, c) (cs)->turn[c]
 
+#ifndef FALSE
+#define FALSE 0
+#endif
+#ifndef TRUE
+#define TRUE 1
+#endif
+
 typedef unsigned char bool;
 
 typedef struct vector2i {
@@ -69,6 +76,16 @@ typedef struct grid {
 	Vector2i top_left, bottom_right;
 } Grid;
 
+/*** Simulation attributes and types ***/
+
+typedef struct simulation {
+	Colors *colors;
+	Grid *grid;
+	Ant *ant;
+	size_t steps;
+	bool is_running;
+} Simulation;
+
 /* logic.c */
 
 Ant *ant_new(Grid *grid, Direction dir);
@@ -88,7 +105,7 @@ bool has_enough_colors(Colors *colors);
 
 /* grid.c */
 
-Grid *grid_new(size_t size, Colors *colors);
+Grid *grid_new(Colors *colors, size_t init_size);
 void grid_delete(Grid *grid);
 void grid_silent_expand(Grid*);
 void grid_expand(Grid *grid, Ant *ant);
@@ -99,8 +116,10 @@ unsigned char color_at_s(Grid *grid, Vector2i p);
 
 /* simulation.c */
 
-void run_simulation(Ant *ant, Grid *grid, Colors *colors);
-void stop_simulation(void);
-bool is_running(void);
+Simulation *simulation_new(Colors *colors, size_t init_size);
+void simulation_delete(Simulation *sim);
+void run_simulation(Simulation *sim);
+void stop_simulation(Simulation *sim);
+bool is_simulation_valid(Simulation *sim);
 
 #endif

@@ -5,21 +5,21 @@
 #include "logic.h"
 #include "graphics.h"
 
-Grid *grid_new(size_t size, Colors *colors)
+Grid *grid_new(Colors *colors, size_t init_size)
 {
 	Grid *grid = malloc(sizeof(Grid));
 	size_t i, j;
-	grid->c = malloc(size * sizeof(unsigned char*));
-	for (i = 0; i < size; ++i) {
-		grid->c[i] = malloc(size);
-		memset(grid->c[i], (unsigned char)colors->def, size);
+	grid->c = malloc(init_size * sizeof(unsigned char*));
+	for (i = 0; i < init_size; ++i) {
+		grid->c[i] = malloc(init_size);
+		memset(grid->c[i], (unsigned char)colors->def, init_size);
 	}
 	grid->csr = NULL;
-	grid->size = grid->init_size = size;
+	grid->size = grid->init_size = init_size;
 	grid->tmp = NULL;
 	grid->tmp_size = 0;
 	grid->def_color = (unsigned char)colors->def;
-	grid->top_left.y = grid->top_left.x = grid->size / 2;
+	grid->top_left.y = grid->top_left.x = init_size / 2;
 	grid->bottom_right = grid->top_left;
 	grid->colored = 0;
 	return grid;

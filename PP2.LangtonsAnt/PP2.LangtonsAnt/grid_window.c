@@ -78,7 +78,7 @@ static void bordered(Grid *grid, int line_width)
 	/* Draw background edge buffer zone */
 	assert(o <= GRID_BUFFER_ZONE);
 	wattrset(gridw, bg_pair);
-	draw_buffer_zone(GRID_BUFFER_ZONE);
+	draw_buffer_zone(o + 1);
 
 	/* Draw grid lines */
 	wattrset(gridw, fg_pair);
