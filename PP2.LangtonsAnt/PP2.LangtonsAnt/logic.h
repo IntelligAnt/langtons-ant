@@ -82,6 +82,7 @@ void add_color(Colors *colors, short c, short turn);
 void remove_color(Colors *colors, short c);
 void set_color(Colors *colors, short index, short c, short turn);
 void set_turn(Colors *colors, short index, short turn);
+short get_color_at(Colors *colors, int index);
 bool color_exists(Colors *colors, short c);
 bool is_color_special(Colors *colors, short c);
 bool has_enough_colors(Colors *colors);

@@ -123,10 +123,11 @@ typedef struct settings {
 #define DIALOG_BUTTON_WIDTH  7
 #define DIALOG_BUTTON_HEIGHT 3
 #define DIALOG_BUTTON_COLOR  COLOR_YELLOW
+#define DIALOG_DELETE_COLOR  COLOR_RED
 #define DIALOG_ROWS          3
 #define DIALOG_COLS          5
 #define DIALOG_WINDOW_WIDTH  (DIALOG_COLS*DIALOG_TILE_SIZE + 2)
-#define DIALOG_WINDOW_HEIGHT (DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT + 3)
+#define DIALOG_WINDOW_HEIGHT (DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT*2 + 4)
 
 #define CIDX_NEWCOLOR -1
 #define CIDX_DEFAULT  -2
@@ -187,6 +188,7 @@ void close_dialog(void);
 void draw_dialog(void);
 Vector2i get_dialog_tile_pos(int index);
 Vector2i get_dialog_button_pos(int index);
+Vector2i get_del_button_pos(void);
 void dialog_mouse_command(MEVENT event);
 
 #endif
