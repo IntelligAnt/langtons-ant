@@ -143,6 +143,7 @@ extern const Vector2i grid_pos, menu_pos;
 extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_clear_pos;
+extern const Vector2i menu_load_pos, menu_save_pos;
 
 /* graphics.c */
 

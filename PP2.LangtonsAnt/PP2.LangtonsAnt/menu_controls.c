@@ -1,6 +1,13 @@
 #include "graphics.h"
 #include "io.h"
 
+#define INPUT_WINDOW_WIDTH  38
+#define INPUT_WINDOW_HEIGHT 3
+
+static WINDOW *inputw;
+static const Vector2i io_pos = { MENU_COMMANDS_POS-22,
+                                 GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH-INPUT_WINDOW_WIDTH-2 };
+
 static void isz_button_clicked(int i)
 {
 	Simulation *sim = stgs.linked_sim;
@@ -57,6 +64,38 @@ static void clear_button_clicked(void)
 		remove_all_colors(stgs.colors);
 		stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 		gridscrl = (ScrollInfo) { 0 };
+	}
+}
+
+static void io_button_clicked(bool load)
+{
+	Colors *colors;
+	char filename[FILENAME_BUF_LEN];
+	short status;
+	
+	inputw = newwin(3, INPUT_WINDOW_WIDTH, io_pos.y, io_pos.x);
+	wbkgd(inputw, GET_PAIR_FOR(COLOR_GRAY) | A_REVERSE);
+	echo();
+	mvwgetnstr(inputw, 1, 1, filename, FILENAME_BUF_LEN);
+	noecho();
+	delwin(inputw);
+
+	if (load) {
+		status = (colors = load_rules(filename)) ? COLOR_LIME : COLOR_RED;
+		wattrset(menuw, GET_PAIR_FOR(status));
+		mvwvline(menuw, menu_load_pos.y, MENU_WINDOW_WIDTH-3, ACS_BLOCK, MENU_BUTTON_HEIGHT);
+		if (colors) {
+			if (stgs.colors) {
+				assert(stgs.linked_sim->colors);
+				clear_button_clicked();
+			}
+			memcpy(stgs.colors, colors, sizeof(Colors));
+			free(colors);
+		}
+	} else {
+		status = (save_rules(filename, stgs.colors) != EOF) ? COLOR_LIME : COLOR_RED;
+		wattrset(menuw, GET_PAIR_FOR(status));
+		mvwvline(menuw, menu_save_pos.y, MENU_WINDOW_WIDTH-3, ACS_BLOCK, MENU_BUTTON_HEIGHT);
 	}
 }
 
@@ -133,7 +172,14 @@ void menu_mouse_command(void)
 		}
 
 		/* IO buttons clicked */
-
+		if (area_contains(menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+			io_button_clicked(TRUE);
+			return;
+		}
+		if (area_contains(menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+			io_button_clicked(FALSE);
+			return;
+		}
 
 		/* Color tiles clicked */
 		for (i = 0; i < MENU_TILE_COUNT; ++i) {

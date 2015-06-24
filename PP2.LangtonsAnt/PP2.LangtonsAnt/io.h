@@ -3,7 +3,10 @@
 
 #include "logic.h"
 
+#define FILENAME_BUF_LEN   256
+#define RULES_TOTAL_FIELDS COLOR_COUNT*2+4
+
 Colors* load_rules(char *filename);
-void save_rules(Colors* colors);
+int save_rules(char *filename, Colors* colors);
 
 #endif

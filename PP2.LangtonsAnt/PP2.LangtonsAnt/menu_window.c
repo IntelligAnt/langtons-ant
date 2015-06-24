@@ -16,16 +16,16 @@ const Vector2i menu_load_pos  = { MENU_COMMANDS_POS-2*MENU_BUTTON_HEIGHT-4,
 const Vector2i menu_save_pos  = { MENU_COMMANDS_POS-MENU_BUTTON_HEIGHT-2,
                                   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
-const char *isz_msg    = "INITIAL SIZE:";
-const char *steps_msg  = "STEPS:";
 const char *tiles_msg  = "RULES:";
-const char *size_msg   = "GRID SIZE:";
+const char *isz_msg    = "INITIAL SIZE:";
 const char *sparse_msg = "SPARSE MATRIX";
+const char *size_msg   = "GRID SIZE:";
+const char *steps_msg  = "STEPS:";
 
-const Vector2i isz_pos        = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-5 };
-const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-21 };
 const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+5,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
 const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
+const Vector2i isz_pos        = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-5 };
+const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-21 };
 const Vector2i sparse_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
 const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
@@ -169,7 +169,7 @@ static void draw_color_list(void)
 	pos1.x = tiles_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
 	wattrset(menuw, bg_pair);
 	draw_rect(menuw, pos1, MENU_TILES_WIDTH, MENU_TILES_HEIGHT);
-
+	
 	if (!stgs.colors) {
 		return;
 	}
@@ -329,7 +329,7 @@ void draw_menu(void)
 	mvwaddstr(menuw, tiles_msg_pos.y, tiles_msg_pos.x, tiles_msg);
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
 	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
-
+	
 	//wattron(menuw, A_REVERSE);
 	//draw_bitmap(menuw, (Vector2i) { 1, 1 }, logo_bitmap, 40, 9);
 
