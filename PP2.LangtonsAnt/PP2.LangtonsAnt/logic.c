@@ -161,21 +161,28 @@ void add_color(Colors *colors, short c, short turn)
 void remove_color(Colors *colors, short c)
 {
 	short i;
-	if (c < 0 || c >= COLOR_COUNT || c == colors->def) {
+	if (c < 0 || c >= COLOR_COUNT || c == colors->def || colors->n == 0) {
 		return;
 	}
 	colors->turn[c] = 0;
-	if (colors->n == 0) {
+
+	if (colors->n == 1) {
 		colors->first = colors->last = COLOR_EMPTY;
-	} else if (colors->first == c) {
+		colors->next[c] = colors->def;
+	}
+	if (colors->first == c) {
 		colors->first = colors->next[colors->last] = colors->next[c];
-	} else {
-		for (i = 0; i < COLOR_COUNT && colors->next[i] != c; ++i);
-		colors->next[i] = colors->next[c];
-		if (colors->last == c) {
-			colors->last = i;
+	} 
+
+	for (i = 0; i < COLOR_COUNT; ++i) {
+		if (colors->next[i] == c) {
+			colors->next[i] = colors->next[c];
+			if (colors->turn[i] != 0 && colors->last == c) {
+				colors->last = i;
+			}
 		}
 	}
+
 	colors->next[c] = colors->def;
 	--colors->n;
 }
@@ -227,6 +234,16 @@ void set_turn(Colors *colors, short index, short turn)
 	}
 
 	colors->turn[i] = turn;
+}
+
+short get_color_at(Colors *colors, int index)
+{
+	short i = colors->first;
+	assert(index >= 0 && index < colors->n);
+	while (index--) {
+		i = colors->next[i];
+	}
+	return i;
 }
 
 bool color_exists(Colors *colors, short c)
