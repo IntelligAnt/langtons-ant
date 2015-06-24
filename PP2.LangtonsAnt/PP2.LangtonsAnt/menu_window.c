@@ -11,6 +11,10 @@ const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-7 };
 const Vector2i menu_play_pos  = { MENU_COMMANDS_POS,  2 };
 const Vector2i menu_pause_pos = { MENU_COMMANDS_POS,  MENU_BUTTON_WIDTH+4 };
 const Vector2i menu_clear_pos = { MENU_COMMANDS_POS,  2*MENU_BUTTON_WIDTH+6 };
+const Vector2i menu_load_pos  = { MENU_COMMANDS_POS-2*MENU_BUTTON_HEIGHT-4,
+                                  MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
+const Vector2i menu_save_pos  = { MENU_COMMANDS_POS-MENU_BUTTON_HEIGHT-2,
+                                  MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
 const char *isz_msg    = "INITIAL SIZE:";
 const char *steps_msg  = "STEPS:";
@@ -20,13 +24,13 @@ const char *sparse_msg = "SPARSE MATRIX";
 
 const Vector2i isz_pos        = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-5 };
 const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-21 };
-const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  MENU_WINDOW_WIDTH-5 };
-const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
 const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+5,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
 const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
 const Vector2i sparse_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
 const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
+const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8, 9 };
+const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4, 2 };
 
 //unsigned char logo_bitmap[] = {
 //	0xE0, 0x00, 0x04, 0x00, 0x10, 0x40, 0x00, 0x04, 0x00,
@@ -35,13 +39,14 @@ const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
 //	0x73, 0x32, 0x46, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00,
 //	0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 //};
+
 const unsigned char digit_bitmaps[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
 };
 const unsigned char inf_bitmap[] = {
-	0x00, 0x00, 0x03, 0x8e, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00,
-	0x04, 0x21, 0x00, 0x00, 0x04, 0x51, 0x00, 0x00, 0x03, 0x8e
+	0x00, 0x00, 0x07, 0x1C, 0x00, 0x00, 0x11, 0x44, 0x00, 0x00,
+	0x21, 0x08, 0x00, 0x00, 0x45, 0x10, 0x00, 0x00, 0x71, 0xC0
 };
 const unsigned char button_bitmaps[][4] = {
 	{ 0x43, 0x1C, 0xC4 }, { 0x52, 0x94, 0xA5 }, { 0x47, 0x92, 0x17 }
@@ -137,7 +142,7 @@ static void draw_color_tile(Vector2i top_left, short c)
 
 	/* Draw direction arrow */
 	if (!is_def) {
-		fg = AVAILABLE_FG_COLOR(GET_COLOR_FOR(bg_pair), c, COLOR_GRAY);
+		fg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), c, COLOR_GRAY);
 		if (fg == c) {
 			wattron(menuw, A_REVERSE);
 		} else {
@@ -183,7 +188,7 @@ static void draw_color_list(void)
 		do_for = c != stgs.colors->last;
 	}
 	
-	/* Draw placeholder title */
+	/* Draw placeholder tile */
 	if (i < MENU_TILE_COUNT) {
 		draw_color_tile(pos2, stgs.colors->def);
 	}
@@ -199,15 +204,37 @@ static void draw_color_list(void)
 	}
 }
 
+static void draw_io_buttons(void)
+{
+	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
+	Vector2i inner1 = { menu_load_pos.y+1, menu_load_pos.x+1 };
+	Vector2i inner2 = { menu_save_pos.y+1, menu_save_pos.x+1 };
+
+	wattrset(menuw, GET_PAIR_FOR(bg));
+	draw_rect(menuw, menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	draw_rect(menuw, menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	wattron(menuw, A_REVERSE);
+	draw_rect(menuw, inner1, MENU_BUTTON_WIDTH-2, MENU_BUTTON_HEIGHT-2);
+	draw_rect(menuw, inner2, MENU_BUTTON_WIDTH-2, MENU_BUTTON_HEIGHT-2);
+
+	wattrset(menuw, fg_pair);
+	mvwaddstr(menuw, inner1.y+1, inner1.x+1, "LOAD");
+	mvwaddstr(menuw, inner1.y+2, inner1.x+2, "FROM");
+	mvwaddstr(menuw, inner1.y+3, inner1.x+4, "FILE");
+	mvwaddstr(menuw, inner2.y+1, inner2.x+1, "SAVE");
+	mvwaddstr(menuw, inner2.y+2, inner2.x+3, "TO");
+	mvwaddstr(menuw, inner2.y+3, inner2.x+4, "FILE");
+}
+
 static void draw_control_buttons(void)
 {
-	short fg = AVAILABLE_FG_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
+	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
 	Vector2i pos1 = { menu_play_pos.y + o.y, menu_play_pos.x + o.x };
 	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
 	Vector2i pos3 = { menu_clear_pos.y + o.y, menu_clear_pos.x + o.x };
 
-	wattrset(menuw, GET_PAIR_FOR(fg));
+	wattrset(menuw, GET_PAIR_FOR(bg));
 	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_clear_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
@@ -246,30 +273,37 @@ static void draw_init_size(void)
 
 static void draw_steps(void)
 {
-	static bool do_draw = TRUE;
+	static bool do_draw;
 	Simulation *sim = stgs.linked_sim;
 	size_t steps = is_simulation_valid(sim) ? sim->steps : 0;
 	int digit, len = (int)log10(steps) + 1;
 	char digits_str[9], *p;
 	Vector2i top_left = steps_pos;
 
-	if (!do_draw) {
+	if (steps == 0) {
+		do_draw = TRUE;
+	} else if (!do_draw) {
 		return;
 	}
 
 	wattrset(menuw, fg_pair);
-	if (len >= 9) {
-		top_left.x -= 29;
-		draw_bitmap(menuw, top_left, inf_bitmap, 32, 5, TRUE);
+	if (len > 8) {
+		draw_bitmap(menuw, top_left, inf_bitmap, 31, 5, TRUE);
 		do_draw = FALSE;
 		return;
 	}
 
 	sprintf(digits_str, "%8d", steps);
-	for (p = digits_str+7; p >= digits_str && *p != ' '; --p) {
-		digit = *p - '0';
-		draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5, TRUE);
-		top_left.x -= 4;
+	for (p = digits_str; p < digits_str+8; ++p) {
+		if (*p != ' ') {
+			digit = *p - '0';
+			wattroff(menuw, A_REVERSE);
+			draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5, TRUE);
+		} else {
+			wattron(menuw, A_REVERSE);
+			draw_rect(menuw, top_left, 4, 5);
+		}
+		top_left.x += 4;
 	}
 }
 
@@ -301,6 +335,7 @@ void draw_menu(void)
 
 	draw_init_size();
 	draw_color_list();
+	draw_io_buttons();
 	draw_control_buttons();
 	draw_size();
 	draw_steps();

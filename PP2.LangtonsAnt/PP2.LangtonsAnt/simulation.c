@@ -22,12 +22,16 @@ void simulation_delete(Simulation *sim)
 
 void run_simulation(Simulation *sim)
 {
-	sim->is_running = TRUE;
+	if (sim) {
+		sim->is_running = TRUE;
+	}
 }
 
 void stop_simulation(Simulation *sim)
 {
-	sim->is_running = FALSE;
+	if (sim) {
+		sim->is_running = FALSE;
+	}
 }
 
 bool is_simulation_valid(Simulation *sim)

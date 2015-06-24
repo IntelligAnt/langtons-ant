@@ -15,6 +15,7 @@ Global
 		{9B4E985D-2588-485A-85CD-6069034A6D4F}.Debug|Win32.Build.0 = Debug|Win32
 		{9B4E985D-2588-485A-85CD-6069034A6D4F}.Release|Win32.ActiveCfg = Release|Win32
 		{9B4E985D-2588-485A-85CD-6069034A6D4F}.Release|Win32.Build.0 = Release|Win32
+		{9B4E985D-2588-485A-85CD-6069034A6D4F}.Release|Win32.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

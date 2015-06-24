@@ -41,9 +41,6 @@
     <ClCompile Include="logic.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestGraphics.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rules_io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="simulation.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

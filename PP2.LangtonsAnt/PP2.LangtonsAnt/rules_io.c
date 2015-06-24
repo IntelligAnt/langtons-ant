@@ -3,18 +3,17 @@
 
 #include "io.h"
 
-Colors* load_rules(char *name)
+Colors* load_rules(char *filename)
 {
     FILE *in;
-    Colors *rule_set;
+    Colors *colors;
     char *buff;
     int t, s, n, w;
-    in = fopen(name,"r");
+	in = fopen(filename, "r");
     fscanf(in, "%s", buff);
     short def;
     def = atoi(buff);
-    rule_set = colors_new(def);
-    rule_set->def = def;
+    colors = colors_new(def);
     t = 0;
     w = 1;
     short r = 0;
@@ -36,7 +35,7 @@ Colors* load_rules(char *name)
             if (r == 0) {
                 r = -1;
             }
-            add_color(rule_set, k, r);
+            add_color(colors, k, r);
             t = 0;
         }
         else
@@ -46,38 +45,38 @@ Colors* load_rules(char *name)
         }
     }
     fclose(in);
-    return rule_set;
+    return colors;
 };
 
-void save_rule(Colors *rule_set)
+void save_rule(Colors *colors)
 {
     FILE *out;
     out = fopen("rules_out.txt", "w");
     int q, n, w;
     char p;
     n = 0;
-    q = rule_set->next[rule_set->first];
-    p = rule_set->turn[rule_set->first];
+    q = colors->next[colors->first];
+    p = colors->turn[colors->first];
     w = 1;
     int i;
-    while ((q != rule_set->next[rule_set->last]) || (w == 1)) {
+    while ((q != colors->next[colors->last]) || (w == 1)) {
             w = 0;
-            q = rule_set->next[q];
-            p = rule_set->turn[q];
+            q = colors->next[q];
+            p = colors->turn[q];
             n = n + 1;
         }
-    q = rule_set->first;
-    p = rule_set->turn[rule_set->first];
+    q = colors->first;
+    p = colors->turn[colors->first];
     w = 1;
-    fprintf(out, "%d\n", rule_set->def);
-    while ((q != rule_set->next[rule_set->last]) || (w == 1)) {
+    fprintf(out, "%d\n", colors->def);
+    while ((q != colors->next[colors->last]) || (w == 1)) {
             w = 0;
             if (p == -1)
                 p = 0;
             fprintf(out, "%d %d %d\n", n, p, q);
             n = n - 1;
-            q = rule_set->next[q];
-            p = rule_set->turn[q];
+            q = colors->next[q];
+            p = colors->turn[q];
         }
     fclose(out);
 }

@@ -6,11 +6,17 @@ Vector2i dialog_pos = { -1, -1 };
 static int cidx;
 static short picked_color = COLOR_EMPTY, picked_turn = 0;
 
-static void draw_tiles(Vector2i top_left)
+const Vector2i colors_pos  = { 1, 1 };
+const Vector2i left_pos    = { DIALOG_ROWS*DIALOG_TILE_SIZE+2, 1 };
+const Vector2i right_pos   = { DIALOG_ROWS*DIALOG_TILE_SIZE+2, DIALOG_BUTTON_WIDTH+2 };
+const Vector2i delete_pos  = { DIALOG_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT+3,
+                              (DIALOG_WINDOW_HEIGHT-DIALOG_BUTTON_WIDTH-2)/2+1 };
+
+static void draw_tiles(void)
 {
 	short i, fg = GET_COLOR_FOR(fg_pair);
 	chtype border_pair = GET_PAIR_FOR(stgs.colors->def);
-	Vector2i outer = top_left, inner;
+	Vector2i outer = colors_pos, inner;
 
 	for (i = 0; i < COLOR_COUNT; i++) {
 		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
@@ -27,25 +33,28 @@ static void draw_tiles(Vector2i top_left)
 			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
 		}
 		if (outer.x + DIALOG_TILE_SIZE + 1 >= DIALOG_WINDOW_WIDTH) {
-			outer.y += DIALOG_TILE_SIZE, outer.x = top_left.x;
+			outer.y += DIALOG_TILE_SIZE, outer.x = colors_pos.x;
 		} else {
 			outer.x += DIALOG_TILE_SIZE;
 		}
 	}
 }
 
-static void draw_buttons(Vector2i top_left)
+static void draw_buttons()
 {
-	Vector2i top_left2 = { top_left.y, top_left.x+DIALOG_BUTTON_WIDTH+1 };
 	int i, mid = DIALOG_BUTTON_HEIGHT/2, n = DIALOG_BUTTON_WIDTH-2;
 
 	wattrset(dialogw, GET_PAIR_FOR(DIALOG_BUTTON_COLOR));
-	draw_rect(dialogw, top_left,  DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
-	draw_rect(dialogw, top_left2, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
-
+	draw_rect(dialogw, left_pos,  DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
+	draw_rect(dialogw, right_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	wattron(dialogw, A_REVERSE);
-	mvwaddstr(dialogw, top_left.y+mid,   top_left.x+1, "  <  ");
-	mvwaddstr(dialogw, top_left2.y+mid, top_left2.x+1, "  >  ");
+	mvwaddstr(dialogw, left_pos.y+mid,  left_pos.x+1,  "  <  ");
+	mvwaddstr(dialogw, right_pos.y+mid, right_pos.x+1, "  >  ");
+
+	wattrset(dialogw, GET_PAIR_FOR(DIALOG_DELETE_COLOR));
+	draw_rect(dialogw, delete_pos, DIALOG_BUTTON_WIDTH-2, DIALOG_BUTTON_HEIGHT);
+	wattron(dialogw, A_REVERSE);
+	mvwaddstr(dialogw, delete_pos.y+mid, delete_pos.x+1,  " X ");
 }
 
 void open_dialog(Vector2i pos, int color_index)
@@ -75,8 +84,8 @@ void draw_dialog(void)
 	wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
 	draw_rect(dialogw, (Vector2i) { 0, 0 }, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT);
 
-	draw_tiles((Vector2i) { 1, 1 });
-	draw_buttons((Vector2i) { 2+DIALOG_ROWS*DIALOG_TILE_SIZE, 1 });
+	draw_tiles();
+	draw_buttons();
 
 	wnoutrefresh(dialogw);
 }
@@ -175,6 +184,9 @@ exit:
 				close_dialog();
 			} else if (del) {
 				remove_color(stgs.colors, get_color_at(stgs.colors, cidx));
+				if (!has_enough_colors(stgs.colors)) {
+					stop_simulation(stgs.linked_sim);
+				}
 				close_dialog();
 			}
 		}

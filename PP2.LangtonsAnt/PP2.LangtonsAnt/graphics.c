@@ -1,8 +1,9 @@
 #include "graphics.h"
 
-#define DRAW_EVERY 100
-#define INPUT_DELAY 10
+#define DRAW_EVERY 13
+#define INPUT_DELAY 0
 
+static bool do_draw = TRUE;
 chtype fg_pair, bg_pair;
 
 void init_graphics(short fg_color, short bg_color)
@@ -73,7 +74,9 @@ void draw_loop(void)
 	Simulation *sim = stgs.linked_sim;
 	Vector2i oldp;
 
-	while (1) {
+	while (do_draw) {
+		handle_input();
+
 		if (is_simulation_valid(sim)) {
 			if (sim->is_running) {
 				oldp = sim->ant->pos;
@@ -97,9 +100,13 @@ void draw_loop(void)
 			cnt = 0;
 		}
 		
-		handle_input();
 		doupdate();
 	}
+}
+
+void exit_draw_loop(bool b)
+{
+	do_draw = !b;
 }
 
 //chtype get_pair_for(short color)

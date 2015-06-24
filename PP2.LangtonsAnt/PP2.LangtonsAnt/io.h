@@ -3,7 +3,7 @@
 
 #include "logic.h"
 
-Colors* load_rules(char name[255]);
-void save_rule(Colors* rule_set);
+Colors* load_rules(char *filename);
+void save_rules(Colors* colors);
 
-#endif // __IO_H__
+#endif

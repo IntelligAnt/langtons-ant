@@ -59,7 +59,7 @@
 
 #define GET_PAIR_FOR(c)  (COLOR_PAIR(c+1))
 #define GET_COLOR_FOR(p) (PAIR_NUMBER(p)-1)
-#define AVAILABLE_FG_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
+#define AVAILABLE_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
 
 /*** Grid window attributes and types ***/
 
@@ -90,7 +90,7 @@ typedef struct scroll_info {
 
 #define MENU_WINDOW_WIDTH   42
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
-#define MENU_LOGO_HEIGHT    15
+#define MENU_LOGO_HEIGHT    16
 #define MENU_BORDER_COLOR   COLOR_BLUE
 #define MENU_BORDER_COLOR_S COLOR_MAROON
 
@@ -103,7 +103,7 @@ typedef struct scroll_info {
 #define MENU_TILES_WIDTH    (MENU_TILE_COLUMNS*MENU_TILE_SIZE + (MENU_TILE_COLUMNS-1)*MENU_TILE_HSEP)
 #define MENU_TILES_HEIGHT   (MENU_TILES_PER_COL*MENU_TILE_SIZE + (MENU_TILES_PER_COL+1)*MENU_TILE_VSEP+2)
 
-#define MENU_COMMANDS_POS   87
+#define MENU_COMMANDS_POS   88
 #define MENU_BUTTON_WIDTH   11
 #define MENU_BUTTON_HEIGHT  7
 #define MENU_PLAY_COLOR     COLOR_GREEN
@@ -150,6 +150,7 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 void init_def_pairs(short fg_color, short bg_color);
 void draw_loop(void);
+void exit_draw_loop(bool b);
 void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_bitmap(WINDOW *w, Vector2i top_left,

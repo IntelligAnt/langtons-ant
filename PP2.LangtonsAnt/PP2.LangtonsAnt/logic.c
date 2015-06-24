@@ -182,8 +182,7 @@ void remove_color(Colors *colors, short c)
 			}
 		}
 	}
-
-	colors->next[c] = colors->def;
+	
 	--colors->n;
 }
 

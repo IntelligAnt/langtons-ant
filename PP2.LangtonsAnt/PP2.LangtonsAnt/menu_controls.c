@@ -1,30 +1,9 @@
 #include "graphics.h"
-
-int menu_key_command(int key)
-{
-	Vector2i rel;
-
-	switch (key) {
-	case ' ':
-		//is_running() ? stop_simulation() : run_simulation();
-		break;
-
-	case KEY_ESC:
-		stop_simulation(stgs.linked_sim);
-		break;
-
-	case KEY_MOUSE:
-		menu_mouse_command();
-		break;
-
-	default:
-		return ERR;
-	}
-	return key;
-}
+#include "io.h"
 
 static void isz_button_clicked(int i)
 {
+	Simulation *sim = stgs.linked_sim;
 	switch (i) {
 	case 1:
 		if (stgs.init_size < GRID_MAX_INIT_SIZE) {
@@ -38,6 +17,10 @@ static void isz_button_clicked(int i)
 		break;
 	default:
 		return;
+	}
+	if (sim && !sim->is_running && sim->steps == 0) {
+		simulation_delete(sim);
+		stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 	}
 }
 
@@ -75,6 +58,34 @@ static void clear_button_clicked(void)
 		stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 		gridscrl = (ScrollInfo) { 0 };
 	}
+}
+
+int menu_key_command(int key)
+{
+	Simulation *sim = stgs.linked_sim;
+	Vector2i rel;
+
+	switch (key) {
+	case ' ':
+		sim->is_running ? pause_button_clicked() : play_button_clicked();
+		break;
+
+	case KEY_BACKSPACE: case '\b':
+		clear_button_clicked();
+		break;
+
+	case KEY_ESC:
+		exit_draw_loop(TRUE);
+		break;
+
+	case KEY_MOUSE:
+		menu_mouse_command();
+		break;
+
+	default:
+		return ERR;
+	}
+	return key;
 }
 
 void menu_mouse_command(void)
@@ -120,6 +131,9 @@ void menu_mouse_command(void)
 			clear_button_clicked();
 			return;
 		}
+
+		/* IO buttons clicked */
+
 
 		/* Color tiles clicked */
 		for (i = 0; i < MENU_TILE_COUNT; ++i) {

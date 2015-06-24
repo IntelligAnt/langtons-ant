@@ -1,22 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <vld.h>
 #include "logic.h"
 #include "graphics.h"
+#include "io.h"
 
-#define DRAW_EVERY 1
-#define INPUT_DELAY 100
-
-int main(void)
+int main(int argc, char *argv[])
 {
+	if (argc >= 2) {
+		printf("Usage: pp2.langtonsant.exe [rulesfile]\n");
+	}
+
 	stgs.colors = colors_new(COLOR_SILVER);
-	stgs.init_size = 4;
+	stgs.init_size = GRID_DEF_INIT_SIZE;
 	stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE);
 	draw_loop();
 
-exit:
+	simulation_delete(stgs.linked_sim);
 	colors_delete(stgs.colors);
 	end_graphics();
 	
