@@ -108,9 +108,9 @@ void draw_loop(void)
 	}
 }
 
-void exit_draw_loop(bool b)
+void exit_draw_loop(bool exit)
 {
-	do_draw = !b;
+	do_draw = !exit;
 }
 
 void draw_box(WINDOW *w, Vector2i top_left, size_t size)

@@ -3,21 +3,15 @@
 
 #include <stddef.h>
 
-#define DEBUG 1
+/** Debug mode enabled */
+#define DEBUG 0
 #if DEBUG
 #include <assert.h>
 #else
 #define assert(e) 1
 #endif
 
-#define COLOR_COUNT 16
-#define COLOR_EMPTY -1
-#define TURN_LEFT -1
-#define TURN_RIGHT 1
-
-#define COLOR_NEXT(cs, c) (cs)->next[c]
-#define COLOR_TURN(cs, c) (cs)->turn[c]
-
+/** Curses boolean literals */
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -25,25 +19,39 @@
 #define TRUE 1
 #endif
 
+/** Curses boolean type */
 typedef unsigned char bool;
 
+/** Vector container */
 typedef struct vector2i {
 	int y, x;
 } Vector2i;
 
+/** Ant directions enum */
 typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
 
+/** Ant container */
 typedef struct ant {
 	Vector2i pos;
 	Direction dir;
 } Ant;
 
+/** Color struct constants */
+#define COLOR_COUNT 16
+#define COLOR_EMPTY -1
+#define TURN_LEFT -1
+#define TURN_RIGHT 1
+
+/** Color utility macros */
+#define COLOR_NEXT(cs, c) (cs)->next[c]
+#define COLOR_TURN(cs, c) (cs)->turn[c]
+
+/** Colors container */
 typedef struct colors {
 	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def;
 } Colors;
 
-/*** Grid attributes and types ***/
-
+/** Grid attributes and types */
 #define GRID_MUL                3
 #define GRID_SIZE_THRESHOLD     19682 // 3^9 - 1
 #define GRID_USAGE_THRESHOLD    0.5
@@ -59,17 +67,20 @@ typedef struct colors {
 #define GRID_EFFICIENCY(g)      ((g)->size*(g)->size / ((double)sizeof(Cell)*(g)->colored))
 #define GRID_COLOR_AT(g, p)     (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
 
+/** Sparse matrix bit packing macros */
 #define CELL_COLOR_MASK         (0xF << 28)
 #define CELL_GET_COLOR(c)	    (((c)->col_packed & CELL_COLOR_MASK) >> 28)
 #define CELL_SET_COLOR(c, col)	((c)->col_packed = (c)->col_packed & ~CELL_COLOR_MASK | ((col) << 28))
 #define CELL_GET_COLUMN(c)	    ((c)->col_packed & ~CELL_COLOR_MASK)
 #define CELL_SET_COLUMN(c, col)	((c)->col_packed = (c)->col_packed & CELL_COLOR_MASK | (col) & ~CELL_COLOR_MASK)
 
+/** Sparse matrix cell container */
 typedef struct cell {
 	size_t col_packed;
 	struct cell *next;
 } Cell;
 
+/** Grid container */
 typedef struct grid {
 	unsigned char **c, **tmp, def_color;
 	Cell **csr;
@@ -77,8 +88,8 @@ typedef struct grid {
 	Vector2i top_left, bottom_right;
 } Grid;
 
-/*** Simulation attributes and types ***/
 
+/*** Simulation attributes and types */
 typedef struct simulation {
 	Colors *colors;
 	Grid *grid;

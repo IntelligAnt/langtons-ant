@@ -116,15 +116,16 @@ Vector2i get_dialog_tile_pos(int index)
 
 Vector2i get_dialog_button_pos(int index)
 {
-	return (Vector2i) {
-		.y = 2 + DIALOG_ROWS*DIALOG_TILE_SIZE,
-		.x = (index == -1) ? 1 : DIALOG_BUTTON_WIDTH + 2
-	};
-}
-
-Vector2i get_del_button_pos(void)
-{
-	return (Vector2i) { 3 + DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT, 1 };
+	switch (index) {
+	case -1:
+		return (Vector2i) { 2+DIALOG_ROWS*DIALOG_TILE_SIZE, 1 };
+	case 0:
+		return (Vector2i) { 3 + DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT, 1 };
+	case 1:
+		return (Vector2i) { 2+DIALOG_ROWS*DIALOG_TILE_SIZE, DIALOG_BUTTON_WIDTH+2 };
+	default:
+		return (Vector2i) { -1, -1 };
+	}
 }
 
 void dialog_mouse_command(MEVENT event)
@@ -137,7 +138,7 @@ void dialog_mouse_command(MEVENT event)
 		return;
 	}
 
-	top_left = get_del_button_pos();
+	top_left = get_dialog_button_pos(0);
 	if (area_contains(top_left, DIALOG_WINDOW_WIDTH - 2, DIALOG_BUTTON_HEIGHT, pos)) {
 		del = TRUE;
 		goto exit;

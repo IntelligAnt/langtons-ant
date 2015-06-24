@@ -330,7 +330,7 @@ void draw_menu(void)
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
 	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
 
-	draw_bitmap(menuw, (Vector2i) { 4, 1 }, logo_bitmap, 40, 8, FALSE);
+	//draw_bitmap(menuw, (Vector2i) { 4, 1 }, logo_bitmap, 40, 8, FALSE);
 
 	draw_init_size();
 	draw_color_list();
