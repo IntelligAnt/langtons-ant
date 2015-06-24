@@ -86,10 +86,11 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 		t = &((*t)->next);
 	}
 	if (!*t || CELL_GET_COLUMN(*t) != x) {
+		if (!*t) {
+			grid->colored++;
+			update_bounding_box(ant->pos, &grid->top_left, &grid->bottom_right);
+		}
 		new_cell(t, x, (unsigned char)colors->first);
-		grid->colored++;
-		update_bounding_box(ant->pos, &grid->top_left, &grid->bottom_right);
-
 	}
 
 	// In-place color changing

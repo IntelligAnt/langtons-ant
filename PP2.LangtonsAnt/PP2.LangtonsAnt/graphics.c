@@ -1,3 +1,4 @@
+#include <math.h>
 #include "graphics.h"
 
 #define DRAW_EVERY 13
@@ -68,11 +69,14 @@ static void handle_input(void)
 	}
 }
 
+#define DELAY 10000000.0
+
 void draw_loop(void)
 {
-	static size_t steps = 0, cnt = DRAW_EVERY-1;
+	static size_t cnt = DRAW_EVERY-1;
 	Simulation *sim = stgs.linked_sim;
 	Vector2i oldp;
+	int delay;
 
 	while (do_draw) {
 		handle_input();
@@ -88,8 +92,8 @@ void draw_loop(void)
 					draw_grid_full(sim->grid);
 				} else {
 					draw_grid_iter(sim->grid, oldp);
+					for (delay = 0; delay < DELAY/pow(sim->steps+1, 0.9); ++delay);
 				}
-
 				++(sim->steps);
 			} else {
 				draw_grid_full(sim->grid);
@@ -99,7 +103,7 @@ void draw_loop(void)
 			draw_menu();
 			cnt = 0;
 		}
-		
+
 		doupdate();
 	}
 }
@@ -108,27 +112,6 @@ void exit_draw_loop(bool b)
 {
 	do_draw = !b;
 }
-
-//chtype get_pair_for(short color)
-//{
-//	short pair = color+1, i = 0, fg, bg;
-//	if (color < 0 || color >= COLOR_COUNT) {
-//		return COLOR_EMPTY;
-//	}
-//	pair_content(pair, &fg, &bg);
-//	if (fg != color) {
-//		do {
-//			pair_content(++i, &fg, &bg);
-//		} while (fg != color);
-//		pair = (fg == color) ? i : 0;
-//	}
-//	return COLOR_PAIR(pair);
-//}
-//
-//short get_pair_for(chtype pair)
-//{
-//	return PAIR_NUMBER(pair) - 1;
-//}
 
 void draw_box(WINDOW *w, Vector2i top_left, size_t size)
 {
