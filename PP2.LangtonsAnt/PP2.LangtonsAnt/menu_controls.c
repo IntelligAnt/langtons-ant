@@ -8,7 +8,7 @@ static WINDOW *iow;
 static const Vector2i io_pos = { MENU_CONTROLS_POS-22,
                                  GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH-INPUT_WINDOW_WIDTH-2 };
 
-static void reset(void)
+static void reset_sim(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (sim) {
@@ -16,6 +16,12 @@ static void reset(void)
 	}
 	stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 	reset_scroll();
+}
+
+static void clear_sim(void)
+{
+	remove_all_colors(stgs.colors);
+	reset_sim();
 }
 
 static void isz_button_clicked(int i)
@@ -36,7 +42,7 @@ static void isz_button_clicked(int i)
 		return;
 	}
 	if (!is_simulation_running(sim) && !has_simulation_started(sim)) {
-		reset();
+		reset_sim();
 	}
 }
 
@@ -44,7 +50,7 @@ static void play_button_clicked(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		reset();
+		reset_sim();
 	}
 	if (is_simulation_valid(sim) && has_enough_colors(sim->colors)) {
 		run_simulation(sim);
@@ -59,10 +65,9 @@ static void pause_button_clicked(void)
 	}
 }
 
-static void clear_button_clicked(void)
+static void stop_button_clicked(void)
 {
-	remove_all_colors(stgs.colors);
-	reset();
+	has_simulation_started(stgs.linked_sim) ? reset_sim() : clear_sim();
 }
 
 static void io_button_clicked(bool load)
@@ -85,7 +90,7 @@ static void io_button_clicked(bool load)
 		if (colors) {
 			if (stgs.colors) {
 				assert(stgs.linked_sim->colors);
-				clear_button_clicked();
+				clear_sim();
 			}
 			memcpy(stgs.colors, colors, sizeof(Colors));
 			free(colors);
@@ -108,11 +113,11 @@ int menu_key_command(int key)
 		break;
 
 	case 'R': case 'r':
-		reset();
+		reset_sim();
 		break;
 
 	case KEY_BACKSPACE: case '\b':
-		clear_button_clicked();
+		clear_sim();
 		break;
 
 	case KEY_ESC:
@@ -168,8 +173,8 @@ void menu_mouse_command(void)
 			pause_button_clicked();
 			return;
 		}
-		if (area_contains(menu_clear_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			clear_button_clicked();
+		if (area_contains(menu_stop_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+			stop_button_clicked();
 			return;
 		}
 

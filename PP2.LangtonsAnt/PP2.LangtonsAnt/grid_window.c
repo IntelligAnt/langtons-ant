@@ -44,12 +44,14 @@ static void draw_buffer_zone(int total, int offset)
 	}
 }
 
-static void draw_scrollbars(short sb_fg_color, short sb_bg_color)
+static void draw_scrollbars(short def)
 {
 	int n = GRID_VIEW_SIZE, mid = n/2;
 	int size = (int)(max((n-2)*gridscrl.scale, SLIDER_MIN_SIZE));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
+	short sb_fg_color = AVAILABLE_COLOR(def, COLOR_WHITE, COLOR_SILVER);
+	short sb_bg_color = AVAILABLE_COLOR(def, COLOR_GRAY, COLOR_SILVER);
 
 	h -= h > mid;
 	v -= v > mid;
@@ -111,8 +113,6 @@ static void borderless(Grid *grid)
 	int t = TOTAL_SIZE(vgs, 0, cs);
 	int o = OFFSET_SIZE(t);
 	Vector2i pos, yx, origin = { 0, 0 };
-	short sb_fg_color = AVAILABLE_COLOR(grid->def_color, COLOR_WHITE, COLOR_SILVER);
-	short sb_bg_color = AVAILABLE_COLOR(grid->def_color, COLOR_GRAY,  COLOR_SILVER);
 
 	/* Draw background edge buffer zone */
 	wattrset(gridw, GET_PAIR_FOR(grid->def_color));
@@ -125,7 +125,7 @@ static void borderless(Grid *grid)
 		gridscrl.scale = GRID_VIEW_SIZE / (double)gs;
 		gridscrl.hcenter = (int)(gridscrl.scale * gridscrl.x);
 		gridscrl.vcenter = (int)(gridscrl.scale * gridscrl.y);
-		draw_scrollbars(sb_fg_color, sb_bg_color);
+		draw_scrollbars(grid->def_color);
 	}
 
 	/* Draw cells */

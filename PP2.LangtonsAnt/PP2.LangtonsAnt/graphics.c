@@ -55,7 +55,7 @@ static void handle_input(void)
 	static int input_delay = 0;
 	Simulation *sim = stgs.linked_sim;
 	int ch;
-	if (input_delay == 0) {
+	if (input_delay-- == 0) {
 		ch = getch();
 		if (is_simulation_valid(sim)) {
 			if (grid_key_command(sim->grid, sim->ant, ch) != ERR) { // TODO wgetch refreshes
@@ -63,9 +63,7 @@ static void handle_input(void)
 			}
 		}
 		menu_key_command(ch);
-		input_delay += INPUT_DELAY;
-	} else {
-		--input_delay;
+		input_delay = INPUT_DELAY;
 	}
 }
 
@@ -73,7 +71,7 @@ static void handle_input(void)
 
 void draw_loop(void)
 {
-	static size_t cnt = DRAW_EVERY-1;
+	static size_t cnt = 0;
 	Simulation *sim;
 	Vector2i oldp;
 	int delay;
@@ -85,6 +83,7 @@ void draw_loop(void)
 		if (is_simulation_valid(sim)) {
 			if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
 				draw_grid_full(sim->grid);
+				cnt = 0;
 			}
 			if (is_simulation_running(sim)) {
 				oldp = sim->ant->pos;
@@ -103,9 +102,9 @@ void draw_loop(void)
 			}
 		}
 
-		if (++cnt == DRAW_EVERY) { // TODO can do better
+		if (cnt-- == 0) { // TODO can do better
 			draw_menu();
-			cnt = 0;
+			cnt = DRAW_EVERY;
 		}
 
 		doupdate();

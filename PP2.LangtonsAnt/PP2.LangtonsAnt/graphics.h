@@ -88,7 +88,7 @@
 #define OFFSET_SIZE(t)         ((GRID_WINDOW_SIZE-(t)) / 2)
 
 /** Scroll utility macros */
-#define ORIGIN_COORD(gs, vs, sc)     max((gs)/2-(vs)/2+(sc), 0)
+#define ORIGIN_COORD(gs, vs, sc)     ((gs)/2-(vs)/2+(sc))
 #define ORIGIN_POS(gs, vs, scy, scx) (Vector2i) { ORIGIN_COORD(gs, vs, scy), ORIGIN_COORD(gs, vs, scx) }
 
 /**
@@ -124,6 +124,7 @@ typedef struct scroll_info {
 #define MENU_BUTTON_HEIGHT  7
 #define MENU_PLAY_COLOR     COLOR_GREEN
 #define MENU_PAUSE_COLOR    COLOR_YELLOW
+#define MENU_STOP_COLOR     COLOR_RED
 #define MENU_CLEAR_COLOR    COLOR_TEAL
 
 /** Escape key literal for input handling */
@@ -159,7 +160,7 @@ extern Settings stgs;
 extern const Vector2i grid_pos, menu_pos;
 extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
-extern const Vector2i menu_play_pos, menu_pause_pos, menu_clear_pos;
+extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 
 

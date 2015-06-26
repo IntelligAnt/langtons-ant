@@ -5,7 +5,7 @@ int grid_key_command(Grid *grid, Ant *ant, int key)
 	Vector2i center = { grid->size/2, grid->size/2 };
 	Vector2i pos = abs2rel(ant->pos, center);
 	Vector2i tl = abs2rel(grid->top_left, center), br = abs2rel(grid->bottom_right, center);
-	int o = GRID_VIEW_SIZE/2 - SCROLL_STEP/2;
+	int o = GRID_VIEW_SIZE / 2 - 1;
 
 	switch (key) {
 		/* Arrow keys */

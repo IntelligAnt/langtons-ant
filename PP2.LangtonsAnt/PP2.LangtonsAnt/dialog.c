@@ -15,7 +15,6 @@ const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_H
 static void draw_tiles(void)
 {
 	short i, fg = GET_COLOR_FOR(fg_pair);
-	chtype border_pair = GET_PAIR_FOR(stgs.colors->def);
 	Vector2i outer = colors_pos, inner;
 
 	for (i = 0; i < COLOR_COUNT; i++) {
@@ -24,7 +23,7 @@ static void draw_tiles(void)
 		}
 		if (color_exists(stgs.colors, i)) {
 			inner.y = outer.y + 1, inner.x = outer.x + 1;
-			wattrset(dialogw, border_pair);
+			wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
 			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
 			wattrset(dialogw, GET_PAIR_FOR(i));
 			draw_box(dialogw, inner, DIALOG_TILE_SIZE - 2);

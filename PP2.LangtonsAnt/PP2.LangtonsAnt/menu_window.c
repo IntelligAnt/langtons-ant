@@ -10,7 +10,7 @@ const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-9 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-9 };
 const Vector2i menu_play_pos  = { MENU_CONTROLS_POS,  2 };
 const Vector2i menu_pause_pos = { MENU_CONTROLS_POS,  MENU_BUTTON_WIDTH+4 };
-const Vector2i menu_clear_pos = { MENU_CONTROLS_POS,  2*MENU_BUTTON_WIDTH+6 };
+const Vector2i menu_stop_pos  = { MENU_CONTROLS_POS,  2*MENU_BUTTON_WIDTH+6 };
 const Vector2i menu_load_pos  = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4,
                                   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 const Vector2i menu_save_pos  = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
@@ -42,8 +42,8 @@ const unsigned char logo_bitmap[] = {
 const unsigned char isz_bitmaps[][1] = {
 	{ 0x5C }, { 0xE8 }
 };
-const unsigned char button_bitmaps[][3] = {
-	{ 0x43, 0x1C, 0xC4 }, { 0x52, 0x94, 0xA5 }, { 0x47, 0x92, 0x17 }
+const unsigned char button_bitmaps[][4] = {
+	{ 0x43, 0x1C, 0xC4 }, { 0x02, 0x94, 0xA0 }, { 0x03, 0x9C, 0xE0 }, { 0x47, 0x92, 0x17 }
 };
 const unsigned char digit_bitmaps[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
@@ -222,23 +222,28 @@ static void draw_control_buttons(void)
 {
 	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
-	Vector2i pos1 = { menu_play_pos.y + o.y, menu_play_pos.x + o.x };
+	Vector2i pos1 = { menu_play_pos.y + o.y,  menu_play_pos.x + o.x };
 	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
-	Vector2i pos3 = { menu_clear_pos.y + o.y, menu_clear_pos.x + o.x };
+	Vector2i pos3 = { menu_stop_pos.y + o.y,  menu_stop_pos.x + o.x };
 
 	wattrset(menuw, GET_PAIR_FOR(bg));
-	draw_rect(menuw, menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	draw_rect(menuw, menu_clear_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	draw_rect(menuw, menu_stop_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
 	wattrset(menuw, GET_PAIR_FOR(MENU_PLAY_COLOR));
 	draw_bitmap(menuw, pos1, button_bitmaps[0], 5, 5, FALSE);
 
 	wattrset(menuw, GET_PAIR_FOR(MENU_PAUSE_COLOR));
 	draw_bitmap(menuw, pos2, button_bitmaps[1], 5, 5, FALSE);
-
-	wattrset(menuw, GET_PAIR_FOR(MENU_CLEAR_COLOR));
-	draw_bitmap(menuw, pos3, button_bitmaps[2], 5, 5, FALSE);
+	
+	if (has_simulation_started(stgs.linked_sim)) {
+		wattrset(menuw, GET_PAIR_FOR(MENU_STOP_COLOR));
+		draw_bitmap(menuw, pos3, button_bitmaps[2], 5, 5, FALSE);
+	} else {
+		wattrset(menuw, GET_PAIR_FOR(MENU_CLEAR_COLOR));
+		draw_bitmap(menuw, pos3, button_bitmaps[3], 5, 5, FALSE);
+	}
 }
 
 static void draw_io_buttons(void)
