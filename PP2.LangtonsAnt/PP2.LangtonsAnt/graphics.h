@@ -78,9 +78,9 @@
 #define LINE_WIDTH_SMALL    2
 #define LINE_WIDTH_MEDIUM   1
 #define LINE_WIDTH_LARGE    0
-#define SLIDER_MIN_SIZE     1
-#define SCROLL_STEP         (GRID_WINDOW_SIZE / 4)
-#define SCROLL_STEP_BIG     GRID_VIEW_SIZE
+#define SCROLL_STEP_SMALL   (GRID_VIEW_SIZE / 18)
+#define SCROLL_STEP_MEDIUM  (GRID_VIEW_SIZE / 4)
+#define SCROLL_STEP_LARGE     GRID_VIEW_SIZE
 
 /** Generic size calculations for grid functions */
 #define CELL_SIZE(gs, lw)      ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))

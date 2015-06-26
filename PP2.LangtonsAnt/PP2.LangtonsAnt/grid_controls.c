@@ -10,42 +10,42 @@ int grid_key_command(Grid *grid, Ant *ant, int key)
 	switch (key) {
 		/* Arrow keys */
 	case KEY_UP:
-		scroll_grid(grid, -SCROLL_STEP, 0);
+		scroll_grid(grid, -SCROLL_STEP_MEDIUM, 0);
 		break;
 	case KEY_DOWN:
-		scroll_grid(grid,  SCROLL_STEP, 0);
+		scroll_grid(grid,  SCROLL_STEP_MEDIUM, 0);
 		break;
 	case KEY_LEFT:
-		scroll_grid(grid, 0, -SCROLL_STEP);
+		scroll_grid(grid, 0, -SCROLL_STEP_MEDIUM);
 		break;
 	case KEY_RIGHT:
-		scroll_grid(grid, 0,  SCROLL_STEP);
+		scroll_grid(grid, 0,  SCROLL_STEP_MEDIUM);
 		break;
 
 		/* Numpad keys */
 	case '8':
-		scroll_grid(grid, -SCROLL_STEP_BIG, 0);
+		scroll_grid(grid, -SCROLL_STEP_LARGE, 0);
 		break;
 	case '2':
-		scroll_grid(grid,  SCROLL_STEP_BIG, 0);
+		scroll_grid(grid,  SCROLL_STEP_LARGE, 0);
 		break;
 	case '4':
-		scroll_grid(grid, 0, -SCROLL_STEP_BIG);
+		scroll_grid(grid, 0, -SCROLL_STEP_LARGE);
 		break;
 	case '6':
-		scroll_grid(grid, 0,  SCROLL_STEP_BIG);
+		scroll_grid(grid, 0,  SCROLL_STEP_LARGE);
 		break;
 	case '7':
-		scroll_grid(grid, -SCROLL_STEP_BIG, -SCROLL_STEP_BIG);
+		scroll_grid(grid, -SCROLL_STEP_LARGE, -SCROLL_STEP_LARGE);
 		break;
 	case '9':
-		scroll_grid(grid, -SCROLL_STEP_BIG,  SCROLL_STEP_BIG);
+		scroll_grid(grid, -SCROLL_STEP_LARGE,  SCROLL_STEP_LARGE);
 		break;
 	case '1':
-		scroll_grid(grid,  SCROLL_STEP_BIG, -SCROLL_STEP_BIG);
+		scroll_grid(grid,  SCROLL_STEP_LARGE, -SCROLL_STEP_LARGE);
 		break;
 	case '3':
-		scroll_grid(grid,  SCROLL_STEP_BIG,  SCROLL_STEP_BIG);
+		scroll_grid(grid,  SCROLL_STEP_LARGE,  SCROLL_STEP_LARGE);
 		break;
 
 		/* PgUp, PgDn, Home, End */
@@ -113,7 +113,7 @@ void grid_mouse_command(Grid *grid)
 	int step;
 	
 	nc_getmouse(&event);
-	step = (event.bstate & BUTTON1_CLICKED) ? SCROLL_STEP
+	step = (event.bstate & BUTTON1_CLICKED) ? SCROLL_STEP_SMALL
 		 : (event.bstate & BUTTON3_CLICKED) ? grid->size // Can be anything large
 		 : 0;
 

@@ -308,7 +308,7 @@ static void draw_steps(void)
 			draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5, TRUE);
 		} else {
 			wattron(menuw, A_REVERSE);
-			draw_rect(menuw, top_left, 4, 5);
+			draw_rect(menuw, top_left, 3, 5);
 		}
 		top_left.x += 4;
 	}

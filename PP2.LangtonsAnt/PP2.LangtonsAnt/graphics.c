@@ -2,7 +2,7 @@
 #include "graphics.h"
 
 #define DRAW_EVERY 13
-#define INPUT_DELAY 0
+#define INPUT_DELAY 0 // TODO low delay causes lag when A is held
 
 static bool do_draw = TRUE;
 chtype fg_pair, bg_pair;

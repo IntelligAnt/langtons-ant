@@ -39,7 +39,7 @@ static void draw_tiles(void)
 	}
 }
 
-static void draw_buttons()
+static void draw_buttons() // TODO draw line borders around selected buttons
 {
 	int i, mid = DIALOG_BUTTON_HEIGHT/2, n = DIALOG_BUTTON_WIDTH-2;
 
@@ -47,13 +47,13 @@ static void draw_buttons()
 	draw_rect(dialogw, left_pos,  DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	draw_rect(dialogw, right_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	wattron(dialogw, A_REVERSE);
-	mvwaddstr(dialogw, left_pos.y+mid,  left_pos.x+1,  "  <  ");
-	mvwaddstr(dialogw, right_pos.y+mid, right_pos.x+1, "  >  ");
+	mvwaddstr(dialogw, left_pos.y+mid,  left_pos.x+3,  "<");
+	mvwaddstr(dialogw, right_pos.y+mid, right_pos.x+3, ">");
 
 	wattrset(dialogw, GET_PAIR_FOR(DIALOG_DELETE_COLOR));
 	draw_rect(dialogw, delete_pos, DIALOG_BUTTON_WIDTH-2, DIALOG_BUTTON_HEIGHT);
 	wattron(dialogw, A_REVERSE);
-	mvwaddstr(dialogw, delete_pos.y+mid, delete_pos.x+1,  " X ");
+	mvwaddstr(dialogw, delete_pos.y+mid, delete_pos.x+2,  "X"); // TODO don't draw when cidx < 0
 }
 
 void open_dialog(Vector2i pos, int color_index)
