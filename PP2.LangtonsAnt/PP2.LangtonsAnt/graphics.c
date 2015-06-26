@@ -81,28 +81,26 @@ void draw_loop(void)
 	while (do_draw) {
 		handle_input();
 
-		if (is_simulation_valid(sim)) {
-			if (!sim->is_running || sim->steps == 0) {
+		if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
+			draw_grid_full(sim->grid);
+		}
+		if (is_simulation_running(sim)) {
+			oldp = sim->ant->pos;
+			ant_move(sim->ant, sim->grid, sim->colors);
+			grid_silent_expand(sim->grid);
+
+			if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
+				grid_expand(sim->grid, sim->ant);
 				draw_grid_full(sim->grid);
+			} else {
+				draw_grid_iter(sim->grid, oldp);
+				for (delay = 0; delay < DELAY/pow(sim->steps+1, 0.9); ++delay);
 			}
-			if (sim->is_running) {
-				oldp = sim->ant->pos;
-				ant_move(sim->ant, sim->grid, sim->colors);
-				grid_silent_expand(sim->grid);
 
-				if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
-					grid_expand(sim->grid, sim->ant);
-					draw_grid_full(sim->grid);
-				} else {
-					draw_grid_iter(sim->grid, oldp);
-					for (delay = 0; delay < DELAY/pow(sim->steps+1, 0.9); ++delay);
-				}
-
-				++(sim->steps);
-			}
+			++(sim->steps);
 		}
 
-		if (++cnt == DRAW_EVERY) {
+		if (++cnt == DRAW_EVERY) { // TODO can do better
 			draw_menu();
 			cnt = 0;
 		}

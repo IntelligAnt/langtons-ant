@@ -3,8 +3,8 @@
 WINDOW *dialogw;
 Vector2i dialog_pos = { -1, -1 };
 
-static int cidx;
-static short picked_color = COLOR_EMPTY, picked_turn = 0;
+int cidx;
+short picked_color = COLOR_NONE, picked_turn = TURN_NONE;
 
 const Vector2i colors_pos  = { 1, 1 };
 const Vector2i left_pos    = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, 1 };
@@ -75,8 +75,8 @@ void close_dialog(void)
 {
 	delwin(dialogw);
 	dialogw = NULL;
-	picked_color = COLOR_EMPTY;
-	picked_turn = 0;
+	picked_color = COLOR_NONE;
+	picked_turn = TURN_NONE;
 }
 
 void draw_dialog(void)
@@ -162,13 +162,13 @@ void dialog_mouse_command(MEVENT event)
 exit:
 	switch (cidx) {
 	case CIDX_NEWCOLOR:
-		if (picked_color != COLOR_EMPTY && picked_turn != 0) {
+		if (picked_color != COLOR_NONE && picked_turn != TURN_NONE) {
 			add_color(stgs.colors, picked_color, picked_turn);
 			close_dialog();
 		}
 		break;
 	case CIDX_DEFAULT:
-		if (picked_color != COLOR_EMPTY) {
+		if (picked_color != COLOR_NONE) {
 			colors_delete(stgs.colors);
 			stgs.colors = colors_new(picked_color);
 			close_dialog();
@@ -176,8 +176,8 @@ exit:
 		break;
 	default:
 		if (cidx >= 0 && cidx < COLOR_COUNT) {
-			if (picked_turn != 0) {
-				if (picked_color != COLOR_EMPTY) {
+			if (picked_turn != TURN_NONE) {
+				if (picked_color != COLOR_NONE) {
 					set_color(stgs.colors, cidx, picked_color, picked_turn);
 				} else {
 					set_turn(stgs.colors, cidx, picked_turn);

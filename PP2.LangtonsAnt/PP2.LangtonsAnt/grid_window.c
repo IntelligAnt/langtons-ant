@@ -28,15 +28,19 @@ static Vector2i pos2yx(Vector2i pos, int line_width, int cell_size, int offset)
 	};
 }
 
-static void draw_buffer_zone(int width)
+static void draw_buffer_zone(int total, int offset)
 {
 	const int n = GRID_WINDOW_SIZE;
 	int i;
-	for (i = 0; i < width; ++i) {
+	for (i = 0; i < offset; ++i) {
 		mvwhline(gridw, i,     i,     ACS_BLOCK, n-i);
-		mvwhline(gridw, n-1-i, i,     ACS_BLOCK, n-i);
 		mvwvline(gridw, i,     i,     ACS_BLOCK, n-i);
+		mvwhline(gridw, n-1-i, i,     ACS_BLOCK, n-i);
 		mvwvline(gridw, i,     n-1-i, ACS_BLOCK, n-i);
+	}
+	if ((n-total-2*offset) % 2) {
+		mvwhline(gridw, n-1-i, i, ACS_BLOCK, n-i);
+		mvwvline(gridw, i, n-1-i, ACS_BLOCK, n-i);
 	}
 }
 
@@ -63,7 +67,7 @@ static void draw_scrollbars(short sb_fg_color, short sb_bg_color)
 	mvwaddch(gridw, n,   n-1, ACS_RARROW);
 
 	/* Scrollbar sliders */
-	wattrset(gridw, GET_PAIR_FOR(sb_fg_color)); // TODO fix sliders drawing over right/bottom arrows
+	wattrset(gridw, GET_PAIR_FOR(sb_fg_color));
 	mvwhline(gridw, n, h, ACS_BLOCK, size);
 	mvwvline(gridw, v, n, ACS_BLOCK, size);
 }
@@ -72,21 +76,20 @@ static void bordered(Grid *grid, int line_width)
 {
 	int gs = grid->size, i, j;
 	int cs = CELL_SIZE(gs, line_width);
-	int total = TOTAL_SIZE(gs, line_width, cs);
-	int o = OFFSET_SIZE(total);
+	int t = TOTAL_SIZE(gs, line_width, cs);
+	int o = OFFSET_SIZE(t);
 	Vector2i pos, yx;
 
 	/* Draw background edge buffer zone */
-	assert(o <= GRID_BUFFER_ZONE);
 	wattrset(gridw, bg_pair);
-	draw_buffer_zone(o + 1);
+	draw_buffer_zone(t, o);
 
 	/* Draw grid lines */
 	wattrset(gridw, fg_pair);
 	for (i = 0; i < GRID_WINDOW_SIZE; i += cs+line_width) {
 		for (j = 0; j < line_width; ++j) {
-			mvwhline(gridw, o+i+j, o,     ACS_BLOCK, total);
-			mvwvline(gridw, o,     o+i+j, ACS_BLOCK, total);
+			mvwhline(gridw, o+i+j, o,     ACS_BLOCK, t);
+			mvwvline(gridw, o,     o+i+j, ACS_BLOCK, t);
 		}
 	}
 	
@@ -105,14 +108,15 @@ static void borderless(Grid *grid)
 {
 	int gs = grid->size, vgs = min(gs, GRID_VIEW_SIZE), i, j;
 	int cs = CELL_SIZE(vgs, 0);
-	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, 0, cs));
+	int t = TOTAL_SIZE(vgs, 0, cs);
+	int o = OFFSET_SIZE(t);
 	Vector2i pos, yx, origin = { 0, 0 };
 	short sb_fg_color = AVAILABLE_COLOR(grid->def_color, COLOR_WHITE, COLOR_SILVER);
 	short sb_bg_color = AVAILABLE_COLOR(grid->def_color, COLOR_GRAY,  COLOR_SILVER);
 
 	/* Draw background edge buffer zone */
 	wattrset(gridw, GET_PAIR_FOR(grid->def_color));
-	draw_buffer_zone(o + 1);
+	draw_buffer_zone(t, o);
 
 	/* Draw scrollbars in case of largest grid */
 	gridscrl.enabled = cs == 1;

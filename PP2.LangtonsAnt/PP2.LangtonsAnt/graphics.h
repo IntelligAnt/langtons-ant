@@ -63,8 +63,8 @@
 #ifndef COLOR_COUNT
 #define COLOR_COUNT 16
 #endif
-#ifndef COLOR_EMPTY
-#define COLOR_EMPTY -1
+#ifndef COLOR_NONE
+#define COLOR_NONE -1
 #endif
 
 /** Utility color macros */
@@ -75,7 +75,6 @@
 /** Grid window attributes */
 #define GRID_WINDOW_SIZE    109
 #define GRID_VIEW_SIZE      (GRID_WINDOW_SIZE - 1)
-#define GRID_BUFFER_ZONE    2
 #define LINE_WIDTH_SMALL    2
 #define LINE_WIDTH_MEDIUM   1
 #define LINE_WIDTH_LARGE    0
@@ -86,7 +85,7 @@
 /** Generic size calculations for grid functions */
 #define CELL_SIZE(gs, lw)      ((GRID_WINDOW_SIZE-(lw))/(gs) - (lw))
 #define TOTAL_SIZE(gs, lw, cs) (((gs)+1)*(lw) + (gs)*(cs))
-#define OFFSET_SIZE(total)     ((GRID_WINDOW_SIZE-(total)) / 2)
+#define OFFSET_SIZE(t)         ((GRID_WINDOW_SIZE-(t)) / 2)
 
 /** Scroll utility macros */
 #define ORIGIN_COORD(gs, vs, sc)     max((gs)/2-(vs)/2+(sc), 0)
@@ -120,7 +119,7 @@ typedef struct scroll_info {
 #define MENU_TILES_HEIGHT   (MENU_TILES_PER_COL*MENU_TILE_SIZE + (MENU_TILES_PER_COL+1)*MENU_TILE_VSEP+2)
 
 /** Menu buttons attributes */
-#define MENU_COMMANDS_POS   88
+#define MENU_CONTROLS_POS   88
 #define MENU_BUTTON_WIDTH   11
 #define MENU_BUTTON_HEIGHT  7
 #define MENU_PLAY_COLOR     COLOR_GREEN

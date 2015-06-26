@@ -4,9 +4,19 @@
 #define INPUT_WINDOW_WIDTH  38
 #define INPUT_WINDOW_HEIGHT 3
 
-static WINDOW *inputw;
-static const Vector2i io_pos = { MENU_COMMANDS_POS-22,
+static WINDOW *iow;
+static const Vector2i io_pos = { MENU_CONTROLS_POS-22,
                                  GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH-INPUT_WINDOW_WIDTH-2 };
+
+static void reset(void)
+{
+	Simulation *sim = stgs.linked_sim;
+	if (sim) {
+		simulation_delete(sim);
+	}
+	stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
+	reset_scroll();
+}
 
 static void isz_button_clicked(int i)
 {
@@ -25,22 +35,18 @@ static void isz_button_clicked(int i)
 	default:
 		return;
 	}
-	if (sim && !sim->is_running && sim->steps == 0) {
-		simulation_delete(sim);
-		stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
+	if (is_simulation_running(sim) && !has_simulation_started(sim)) {
+		reset();
 	}
 }
 
 static void play_button_clicked(void)
 {
 	Simulation *sim = stgs.linked_sim;
-	if (!sim || sim->is_running) {
-		if (sim) {
-			simulation_delete(sim);
-		}
-		sim = stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
+	if (is_simulation_running(sim)) {
+		reset();
 	}
-	if (has_enough_colors(sim->colors)) {
+	if (is_simulation_valid(sim) && has_enough_colors(sim->colors)) {
 		run_simulation(sim);
 	}
 }
@@ -48,23 +54,15 @@ static void play_button_clicked(void)
 static void pause_button_clicked(void)
 {
 	Simulation *sim = stgs.linked_sim;
-	if (sim && sim->is_running) {
+	if (is_simulation_running(sim)) {
 		stop_simulation(sim);
 	}
 }
 
 static void clear_button_clicked(void)
 {
-	Simulation *sim = stgs.linked_sim;
-	if (sim) {
-		if (sim->is_running) {
-			stop_simulation(sim);
-		}
-		remove_all_colors(stgs.colors);
-		simulation_delete(sim);
-		stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
-		reset_scroll();
-	}
+	remove_all_colors(stgs.colors);
+	reset();
 }
 
 static void io_button_clicked(bool load)
@@ -73,12 +71,12 @@ static void io_button_clicked(bool load)
 	char filename[FILENAME_BUF_LEN];
 	short status;
 	
-	inputw = newwin(3, INPUT_WINDOW_WIDTH, io_pos.y, io_pos.x);
-	wbkgd(inputw, GET_PAIR_FOR(COLOR_GRAY) | A_REVERSE);
+	iow = newwin(3, INPUT_WINDOW_WIDTH, io_pos.y, io_pos.x); // TODO move to window drawing file
+	wbkgd(iow, GET_PAIR_FOR(COLOR_GRAY) | A_REVERSE);
 	echo();
-	mvwgetnstr(inputw, 1, 1, filename, FILENAME_BUF_LEN);
+	mvwgetnstr(iow, 1, 1, filename, FILENAME_BUF_LEN);
 	noecho();
-	delwin(inputw);
+	delwin(iow);
 
 	if (load) {
 		status = (colors = load_rules(filename)) ? COLOR_LIME : COLOR_RED;
@@ -106,7 +104,11 @@ int menu_key_command(int key)
 
 	switch (key) {
 	case ' ':
-		sim->is_running ? pause_button_clicked() : play_button_clicked();
+		is_simulation_running(sim) ? pause_button_clicked() : play_button_clicked();
+		break;
+
+	case 'R': case 'r':
+		reset();
 		break;
 
 	case KEY_BACKSPACE: case '\b':

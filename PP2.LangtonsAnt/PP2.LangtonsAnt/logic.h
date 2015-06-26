@@ -38,8 +38,9 @@ typedef struct ant {
 
 /** Color struct constants */
 #define COLOR_COUNT 16
-#define COLOR_EMPTY -1
+#define COLOR_NONE  -1
 #define TURN_LEFT -1
+#define TURN_NONE  0
 #define TURN_RIGHT 1
 
 /** Color utility macros */
@@ -135,5 +136,7 @@ void simulation_delete(Simulation *sim);
 void run_simulation(Simulation *sim);
 void stop_simulation(Simulation *sim);
 bool is_simulation_valid(Simulation *sim);
+bool is_simulation_running(Simulation *sim);
+bool has_simulation_started(Simulation *sim);
 
 #endif

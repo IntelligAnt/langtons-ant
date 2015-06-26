@@ -8,12 +8,12 @@ Settings stgs;
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
 const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-9 };
 const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-9 };
-const Vector2i menu_play_pos  = { MENU_COMMANDS_POS,  2 };
-const Vector2i menu_pause_pos = { MENU_COMMANDS_POS,  MENU_BUTTON_WIDTH+4 };
-const Vector2i menu_clear_pos = { MENU_COMMANDS_POS,  2*MENU_BUTTON_WIDTH+6 };
-const Vector2i menu_load_pos  = { MENU_COMMANDS_POS-2*MENU_BUTTON_HEIGHT-4,
+const Vector2i menu_play_pos  = { MENU_CONTROLS_POS,  2 };
+const Vector2i menu_pause_pos = { MENU_CONTROLS_POS,  MENU_BUTTON_WIDTH+4 };
+const Vector2i menu_clear_pos = { MENU_CONTROLS_POS,  2*MENU_BUTTON_WIDTH+6 };
+const Vector2i menu_load_pos  = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4,
                                   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
-const Vector2i menu_save_pos  = { MENU_COMMANDS_POS-MENU_BUTTON_HEIGHT-2,
+const Vector2i menu_save_pos  = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
                                   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
 const char *tiles_msg  = "RULES:";
@@ -179,7 +179,7 @@ static void draw_color_list(void)
 	/* Draw color tiles */
 	for (c = stgs.colors->first; do_for; c = stgs.colors->next[c]) {
 		pos1 = pos2 = get_menu_tile_pos(i++);
-		if (c == COLOR_EMPTY) {
+		if (c == COLOR_NONE) {
 			break;
 		}
 		if (i < MENU_TILE_COUNT) {
@@ -206,6 +206,41 @@ static void draw_color_list(void)
 	}
 }
 
+static void draw_init_size(void)
+{
+	if (stgs.init_size < GRID_MIN_INIT_SIZE || stgs.init_size > GRID_MAX_INIT_SIZE) {
+		return;
+	}
+	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	draw_bitmap(menuw, menu_isz_u_pos, isz_bitmaps[0], 3, 2, FALSE);
+	draw_bitmap(menuw, menu_isz_d_pos, isz_bitmaps[1], 3, 2, FALSE);
+	wattrset(menuw, fg_pair);
+	draw_bitmap(menuw, isz_pos, digit_bitmaps[stgs.init_size], 3, 5, TRUE);
+}
+
+static void draw_control_buttons(void)
+{
+	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
+	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
+	Vector2i pos1 = { menu_play_pos.y + o.y, menu_play_pos.x + o.x };
+	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
+	Vector2i pos3 = { menu_clear_pos.y + o.y, menu_clear_pos.x + o.x };
+
+	wattrset(menuw, GET_PAIR_FOR(bg));
+	draw_rect(menuw, menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+	draw_rect(menuw, menu_clear_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_PLAY_COLOR));
+	draw_bitmap(menuw, pos1, button_bitmaps[0], 5, 5, FALSE);
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_PAUSE_COLOR));
+	draw_bitmap(menuw, pos2, button_bitmaps[1], 5, 5, FALSE);
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_CLEAR_COLOR));
+	draw_bitmap(menuw, pos3, button_bitmaps[2], 5, 5, FALSE);
+}
+
 static void draw_io_buttons(void)
 {
 	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
@@ -228,29 +263,6 @@ static void draw_io_buttons(void)
 	mvwaddstr(menuw, inner2.y+3, inner2.x+4, "FILE");
 }
 
-static void draw_control_buttons(void)
-{
-	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
-	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
-	Vector2i pos1 = { menu_play_pos.y + o.y, menu_play_pos.x + o.x };
-	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
-	Vector2i pos3 = { menu_clear_pos.y + o.y, menu_clear_pos.x + o.x };
-
-	wattrset(menuw, GET_PAIR_FOR(bg));
-	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-	draw_rect(menuw, menu_clear_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
-
-	wattrset(menuw, GET_PAIR_FOR(MENU_PLAY_COLOR));
-	draw_bitmap(menuw, pos1, button_bitmaps[0], 5, 5, FALSE);
-
-	wattrset(menuw, GET_PAIR_FOR(MENU_PAUSE_COLOR));
-	draw_bitmap(menuw, pos2, button_bitmaps[1], 5, 5, FALSE);
-
-	wattrset(menuw, GET_PAIR_FOR(MENU_CLEAR_COLOR));
-	draw_bitmap(menuw, pos3, button_bitmaps[2], 5, 5, FALSE);
-}
-
 static void draw_size(void)
 {
 	Simulation *sim = stgs.linked_sim;
@@ -261,23 +273,11 @@ static void draw_size(void)
 	mvwaddstr(menuw, size_pos.y, size_pos.x-28, size_str);
 }
 
-static void draw_init_size(void)
-{
-	if (stgs.init_size < GRID_MIN_INIT_SIZE || stgs.init_size > GRID_MAX_INIT_SIZE) {
-		return;
-	}
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
-	draw_bitmap(menuw, menu_isz_u_pos, isz_bitmaps[0], 3, 2, FALSE);
-	draw_bitmap(menuw, menu_isz_d_pos, isz_bitmaps[1], 3, 2, FALSE);
-	wattrset(menuw, fg_pair);
-	draw_bitmap(menuw, isz_pos, digit_bitmaps[stgs.init_size], 3, 5, TRUE);
-}
-
 static void draw_steps(void)
 {
 	static bool do_draw;
 	Simulation *sim = stgs.linked_sim;
-	size_t steps = is_simulation_valid(sim) ? sim->steps : 0;
+	size_t steps = sim ? sim->steps : 0;
 	int digit, len = (int)log10(steps) + 1;
 	char digits_str[9], *p;
 	Vector2i top_left = steps_pos;
@@ -336,8 +336,8 @@ void draw_menu(void)
 
 	draw_init_size();
 	draw_color_list();
-	draw_io_buttons();
 	draw_control_buttons();
+	draw_io_buttons();
 	draw_size();
 	draw_steps();
 

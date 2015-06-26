@@ -36,5 +36,15 @@ void stop_simulation(Simulation *sim)
 
 bool is_simulation_valid(Simulation *sim)
 {
-	return (sim && sim->colors && sim->grid && sim->ant);
+	return sim && sim->colors && sim->grid && sim->ant;
+}
+
+bool is_simulation_running(Simulation *sim)
+{
+	return sim && sim->is_running;
+}
+
+bool has_simulation_started(Simulation *sim)
+{
+	return sim && sim->steps > 0;
 }
