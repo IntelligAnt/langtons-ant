@@ -4,7 +4,7 @@
 
 #include "io.h"
 
-Colors *load_rules(char *filename)
+Colors *load_rules(char *filename) // TODO format checks
 {
 	Colors *colors;
 	FILE *input;

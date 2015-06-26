@@ -35,7 +35,7 @@ static void isz_button_clicked(int i)
 	default:
 		return;
 	}
-	if (is_simulation_running(sim) && !has_simulation_started(sim)) {
+	if (!is_simulation_running(sim) && !has_simulation_started(sim)) {
 		reset();
 	}
 }

@@ -119,7 +119,7 @@ static void borderless(Grid *grid)
 	draw_buffer_zone(t, o);
 
 	/* Draw scrollbars in case of largest grid */
-	gridscrl.enabled = cs == 1;
+	gridscrl.enabled = gs > vgs;
 	if (gridscrl.enabled) {
 		origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x);
 		gridscrl.scale = GRID_VIEW_SIZE / (double)gs;

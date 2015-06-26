@@ -74,30 +74,33 @@ static void handle_input(void)
 void draw_loop(void)
 {
 	static size_t cnt = DRAW_EVERY-1;
-	Simulation *sim = stgs.linked_sim;
+	Simulation *sim;
 	Vector2i oldp;
 	int delay;
 
 	while (do_draw) {
 		handle_input();
 
-		if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
-			draw_grid_full(sim->grid);
-		}
-		if (is_simulation_running(sim)) {
-			oldp = sim->ant->pos;
-			ant_move(sim->ant, sim->grid, sim->colors);
-			grid_silent_expand(sim->grid);
-
-			if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
-				grid_expand(sim->grid, sim->ant);
+		sim = stgs.linked_sim;
+		if (is_simulation_valid(sim)) {
+			if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
 				draw_grid_full(sim->grid);
-			} else {
-				draw_grid_iter(sim->grid, oldp);
-				for (delay = 0; delay < DELAY/pow(sim->steps+1, 0.9); ++delay);
 			}
+			if (is_simulation_running(sim)) {
+				oldp = sim->ant->pos;
+				ant_move(sim->ant, sim->grid, sim->colors);
+				grid_silent_expand(sim->grid);
 
-			++(sim->steps);
+				if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
+					grid_expand(sim->grid, sim->ant);
+					draw_grid_full(sim->grid);
+				} else {
+					draw_grid_iter(sim->grid, oldp);
+					for (delay = 0; delay < DELAY/pow(sim->steps+1, 0.9); ++delay);
+				}
+
+				++(sim->steps);
+			}
 		}
 
 		if (++cnt == DRAW_EVERY) { // TODO can do better
