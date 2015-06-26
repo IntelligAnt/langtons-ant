@@ -4,6 +4,7 @@
 
 WINDOW *gridw;
 ScrollInfo gridscrl;
+
 const Vector2i grid_pos = { 0, 0 };
 
 void init_grid_window(void)
@@ -201,4 +202,15 @@ void set_scroll(Grid *grid, int y, int x)
 	gridscrl.x = x;
 	gridscrl.hcenter = (int)(gridscrl.scale * x);
 	gridscrl.vcenter = (int)(gridscrl.scale * y);
+}
+
+void reset_scroll(void)
+{
+	if (gridscrl.enabled) {
+		gridscrl.y = 0;
+		gridscrl.x = 0;
+		gridscrl.hcenter = 0;
+		gridscrl.vcenter = 0;
+		gridscrl.scale = 0.0;
+	}
 }

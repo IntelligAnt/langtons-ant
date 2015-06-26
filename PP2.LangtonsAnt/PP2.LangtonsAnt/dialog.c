@@ -7,9 +7,9 @@ static int cidx;
 static short picked_color = COLOR_EMPTY, picked_turn = 0;
 
 const Vector2i colors_pos  = { 1, 1 };
-const Vector2i left_pos    = { DIALOG_ROWS*DIALOG_TILE_SIZE+2, 1 };
-const Vector2i right_pos   = { DIALOG_ROWS*DIALOG_TILE_SIZE+2, DIALOG_BUTTON_WIDTH+2 };
-const Vector2i delete_pos  = { DIALOG_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT+3,
+const Vector2i left_pos    = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, 1 };
+const Vector2i right_pos   = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, DIALOG_BUTTON_WIDTH+2 };
+const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT+3,
                               (DIALOG_WINDOW_HEIGHT-DIALOG_BUTTON_WIDTH-2)/2+1 };
 
 static void draw_tiles(void)
@@ -118,11 +118,11 @@ Vector2i get_dialog_button_pos(int index)
 {
 	switch (index) {
 	case -1:
-		return (Vector2i) { 2+DIALOG_ROWS*DIALOG_TILE_SIZE, 1 };
+		return (Vector2i) { 2+DIALOG_TILE_ROWS*DIALOG_TILE_SIZE, 1 };
 	case 0:
-		return (Vector2i) { 3 + DIALOG_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT, 1 };
+		return (Vector2i) { 3 + DIALOG_TILE_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT, 1 };
 	case 1:
-		return (Vector2i) { 2+DIALOG_ROWS*DIALOG_TILE_SIZE, DIALOG_BUTTON_WIDTH+2 };
+		return (Vector2i) { 2+DIALOG_TILE_ROWS*DIALOG_TILE_SIZE, DIALOG_BUTTON_WIDTH+2 };
 	default:
 		return (Vector2i) { -1, -1 };
 	}

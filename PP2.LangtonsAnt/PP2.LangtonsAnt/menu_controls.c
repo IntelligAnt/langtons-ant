@@ -60,10 +60,10 @@ static void clear_button_clicked(void)
 		if (sim->is_running) {
 			stop_simulation(sim);
 		}
-		simulation_delete(sim);
 		remove_all_colors(stgs.colors);
+		simulation_delete(sim);
 		stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
-		gridscrl = (ScrollInfo) { 0 };
+		reset_scroll();
 	}
 }
 
@@ -148,11 +148,11 @@ void menu_mouse_command(void)
 		}
 
 		/* Init size buttons clicked */
-		if (area_contains(menu_isz_u_pos, 1, 2, pos)) {
+		if (area_contains(menu_isz_u_pos, 3, 2, pos)) {
 			isz_button_clicked(1);
 			return;
 		}
-		if (area_contains(menu_isz_d_pos, 1, 2, pos)) {
+		if (area_contains(menu_isz_d_pos, 3, 2, pos)) {
 			isz_button_clicked(-1);
 			return;
 		}

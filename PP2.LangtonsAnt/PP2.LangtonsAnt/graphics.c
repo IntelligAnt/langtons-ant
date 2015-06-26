@@ -82,6 +82,9 @@ void draw_loop(void)
 		handle_input();
 
 		if (is_simulation_valid(sim)) {
+			if (!sim->is_running || sim->steps == 0) {
+				draw_grid_full(sim->grid);
+			}
 			if (sim->is_running) {
 				oldp = sim->ant->pos;
 				ant_move(sim->ant, sim->grid, sim->colors);
@@ -94,11 +97,11 @@ void draw_loop(void)
 					draw_grid_iter(sim->grid, oldp);
 					for (delay = 0; delay < DELAY/pow(sim->steps+1, 0.9); ++delay);
 				}
+
 				++(sim->steps);
-			} else {
-				draw_grid_full(sim->grid);
 			}
 		}
+
 		if (++cnt == DRAW_EVERY) {
 			draw_menu();
 			cnt = 0;

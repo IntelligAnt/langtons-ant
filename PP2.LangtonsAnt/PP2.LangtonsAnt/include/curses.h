@@ -36,7 +36,7 @@ PDCurses portable platform definitions list:
     SYSVcurses      True if you are compiling for SYSV portability.
     BSDcurses       True if you are compiling for BSD portability.
 
-**man-end****************************************************************/
+ **man-end****************************************************************/
 
 #define PDC_BUILD 3401
 #define PDCURSES        1      /* PDCurses-only routines */
@@ -393,7 +393,7 @@ The available non-color attributes are bold, underline, invisible,
 right-line, left-line, protect, reverse and blink. 256 color pairs (8 
 bits), 8 bits for other attributes, and 16 bits for character data.
 
-**man-end****************************************************************/
+ **man-end****************************************************************/
 
 /*** Video attribute macros ***/
 

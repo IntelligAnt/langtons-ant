@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 /** Debug mode enabled */
-#define DEBUG 0
+#define DEBUG 1
 #if DEBUG
 #include <assert.h>
 #else
