@@ -23,8 +23,8 @@ const char *sparse_msg = "SPARSE MATRIX";
 const char *size_msg   = "GRID SIZE:";
 const char *steps_msg  = "STEPS:";
 
-const Vector2i logo_pos       = { 3, 1 };
-const Vector2i logo_msg_pos   = { MENU_LOGO_HEIGHT-4,    2 };
+const Vector2i logo_pos       = { 3,  1 };
+const Vector2i logo_msg_pos   = { 12, 2 };
 const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
 const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
 const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-5 };
@@ -317,7 +317,7 @@ static void draw_steps(void)
 	}
 }
 
-void draw_menu(void)
+void draw_menu_full(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;

@@ -27,7 +27,7 @@ void init_graphics(short fg_color, short bg_color)
 
 	if (gridw != NULL && menuw != NULL) {
 		draw_grid_full(NULL);
-		draw_menu();
+		draw_menu_full();
 	} else {
 		printw("Couldn't initialize graphics. Please lower your terminal's font size "
 			   "(raster 8x8 preferred) and try again.");
@@ -109,7 +109,7 @@ void draw_loop(void)
 		}
 
 		if (cnt-- == 0) { // TODO can do better
-			draw_menu();
+			draw_menu_full();
 			cnt = DRAW_EVERY;
 		}
 

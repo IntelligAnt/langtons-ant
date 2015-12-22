@@ -1,16 +1,22 @@
+/**
+ * @file logic.h
+ * File containing all logic members and functions
+ * @author IntelligAnt
+ */
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
 #include <assert.h>
 #include <stddef.h>
 
-/** Curses boolean literals */
+///@{
 #ifndef FALSE
-#define FALSE 0
+#define FALSE 0 /**< Curses boolean literal */
 #endif
 #ifndef TRUE
 #define TRUE 1
 #endif
+///@}
 
 /** Curses boolean type */
 typedef unsigned char bool;
@@ -83,7 +89,7 @@ typedef struct grid {
 } Grid;
 
 
-/*** Simulation attributes and types */
+/** Simulation attributes and types */
 typedef struct simulation {
 	Colors *colors;
 	Grid *grid;

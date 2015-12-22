@@ -1,7 +1,7 @@
 /**
  * @file io.h
+ * File containing all input/output members and functions
  * @author IntelligAnt
- * @brief File containing all input/output functions
  */
 
 #ifndef __IO_H__
@@ -16,18 +16,20 @@
 #define RULES_TOTAL_FIELDS COLOR_COUNT*2+4
 
 /**
- * @brief Attemps to read rules from a .lant textfile
+ * Attemps to read rules from a .lant textfile
  * @param filename Path of file from which to load
- * @return Pointer to Colors struct if successful; NULL otherwise
+ * @return Pointer to a Colors struct if successful; NULL otherwise
+ * @see save_rules(char *, Colors *)
  */
 Colors* load_rules(char *filename);
 
 /**
- * @brief Attempts to write rules to a .lant textfile
- * @param filenama Path of file from which to load
+ * Attempts to write rules to a .lant textfile
+ * @param filename Path of file from which to load
  * @param colors Rules to be written
  * @return Number of read fields if successful; EOF otherwise
+ * @see load_rules(char *)
  */
-int save_rules(char *filename, Colors* colors);
+int save_rules(char *filename, Colors *colors);
 
 #endif
