@@ -3,7 +3,7 @@
 #include "graphics.h"
 #include "io.h"
 
-#define INPUT_WINDOW_WIDTH  38
+#define INPUT_WINDOW_WIDTH  (MENU_WINDOW_WIDTH-4)
 #define INPUT_WINDOW_HEIGHT 3
 
 static WINDOW *iow;
@@ -80,6 +80,9 @@ static void io_button_clicked(bool load)
 	
 	iow = newwin(3, INPUT_WINDOW_WIDTH, io_pos.y, io_pos.x); // TODO move to window drawing file
 	wbkgd(iow, GET_PAIR_FOR(COLOR_GRAY) | A_REVERSE);
+	wattron(iow, fg_pair);
+	waddstr(iow, " Path: ");
+	wattroff(iow, fg_pair);
 	echo();
 	mvwgetnstr(iow, 1, 1, filename, FILENAME_BUF_LEN);
 	noecho();

@@ -16,12 +16,15 @@ const Vector2i menu_load_pos  = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4,
 const Vector2i menu_save_pos  = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
                                   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
+const char *logo_msg   = " 14-STATE 2D TURING MACHINE SIMULATOR ";
 const char *tiles_msg  = "RULES:";
 const char *isz_msg    = "INIT SIZE:";
 const char *sparse_msg = "SPARSE MATRIX";
 const char *size_msg   = "GRID SIZE:";
 const char *steps_msg  = "STEPS:";
 
+const Vector2i logo_pos       = { 3, 1 };
+const Vector2i logo_msg_pos   = { MENU_LOGO_HEIGHT-4,    2 };
 const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
 const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
 const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-5 };
@@ -337,10 +340,12 @@ void draw_menu(void)
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
 	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
 
-	draw_bitmap(menuw, (Vector2i) { 4, 1 }, logo_bitmap, 40, 8, FALSE);
+	draw_bitmap(menuw, logo_pos, logo_bitmap, 40, 8, FALSE);
+	wattron(menuw, A_REVERSE);
+	mvwaddstr(menuw, logo_msg_pos.y,  logo_msg_pos.x,  logo_msg);
 
-	draw_init_size();
 	draw_color_list();
+	draw_init_size();
 	draw_control_buttons();
 	draw_io_buttons();
 	draw_size();
