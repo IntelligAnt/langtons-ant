@@ -10,8 +10,9 @@
 #include <stddef.h>
 
 ///@{
+/** Curses boolean literal */
 #ifndef FALSE
-#define FALSE 0 /**< Curses boolean literal */
+#define FALSE 0
 #endif
 #ifndef TRUE
 #define TRUE 1
@@ -22,8 +23,8 @@
 typedef unsigned char bool;
 
 /** Vector container */
-typedef struct vector2i {
-	int y, x;
+typedef struct vector2i {      ///@{
+	int y, x; /**< Coordinates */ ///@}
 } Vector2i;
 
 /** Ant directions enum */
@@ -35,23 +36,28 @@ typedef struct ant {
 	Direction dir;
 } Ant;
 
-/** Color struct constants */
+/** @name Color struct constants */
+///@{
 #define COLOR_COUNT 16
 #define COLOR_NONE  -1
 #define TURN_LEFT -1
 #define TURN_NONE  0
 #define TURN_RIGHT 1
+///@}
 
-/** Color utility macros */
+/** @name Color utility macros */
+///@{
 #define COLOR_NEXT(cs, c) (cs)->next[c]
 #define COLOR_TURN(cs, c) (cs)->turn[c]
+///@}
 
 /** Colors container */
 typedef struct colors {
-	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def;
+	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def; // TODO Finish logic docs
 } Colors;
 
-/** Grid attributes and types */
+/** @name Grid attributes and types */
+///{@
 #define GRID_MUL                3
 #define GRID_SIZE_THRESHOLD     19682 // 3^9 - 1
 #define GRID_USAGE_THRESHOLD    0.5
@@ -66,13 +72,16 @@ typedef struct colors {
 #define IS_GRID_LARGE(g)        ((g)->size >= GRID_SIZE_LARGE(g))
 #define GRID_EFFICIENCY(g)      ((g)->size*(g)->size / ((double)sizeof(Cell)*(g)->colored))
 #define GRID_COLOR_AT(g, p)     (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
+///@}
 
-/** Sparse matrix bit packing macros */
+/** @name Sparse matrix bit packing macros */
+///@{
 #define CELL_COLOR_MASK         (0xF << 28)
 #define CELL_GET_COLOR(c)	    (((c)->col_packed & CELL_COLOR_MASK) >> 28)
 #define CELL_SET_COLOR(c, col)	((c)->col_packed = (c)->col_packed & ~CELL_COLOR_MASK | ((col) << 28))
 #define CELL_GET_COLUMN(c)	    ((c)->col_packed & ~CELL_COLOR_MASK)
 #define CELL_SET_COLUMN(c, col)	((c)->col_packed = (c)->col_packed & CELL_COLOR_MASK | (col) & ~CELL_COLOR_MASK)
+///@}
 
 /** Sparse matrix cell container */
 typedef struct cell {

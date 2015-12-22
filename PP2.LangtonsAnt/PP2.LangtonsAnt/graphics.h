@@ -10,7 +10,8 @@
 #include "include/curses.h"
 
 ///@{
-#define max(a, b) (((a) > (b)) ? (a) : (b)) /**< Standard max/min macro */
+/** Standard max/min macro */
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 ///@}
 
@@ -99,9 +100,9 @@
 
 /** Structure for managing scroll data */
 typedef struct scroll_info {
-	bool enabled;		  /**< Scrolling is enabled */
-	int y, x;             /**< Current view pos relative to (0,0) */
-	int hcenter, vcenter; /**< Scrollbar slider positions */
+	bool enabled;		  /**< Scrolling is enabled */               ///@{
+	int y, x;             /**< Current view pos relative to (0,0) */ /**@}*/ ///@{
+	int hcenter, vcenter; /**< Scrollbar slider positions */         ///@}
 	double scale;         /**< Scaling factor */
 } ScrollInfo;
 
@@ -161,7 +162,8 @@ typedef struct settings {
 ///@}
 
 ///@{
-#define CIDX_NEWCOLOR -1 /**< Designates which colors are to be set in the dialog */
+/** Designates which colors are to be set in the dialog */
+#define CIDX_NEWCOLOR -1
 #define CIDX_DEFAULT  -2
 ///@}
 
@@ -294,7 +296,7 @@ void end_grid_window(void);
 void draw_grid_full(Grid *grid);
 
 /**
- * Draws the given pixel in the grid (the portion shown by gridscrl)
+ * Draws the given pixel in the grid (the portion shown by gridscrl).
  * Suitable for calling in loops as it does less work than draw_grid__full
  * @param grid Grid from which to draw
  * @param oldp Position of pixel that has changed and should be drawn
@@ -354,13 +356,16 @@ void init_menu_window(void);
 void end_menu_window(void);
 
 /**
- * Draws the entire menu
+ * Draws the entire menu.
+ * @see draw_menu_iter(void)
  */
 void draw_menu_full(void);
 
 /**
-* Draws only the parts of the menu that can dynamically change
-*/
+ * Draws only the parts of the menu that can dynamically change.
+ * Suitable for calling in loops as it does less work than draw_menu_full
+ * @see draw_menu_full(void)
+ */
 void draw_menu_iter(void);
 
 /**
