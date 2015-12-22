@@ -41,7 +41,7 @@ static void draw_tiles(void)
 
 static void draw_buttons() // TODO draw line borders around selected buttons
 {
-	int i, mid = DIALOG_BUTTON_HEIGHT/2, n = DIALOG_BUTTON_WIDTH-2;
+	int mid = DIALOG_BUTTON_HEIGHT/2;
 
 	wattrset(dialogw, GET_PAIR_FOR(DIALOG_BUTTON_COLOR));
 	draw_rect(dialogw, left_pos,  DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);

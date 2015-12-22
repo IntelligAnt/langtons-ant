@@ -8,7 +8,7 @@
 Grid *grid_new(Colors *colors, size_t init_size)
 {
 	Grid *grid = malloc(sizeof(Grid));
-	size_t i, j;
+	size_t i;
 	grid->c = malloc(init_size * sizeof(unsigned char*));
 	for (i = 0; i < init_size; ++i) {
 		grid->c[i] = malloc(init_size);
@@ -205,7 +205,7 @@ void grid_make_sparse(Grid *grid)
 
 bool is_grid_sparse(Grid *grid)
 {
-	return grid->csr ? assert(!grid->c), 1 : 0;
+	return grid->csr ? assert(!grid->c), TRUE : FALSE;
 }
 
 void new_cell(Cell **cur, unsigned column, unsigned char c)

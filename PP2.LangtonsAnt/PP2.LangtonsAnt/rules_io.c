@@ -8,7 +8,7 @@ Colors *load_rules(char *filename) // TODO format checks
 {
 	Colors *colors;
 	FILE *input;
-	int e, i;
+	int e;
 	short def, c;
 	
 	if (!(input = fopen(filename, "r"))) {

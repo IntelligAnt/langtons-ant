@@ -23,10 +23,16 @@ void init_graphics(short fg_color, short bg_color)
 	init_def_pairs(fg_color, bg_color);
 	
 	init_grid_window();
-	draw_grid_full(NULL);
-
 	init_menu_window();
-	draw_menu();
+
+	if (gridw != NULL && menuw != NULL) {
+		draw_grid_full(NULL);
+		draw_menu();
+	} else {
+		printw("Couldn't initialize graphics. Please lower your terminal's font size "
+			   "(raster 8x8 preferred) and try again.");
+		wnoutrefresh(stdscr);
+	}
 
 	doupdate();
 }

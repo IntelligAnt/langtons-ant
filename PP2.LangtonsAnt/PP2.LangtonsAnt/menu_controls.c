@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "graphics.h"
 #include "io.h"
 
@@ -105,7 +107,6 @@ static void io_button_clicked(bool load)
 int menu_key_command(int key)
 {
 	Simulation *sim = stgs.linked_sim;
-	Vector2i rel;
 
 	switch (key) {
 	case ' ':
@@ -131,6 +132,7 @@ int menu_key_command(int key)
 	default:
 		return ERR;
 	}
+
 	return key;
 }
 
@@ -138,7 +140,7 @@ void menu_mouse_command(void)
 {
 	MEVENT event;
 	Vector2i event_pos, pos, tile;
-	int dy, dx, i;
+	int i;
 
 	nc_getmouse(&event);
 	if (event.bstate & BUTTON1_CLICKED) {

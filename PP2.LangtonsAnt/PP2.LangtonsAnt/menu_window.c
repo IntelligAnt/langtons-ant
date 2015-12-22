@@ -6,8 +6,8 @@ WINDOW *menuw;
 Settings stgs;
 
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
-const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT,   MENU_WINDOW_WIDTH-9 };
-const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+3, MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT+1, MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+4, MENU_WINDOW_WIDTH-9 };
 const Vector2i menu_play_pos  = { MENU_CONTROLS_POS,  2 };
 const Vector2i menu_pause_pos = { MENU_CONTROLS_POS,  MENU_BUTTON_WIDTH+4 };
 const Vector2i menu_stop_pos  = { MENU_CONTROLS_POS,  2*MENU_BUTTON_WIDTH+6 };
@@ -22,10 +22,10 @@ const char *sparse_msg = "SPARSE MATRIX";
 const char *size_msg   = "GRID SIZE:";
 const char *steps_msg  = "STEPS:";
 
-const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+5,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
-const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
-const Vector2i isz_pos        = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-5 };
-const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT,      MENU_WINDOW_WIDTH-20 };
+const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
+const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
+const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-5 };
+const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-20 };
 const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
 const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
@@ -337,7 +337,7 @@ void draw_menu(void)
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
 	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
 
-	//draw_bitmap(menuw, (Vector2i) { 4, 1 }, logo_bitmap, 40, 8, FALSE);
+	draw_bitmap(menuw, (Vector2i) { 4, 1 }, logo_bitmap, 40, 8, FALSE);
 
 	draw_init_size();
 	draw_color_list();

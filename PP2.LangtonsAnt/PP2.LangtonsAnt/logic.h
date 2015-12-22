@@ -1,15 +1,8 @@
 #ifndef __LOGIC_H__
 #define __LOGIC_H__
 
-#include <stddef.h>
-
-/** Debug mode enabled */
-#define DEBUG 1
-#if DEBUG
 #include <assert.h>
-#else
-#define assert(e) 1
-#endif
+#include <stddef.h>
 
 /** Curses boolean literals */
 #ifndef FALSE
