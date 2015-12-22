@@ -297,7 +297,7 @@ void draw_grid_full(Grid *grid);
 
 /**
  * Draws the given pixel in the grid (the portion shown by gridscrl).
- * Suitable for calling in loops as it does less work than draw_grid__full
+ * Suitable for calling in loops as it does less work than draw_grid__full.
  * @param grid Grid from which to draw
  * @param oldp Position of pixel that has changed and should be drawn
  * @see draw_grid_full(Grid *)
@@ -363,7 +363,7 @@ void draw_menu_full(void);
 
 /**
  * Draws only the parts of the menu that can dynamically change.
- * Suitable for calling in loops as it does less work than draw_menu_full
+ * Suitable for calling in loops as it does less work than draw_menu_full.
  * @see draw_menu_full(void)
  */
 void draw_menu_iter(void);
