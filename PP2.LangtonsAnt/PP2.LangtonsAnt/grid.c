@@ -52,12 +52,12 @@ static void grid_delete_n(Grid *grid)
 static void grid_delete_s(Grid *grid)
 {
 	int i;
-	Cell *temp;
+	Cell *cell;
 	for (i = 0; i < grid->size; i++) {
 		while (grid->csr[i]) {
-			temp = grid->csr[i];
+			cell = grid->csr[i];
 			grid->csr[i] = (grid->csr[i])->next;
-			free(temp);
+			free(cell);
 		}
 	}
 	free(grid->csr);
@@ -65,11 +65,7 @@ static void grid_delete_s(Grid *grid)
 
 void grid_delete(Grid *grid)
 {
-	if (is_grid_sparse(grid)) {
-		grid_delete_s(grid);
-	} else {
-		grid_delete_n(grid);
-	}
+	is_grid_sparse(grid) ? grid_delete_s(grid) : grid_delete_n(grid);
 	free(grid);
 }
 
