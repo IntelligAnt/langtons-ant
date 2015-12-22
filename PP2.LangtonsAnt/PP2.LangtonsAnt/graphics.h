@@ -138,9 +138,6 @@ typedef struct scroll_info {
 #define MENU_CLEAR_COLOR    COLOR_TEAL
 ///@}
 
-/** Escape key literal for input handling */
-#define KEY_ESC 0x1B
-
 /** Structure containing all relevant menu settings */
 typedef struct settings {
 	Colors *colors;         /**< Currently active colors/rules */
@@ -165,6 +162,17 @@ typedef struct settings {
 /** Designates which colors are to be set in the dialog */
 #define CIDX_NEWCOLOR -1
 #define CIDX_DEFAULT  -2
+///@}
+
+/** Escape key literal for input handling */
+#define KEY_ESC 0x1B
+
+/** @name Optimization settings */
+///@{
+#define OPT_DELAY_LOOP      1          /**< Should use a delay loop to extend time between draws? */
+#define OPT_DELAY           10000000.0 /**< Base value for the delay in the delay loop */
+#define OPT_STEPS           1          /**< Should optimize drawing of steps in the menu by skipping some? */
+#define OPT_STEPS_THRESHOLD 0.9        /**< Ratio of steps between two draws must fall below this value */
 ///@}
 
 /** @name Globals */

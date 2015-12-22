@@ -290,9 +290,16 @@ static void draw_steps(void)
 	char digits_str[9], *p;
 	Vector2i top_left = steps_pos;
 
+#if OPT_STEPS
+	static size_t prev_steps;
+	bool skip_draw = (double)prev_steps/steps > OPT_STEPS_THRESHOLD;
+#else
+	bool skip_draw = FALSE;
+#endif
+
 	if (steps == 0) {
 		do_draw = TRUE;
-	} else if (!do_draw) {
+	} else if (!do_draw || skip_draw) {
 		return;
 	}
 
@@ -315,6 +322,10 @@ static void draw_steps(void)
 		}
 		top_left.x += 4;
 	}
+
+#if OPT_STEPS
+	prev_steps = steps;
+#endif
 }
 
 void draw_menu_full(void)
@@ -322,6 +333,7 @@ void draw_menu_full(void)
 	Simulation *sim = stgs.linked_sim;
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
 
+	/* Border and logo color */
 	if (is_simulation_valid(sim) && is_grid_sparse(sim->grid)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
 		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
@@ -329,20 +341,24 @@ void draw_menu_full(void)
 		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', MENU_WINDOW_WIDTH-2);
 	}
+
+	/* Draw border */
 	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
 	mvwvline(menuw, 0,   0,   ACS_BLOCK, v);
 	mvwhline(menuw, v-1, 0,   ACS_BLOCK, h);
 	mvwvline(menuw, 0,   h-1, ACS_BLOCK, v);
 
+	/* Draw logo */
+	draw_bitmap(menuw, logo_pos, logo_bitmap, 40, 8, FALSE);
+	wattron(menuw, A_REVERSE);
+	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
+
+	/* Draw messages */
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
 	mvwaddstr(menuw, isz_msg_pos.y,   isz_msg_pos.x,   isz_msg);
 	mvwaddstr(menuw, tiles_msg_pos.y, tiles_msg_pos.x, tiles_msg);
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
 	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
-
-	draw_bitmap(menuw, logo_pos, logo_bitmap, 40, 8, FALSE);
-	wattron(menuw, A_REVERSE);
-	mvwaddstr(menuw, logo_msg_pos.y,  logo_msg_pos.x,  logo_msg);
 
 	draw_color_list();
 	draw_init_size();
@@ -356,4 +372,23 @@ void draw_menu_full(void)
 	if (dialogw) {
 		draw_dialog();
 	}
+}
+
+void draw_menu_iter(void)
+{
+	static bool dialog_opened = FALSE;
+
+	if (dialogw) {
+		draw_dialog();
+		if (!dialog_opened) {
+			dialog_opened = TRUE;
+		}
+	} else if (dialog_opened) {
+		draw_menu_full();
+		dialog_opened = FALSE;
+		return;
+	}
+
+	draw_steps();
+	wnoutrefresh(menuw);
 }

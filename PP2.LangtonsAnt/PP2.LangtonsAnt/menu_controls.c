@@ -72,12 +72,8 @@ static void stop_button_clicked(void)
 	has_simulation_started(stgs.linked_sim) ? reset_sim() : clear_sim();
 }
 
-static void io_button_clicked(bool load)
+static void read_filename(char *filename)
 {
-	Colors *colors;
-	char filename[FILENAME_BUF_LEN];
-	short status;
-	
 	iow = newwin(3, INPUT_WINDOW_WIDTH, io_pos.y, io_pos.x); // TODO move to window drawing file
 	wbkgd(iow, GET_PAIR_FOR(COLOR_GRAY) | A_REVERSE);
 	wattron(iow, fg_pair);
@@ -87,7 +83,15 @@ static void io_button_clicked(bool load)
 	mvwgetnstr(iow, 1, 1, filename, FILENAME_BUF_LEN);
 	noecho();
 	delwin(iow);
+}
 
+static void io_button_clicked(bool load)
+{
+	Colors *colors;
+	short status;
+	char filename[FILENAME_BUF_LEN];
+
+	read_filename(filename);
 	if (load) {
 		status = (colors = load_rules(filename)) ? COLOR_LIME : COLOR_RED;
 		wattrset(menuw, GET_PAIR_FOR(status));

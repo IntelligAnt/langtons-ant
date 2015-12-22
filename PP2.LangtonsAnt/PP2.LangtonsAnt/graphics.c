@@ -1,7 +1,6 @@
 #include <math.h>
 #include "graphics.h"
 
-#define DRAW_EVERY 13
 #define INPUT_DELAY 0 // TODO low delay causes lag when A is held
 
 static bool do_draw = TRUE;
@@ -73,14 +72,10 @@ static void handle_input(void)
 	}
 }
 
-#define DELAY 10000000.0
-
 void draw_loop(void)
 {
-	static size_t cnt = 0;
 	Simulation *sim;
 	Vector2i oldp;
-	int delay;
 
 	while (do_draw) {
 		handle_input();
@@ -89,7 +84,7 @@ void draw_loop(void)
 		if (is_simulation_valid(sim)) {
 			if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
 				draw_grid_full(sim->grid);
-				cnt = 0;
+				draw_menu_full();
 			}
 			if (is_simulation_running(sim)) {
 				oldp = sim->ant->pos;
@@ -99,18 +94,18 @@ void draw_loop(void)
 				if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
 					grid_expand(sim->grid, sim->ant);
 					draw_grid_full(sim->grid);
+					draw_menu_full();
 				} else {
+#if OPT_DELAY_LOOP
+					unsigned d;
+					for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
+#endif
 					draw_grid_iter(sim->grid, oldp);
-					for (delay = 0; delay < DELAY/pow(sim->steps+1, 0.9); ++delay);
+					draw_menu_iter();
 				}
 
 				++(sim->steps);
 			}
-		}
-
-		if (cnt-- == 0) { // TODO can do better
-			draw_menu_full();
-			cnt = DRAW_EVERY;
 		}
 
 		doupdate();
