@@ -63,23 +63,23 @@ int grid_key_command(Grid *grid, Ant *ant, int key)
 		break;
 
 		/* A - Move to ant */
-	case 'A': case 'a':
+	case 'A': case 'a': case '5':
 		set_scroll(grid, pos.y, pos.x);
 		break;
 
 		/* S - Move to origin */
-	case 'S': case 's': case '5':
+	case 'S': case 's': case '0':
 		set_scroll(grid, 0, 0);
 		break;
 
 	case KEY_MOUSE:
-		grid_mouse_command(grid);
-		break;
+		return grid_mouse_command(grid);
 
 	default:
-		return ERR;
+		return INPUT_NO_CHANGE;
 	}
-	return key;
+
+	return INPUT_GRID_CHANGED;
 }
 
 typedef enum { SB_VERTICAL, SB_HORIZONTAL } ScrollbarType;
@@ -107,7 +107,7 @@ static void scrollbar_clicked(Grid *grid, MEVENT event, ScrollbarType sbtype)
 	}
 }
 
-void grid_mouse_command(Grid *grid)
+input_t grid_mouse_command(Grid *grid)
 {
 	MEVENT event;
 	int step;
@@ -126,6 +126,7 @@ void grid_mouse_command(Grid *grid)
 		} else {
 			scrollbar_clicked(grid, event, SB_VERTICAL);
 		}
+		return INPUT_GRID_CHANGED;
 	/* Horizontal scrollbar */
 	} else if (event.y == GRID_VIEW_SIZE && event.x < GRID_VIEW_SIZE) {
 		if (event.x == 0) {
@@ -135,5 +136,8 @@ void grid_mouse_command(Grid *grid)
 		} else {
 			scrollbar_clicked(grid, event, SB_HORIZONTAL);
 		}
+		return INPUT_GRID_CHANGED;
 	}
+
+	return INPUT_NO_CHANGE;
 }

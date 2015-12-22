@@ -94,7 +94,7 @@ static void io_button_clicked(bool load)
 	read_filename(filename);
 	if (load) {
 		status = (colors = load_rules(filename)) ? COLOR_LIME : COLOR_RED;
-		wattrset(menuw, GET_PAIR_FOR(status));
+		wattrset(menuw, GET_PAIR_FOR(status));	// TODO Separate drawing from controls
 		mvwvline(menuw, menu_load_pos.y, MENU_WINDOW_WIDTH-3, ACS_BLOCK, MENU_BUTTON_HEIGHT);
 		if (colors) {
 			if (stgs.colors) {
@@ -111,7 +111,7 @@ static void io_button_clicked(bool load)
 	}
 }
 
-int menu_key_command(int key)
+input_t menu_key_command(int key)
 {
 	Simulation *sim = stgs.linked_sim;
 
@@ -133,17 +133,16 @@ int menu_key_command(int key)
 		break;
 
 	case KEY_MOUSE:
-		menu_mouse_command();
-		break;
+		return menu_mouse_command();
 
 	default:
-		return ERR;
+		return INPUT_NO_CHANGE;
 	}
 
-	return key;
+	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
-void menu_mouse_command(void)
+input_t menu_mouse_command(void)
 {
 	MEVENT event;
 	Vector2i event_pos, pos, tile;

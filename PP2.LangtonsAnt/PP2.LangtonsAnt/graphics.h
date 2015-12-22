@@ -167,6 +167,16 @@ typedef struct settings {
 /** Escape key literal for input handling */
 #define KEY_ESC 0x1B
 
+/** Window state change as a result of input events (bitwise OR of INPUT_* fields) */
+typedef char input_t;
+
+/** @name Window state change flags */
+///@{
+#define INPUT_NO_CHANGE    ((input_t)0x0)
+#define INPUT_GRID_CHANGED ((input_t)0x1)
+#define INPUT_MENU_CHANGED ((input_t)0x2)
+///@}
+
 /** @name Optimization settings */
 ///@{
 #define OPT_DELAY_LOOP      1          /**< Should use a delay loop to extend time between draws? */
@@ -271,10 +281,10 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin);
  * @param top_left Area origin
  * @param width Area width
  * @param height Area height
- * @param needle Vector to be checked
+ * @param vector Vector to be checked
  * @return Does area contain the vector?
  */
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i needle);
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i vector);
 
 /**
  * Standard signum function
@@ -340,15 +350,16 @@ void reset_scroll(void);
  * @param grid Grid to be acted upon
  * @param ant Ant to be acted upon
  * @param key Key passed to the grid
- * @return key if successful; ERR otherwise
+ * @return INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
  */
-int grid_key_command(Grid *grid, Ant *ant, int key);
+input_t grid_key_command(Grid *grid, Ant *ant, int key);
 
 /**
  * Handles mouse command passed to the grid window
  * @param grid Grid to be acted upon
+ * @return INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
  */
-void grid_mouse_command(Grid *grid);
+input_t grid_mouse_command(Grid *grid);
 
 
 /* menu_window.c */
@@ -387,16 +398,17 @@ Vector2i get_menu_tile_pos(int index);
 /* menu_controls.c */
 
 /**
- * Handles key command passed to the menu
+ * Handles key Command passed to the menu
  * @param key Key passed to the grid
- * @return key if successful; ERR otherwise
+ * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
  */
-int menu_key_command(int key);
+input_t menu_key_command(int key);
 
 /**
  * Handles mouse command passed to the menu
+ * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
  */
-void menu_mouse_command(void);
+input_t menu_mouse_command(void);
 
 
 /* dialog.c */

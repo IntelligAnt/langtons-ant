@@ -1,8 +1,6 @@
 #include <math.h>
 #include "graphics.h"
 
-#define INPUT_DELAY 0 // TODO low delay causes lag when A is held
-
 static bool do_draw = TRUE;
 chtype fg_pair, bg_pair;
 
@@ -55,39 +53,31 @@ void init_def_pairs(short fg_color, short bg_color)
 	}
 }
 
-static void handle_input(void)
+static input_t handle_input(void)
 {
-	static int input_delay = 0;
+	input_t res = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
-	int ch;
-	if (input_delay-- == 0) {
-		ch = getch();
-		if (is_simulation_valid(sim)) {
-			if (grid_key_command(sim->grid, sim->ant, ch) != ERR) { // TODO wgetch refreshes
-				draw_grid_full(sim->grid);
-			}
-		}
-		menu_key_command(ch);
-		input_delay = INPUT_DELAY;
+	int ch = getch();
+	if (is_simulation_valid(sim)) {
+		res |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
 	}
+	res |= menu_key_command(ch);
+	return res;
 }
 
 void draw_loop(void)
 {
-	Simulation *sim;
-	Vector2i oldp;
-
 	while (do_draw) {
-		handle_input();
+		Simulation *sim = stgs.linked_sim;
+		input_t input = handle_input();
 
-		sim = stgs.linked_sim;
-		if (is_simulation_valid(sim)) {
+		if (is_simulation_valid(sim) || input) { // TODO Fix drawing logic w/ input
 			if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
 				draw_grid_full(sim->grid);
 				draw_menu_full();
 			}
 			if (is_simulation_running(sim)) {
-				oldp = sim->ant->pos;
+				Vector2i oldp = sim->ant->pos;
 				ant_move(sim->ant, sim->grid, sim->colors);
 				grid_silent_expand(sim->grid);
 
@@ -174,10 +164,10 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin)
 	};
 }
 
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i needle)
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i vector)
 {
-	return (needle.y >= top_left.y && needle.y < top_left.y+height
-		 && needle.x >= top_left.x && needle.x < top_left.x+width);
+	return (vector.y >= top_left.y && vector.y < top_left.y+height
+		 && vector.x >= top_left.x && vector.x < top_left.x+width);
 }
 
 int sgn(int x)
