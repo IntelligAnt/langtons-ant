@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	Colors *colors = NULL;
 
 	if (argc > 2) {
-		printf("Usage: pp2.langtonsant.exe [rulesfile]\n");
+		printf("Usage: LangtonsAnt.exe [rulesfile]\n");
 		return;
 	}
 	if (argc == 2) {
