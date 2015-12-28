@@ -56,6 +56,7 @@ static input_t play_button_clicked(void)
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
 		res |= reset_sim();
+		sim = stgs.linked_sim;
 	}
 	if (sim && has_enough_colors(sim->colors)) {
 		run_simulation(sim);
@@ -109,12 +110,13 @@ static input_t io_button_clicked(bool load)
 			memcpy(stgs.colors, colors, sizeof(Colors));
 			free(colors);
 		}
+		return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 	} else {
 		status = (save_rules(filename, stgs.colors) != EOF) ? COLOR_LIME : COLOR_RED;
 		wattrset(menuw, GET_PAIR_FOR(status));
 		mvwvline(menuw, menu_save_pos.y, MENU_WINDOW_WIDTH-3, ACS_BLOCK, MENU_BUTTON_HEIGHT);
+		return INPUT_MENU_CHANGED;
 	}
-	return INPUT_MENU_CHANGED;
 }
 
 input_t menu_key_command(int key)

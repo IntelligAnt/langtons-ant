@@ -71,9 +71,9 @@ void draw_loop(void)
 	draw_menu_full();
 
 	while (do_draw) {
-		Simulation *sim = stgs.linked_sim;
 		input_t input = handle_input();
-		bool grid_changed = input & INPUT_GRID_CHANGED, menu_changed = input & INPUT_MENU_CHANGED;
+		input_t grid_changed = input & INPUT_GRID_CHANGED, menu_changed = input & INPUT_MENU_CHANGED;
+		Simulation *sim = stgs.linked_sim;
 
 		if (is_simulation_running(sim)) {
 			Vector2i oldp = sim->ant->pos;
