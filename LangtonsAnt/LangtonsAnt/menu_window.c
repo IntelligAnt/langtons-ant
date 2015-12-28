@@ -274,7 +274,7 @@ static void draw_io_buttons(void)
 static void draw_size(void)
 {
 	Simulation *sim = stgs.linked_sim;
-	size_t size = is_simulation_valid(sim) ? sim->grid->size : 0;
+	size_t size = sim ? sim->grid->size : 0;
 	char size_str[29];
 	sprintf(size_str, "%28d", size);
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
@@ -334,7 +334,7 @@ void draw_menu_full(void)
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
 
 	/* Border and logo color */
-	if (is_simulation_valid(sim) && is_grid_sparse(sim->grid)) {
+	if (sim && is_grid_sparse(sim->grid)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
 		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
 	} else {
@@ -379,7 +379,7 @@ void draw_menu_iter(void)
 	static bool dialog_opened = FALSE;
 
 	if (dialogw) {
-		draw_dialog();
+		//draw_dialog();
 		if (!dialog_opened) {
 			dialog_opened = TRUE;
 		}

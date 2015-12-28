@@ -168,7 +168,7 @@ typedef struct settings {
 #define KEY_ESC 0x1B
 
 /** Window state change as a result of input events (bitwise OR of INPUT_* fields) */
-typedef char input_t;
+typedef unsigned char input_t;
 
 /** @name Window state change flags */
 ///@{
@@ -197,6 +197,7 @@ extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 ///@}
+
 
 /* graphics.c */
 
@@ -416,7 +417,7 @@ input_t menu_mouse_command(void);
 /**
  * Opens a temporary dialog window for picking colors
  * @param pos Dialog origin relative to menu
- * @param color_index Index of the color that is to be set
+ * @param color_index Index of the color that is to be set (CIDX_NEWCOLOR to add a color, CIDX_DEFAULT to change the default)
  */
 void open_dialog(Vector2i pos, int color_index);
 
@@ -448,6 +449,6 @@ Vector2i get_dialog_button_pos(int index);
  * Handles mouse command passed to the dialog
  * @param event Mouse event
  */
-void dialog_mouse_command(MEVENT event);
+input_t dialog_mouse_command(MEVENT event);
 
 #endif

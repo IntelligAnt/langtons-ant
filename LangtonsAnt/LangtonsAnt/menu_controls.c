@@ -10,7 +10,7 @@ static WINDOW *iow;
 static const Vector2i io_pos = { MENU_CONTROLS_POS-22,
                                  GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH-INPUT_WINDOW_WIDTH-2 };
 
-static void reset_sim(void)
+static input_t reset_sim(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (sim) {
@@ -18,15 +18,16 @@ static void reset_sim(void)
 	}
 	stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 	reset_scroll();
+	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
-static void clear_sim(void)
+static input_t clear_sim(void)
 {
 	remove_all_colors(stgs.colors);
-	reset_sim();
+	return reset_sim();
 }
 
-static void isz_button_clicked(int i)
+static input_t isz_button_clicked(int i)
 {
 	Simulation *sim = stgs.linked_sim;
 	switch (i) {
@@ -41,35 +42,40 @@ static void isz_button_clicked(int i)
 		}
 		break;
 	default:
-		return;
+		return INPUT_NO_CHANGE;
 	}
-	if (!is_simulation_running(sim) && !has_simulation_started(sim)) {
-		reset_sim();
+	if (!is_simulation_running(sim) && !has_simulation_started(sim)) { // Sanity check
+		return reset_sim();
 	}
+	return INPUT_MENU_CHANGED;
 }
 
-static void play_button_clicked(void)
+static input_t play_button_clicked(void)
 {
+	input_t result = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		reset_sim();
+		result |= reset_sim();
 	}
-	if (is_simulation_valid(sim) && has_enough_colors(sim->colors)) {
+	if (sim && has_enough_colors(sim->colors)) {
 		run_simulation(sim);
+		result |= INPUT_MENU_CHANGED;
 	}
+	return result;
 }
 
-static void pause_button_clicked(void)
+static input_t pause_button_clicked(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		stop_simulation(sim);
+		halt_simulation(sim);
 	}
+	return INPUT_NO_CHANGE;
 }
 
-static void stop_button_clicked(void)
+static input_t stop_button_clicked(void)
 {
-	has_simulation_started(stgs.linked_sim) ? reset_sim() : clear_sim();
+	return has_simulation_started(stgs.linked_sim) ? reset_sim() : clear_sim();
 }
 
 static void read_filename(char *filename)
@@ -85,12 +91,11 @@ static void read_filename(char *filename)
 	delwin(iow);
 }
 
-static void io_button_clicked(bool load)
+static input_t io_button_clicked(bool load)
 {
 	Colors *colors;
 	short status;
 	char filename[FILENAME_BUF_LEN];
-
 	read_filename(filename);
 	if (load) {
 		status = (colors = load_rules(filename)) ? COLOR_LIME : COLOR_RED;
@@ -109,6 +114,7 @@ static void io_button_clicked(bool load)
 		wattrset(menuw, GET_PAIR_FOR(status));
 		mvwvline(menuw, menu_save_pos.y, MENU_WINDOW_WIDTH-3, ACS_BLOCK, MENU_BUTTON_HEIGHT);
 	}
+	return INPUT_MENU_CHANGED;
 }
 
 input_t menu_key_command(int key)
@@ -117,20 +123,21 @@ input_t menu_key_command(int key)
 
 	switch (key) {
 	case ' ':
-		is_simulation_running(sim) ? pause_button_clicked() : play_button_clicked();
-		break;
+		if (is_simulation_running(sim)) {
+			return pause_button_clicked();
+		} else {
+			return play_button_clicked();
+		}
 
 	case 'R': case 'r':
-		reset_sim();
-		break;
+		return reset_sim();
 
 	case KEY_BACKSPACE: case '\b':
-		clear_sim();
-		break;
+		return clear_sim();
 
 	case KEY_ESC:
 		exit_draw_loop(TRUE);
-		break;
+		return INPUT_NO_CHANGE;
 
 	case KEY_MOUSE:
 		return menu_mouse_command();
@@ -138,8 +145,6 @@ input_t menu_key_command(int key)
 	default:
 		return INPUT_NO_CHANGE;
 	}
-
-	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
 input_t menu_mouse_command(void)
@@ -154,46 +159,39 @@ input_t menu_mouse_command(void)
 		pos = abs2rel(event_pos, menu_pos);
 
 		if (dialogw) {
-			if (area_contains(dialog_pos, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT,
-				              event_pos)) {
-				dialog_mouse_command(event);
-				return;
+			if (area_contains(dialog_pos, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT, event_pos)) {
+				return dialog_mouse_command(event);
+			} else {
+				close_dialog();
+				return INPUT_MENU_CHANGED;
 			}
-			close_dialog();
 		}
 
 		/* Init size buttons clicked */
 		if (area_contains(menu_isz_u_pos, 3, 2, pos)) {
-			isz_button_clicked(1);
-			return;
+			return isz_button_clicked(1);
 		}
 		if (area_contains(menu_isz_d_pos, 3, 2, pos)) {
-			isz_button_clicked(-1);
-			return;
+			return isz_button_clicked(-1);
 		}
 
 		/* Control buttons clicked */
 		if (area_contains(menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			play_button_clicked();
-			return;
+			return play_button_clicked();
 		}
 		if (area_contains(menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			pause_button_clicked();
-			return;
+			return pause_button_clicked();
 		}
 		if (area_contains(menu_stop_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			stop_button_clicked();
-			return;
+			return stop_button_clicked();
 		}
 
 		/* IO buttons clicked */
 		if (area_contains(menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			io_button_clicked(TRUE);
-			return;
+			return io_button_clicked(TRUE);
 		}
 		if (area_contains(menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			io_button_clicked(FALSE);
-			return;
+			return io_button_clicked(FALSE);
 		}
 
 		/* Color tiles clicked */
@@ -202,8 +200,10 @@ input_t menu_mouse_command(void)
 			if (i <= stgs.colors->n &&
 					area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
 				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : i);
-				break;
+				return INPUT_MENU_CHANGED;
 			}
 		}
 	}
+
+	return INPUT_NO_CHANGE;
 }

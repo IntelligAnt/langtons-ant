@@ -12,6 +12,28 @@ const Vector2i right_pos   = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, DIALOG_BUTTO
 const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT+3,
                               (DIALOG_WINDOW_HEIGHT-DIALOG_BUTTON_WIDTH-2)/2+1 };
 
+void open_dialog(Vector2i pos, int color_index)
+{
+	cidx = color_index;
+
+	if (pos.x + DIALOG_WINDOW_WIDTH >= MENU_WINDOW_WIDTH) {
+		pos.x += DIALOG_WINDOW_WIDTH - MENU_WINDOW_WIDTH - 2;
+	}
+	dialog_pos = rel2abs(pos, menu_pos);
+
+	dialogw = newwin(DIALOG_WINDOW_HEIGHT, DIALOG_WINDOW_WIDTH, dialog_pos.y, dialog_pos.x);
+	keypad(dialogw, TRUE);
+	nodelay(dialogw, TRUE);
+}
+
+void close_dialog(void)
+{
+	delwin(dialogw);
+	dialogw = NULL;
+	picked_color = COLOR_NONE;
+	picked_turn = TURN_NONE;
+}
+
 static void draw_tiles(void)
 {
 	short i, fg = GET_COLOR_FOR(fg_pair);
@@ -56,28 +78,6 @@ static void draw_buttons() // TODO draw line borders around selected buttons
 	mvwaddstr(dialogw, delete_pos.y+mid, delete_pos.x+2,  "X"); // TODO don't draw when cidx < 0
 }
 
-void open_dialog(Vector2i pos, int color_index)
-{
-	cidx = color_index;
-
-	if (pos.x + DIALOG_WINDOW_WIDTH >= MENU_WINDOW_WIDTH) {
-		pos.x += DIALOG_WINDOW_WIDTH - MENU_WINDOW_WIDTH - 2;
-	}
-	dialog_pos = rel2abs(pos, menu_pos);
-
-	dialogw = newwin(DIALOG_WINDOW_HEIGHT, DIALOG_WINDOW_WIDTH, dialog_pos.y, dialog_pos.x);
-	keypad(dialogw, TRUE);
-	nodelay(dialogw, TRUE);
-}
-
-void close_dialog(void)
-{
-	delwin(dialogw);
-	dialogw = NULL;
-	picked_color = COLOR_NONE;
-	picked_turn = TURN_NONE;
-}
-
 void draw_dialog(void)
 {
 	wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
@@ -119,7 +119,7 @@ Vector2i get_dialog_button_pos(int index)
 	case -1:
 		return (Vector2i) { 2+DIALOG_TILE_ROWS*DIALOG_TILE_SIZE, 1 };
 	case 0:
-		return (Vector2i) { 3 + DIALOG_TILE_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT, 1 };
+		return (Vector2i) { 3+DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT, 1 };
 	case 1:
 		return (Vector2i) { 2+DIALOG_TILE_ROWS*DIALOG_TILE_SIZE, DIALOG_BUTTON_WIDTH+2 };
 	default:
@@ -127,14 +127,14 @@ Vector2i get_dialog_button_pos(int index)
 	}
 }
 
-void dialog_mouse_command(MEVENT event)
+input_t dialog_mouse_command(MEVENT event)
 {
 	int i;
 	bool del = FALSE;
 	Vector2i pos = abs2rel((Vector2i) { event.y, event.x }, dialog_pos), top_left;
 
 	if (!(event.bstate & BUTTON1_CLICKED)) {
-		return;
+		return INPUT_NO_CHANGE;
 	}
 
 	top_left = get_dialog_button_pos(0);
@@ -164,6 +164,7 @@ exit:
 		if (picked_color != COLOR_NONE && picked_turn != TURN_NONE) {
 			add_color(stgs.colors, picked_color, picked_turn);
 			close_dialog();
+			return INPUT_MENU_CHANGED;
 		}
 		break;
 	case CIDX_DEFAULT:
@@ -171,6 +172,7 @@ exit:
 			colors_delete(stgs.colors);
 			stgs.colors = colors_new(picked_color);
 			close_dialog();
+			return INPUT_MENU_CHANGED;
 		}
 		break;
 	default:
@@ -182,13 +184,17 @@ exit:
 					set_turn(stgs.colors, cidx, picked_turn);
 				}
 				close_dialog();
+				return INPUT_MENU_CHANGED;
 			} else if (del) {
 				remove_color(stgs.colors, get_color_at(stgs.colors, cidx));
 				if (!has_enough_colors(stgs.colors)) {
-					stop_simulation(stgs.linked_sim);
+					halt_simulation(stgs.linked_sim);
 				}
 				close_dialog();
+				return INPUT_MENU_CHANGED;
 			}
 		}
 	}
+
+	return INPUT_NO_CHANGE;
 }

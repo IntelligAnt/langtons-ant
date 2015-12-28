@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-int grid_key_command(Grid *grid, Ant *ant, int key)
+input_t grid_key_command(Grid *grid, Ant *ant, int key)
 {
 	Vector2i center = { grid->size/2, grid->size/2 };
 	Vector2i pos = abs2rel(ant->pos, center);

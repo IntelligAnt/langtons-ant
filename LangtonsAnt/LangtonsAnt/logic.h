@@ -97,7 +97,6 @@ typedef struct grid {
 	Vector2i top_left, bottom_right;
 } Grid;
 
-
 /** Simulation attributes and types */
 typedef struct simulation {
 	Colors *colors;
@@ -106,6 +105,7 @@ typedef struct simulation {
 	size_t steps;
 	bool is_running;
 } Simulation;
+
 
 /* logic.c */
 
@@ -126,6 +126,7 @@ bool color_exists(Colors *colors, short c);
 bool is_color_special(Colors *colors, short c);
 bool has_enough_colors(Colors *colors);
 
+
 /* grid.c */
 
 Grid *grid_new(Colors *colors, size_t init_size);
@@ -137,13 +138,13 @@ bool is_grid_sparse(Grid *grid);
 void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
 
+
 /* simulation.c */
 
 Simulation *simulation_new(Colors *colors, size_t init_size);
 void simulation_delete(Simulation *sim);
 void run_simulation(Simulation *sim);
-void stop_simulation(Simulation *sim);
-bool is_simulation_valid(Simulation *sim);
+void halt_simulation(Simulation *sim);
 bool is_simulation_running(Simulation *sim);
 bool has_simulation_started(Simulation *sim);
 

@@ -55,47 +55,60 @@ void init_def_pairs(short fg_color, short bg_color)
 
 static input_t handle_input(void)
 {
-	input_t res = INPUT_NO_CHANGE;
+	input_t result = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	int ch = getch();
-	if (is_simulation_valid(sim)) {
-		res |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
+	if (sim) {
+		result |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
 	}
-	res |= menu_key_command(ch);
-	return res;
+	result |= menu_key_command(ch);
+	return result;
 }
 
 void draw_loop(void)
 {
+	draw_grid_full(stgs.linked_sim->grid);
+	draw_menu_full();
+
 	while (do_draw) {
 		Simulation *sim = stgs.linked_sim;
 		input_t input = handle_input();
+		bool grid_changed = input & INPUT_GRID_CHANGED, menu_changed = input & INPUT_MENU_CHANGED;
 
-		if (is_simulation_valid(sim) || input) { // TODO Fix drawing logic w/ input
-			if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
-				draw_grid_full(sim->grid);
-				draw_menu_full();
-			}
-			if (is_simulation_running(sim)) {
-				Vector2i oldp = sim->ant->pos;
-				ant_move(sim->ant, sim->grid, sim->colors);
-				grid_silent_expand(sim->grid);
+		if (is_simulation_running(sim)) {
+			Vector2i oldp = sim->ant->pos;
+			ant_move(sim->ant, sim->grid, sim->colors);
+			grid_silent_expand(sim->grid);
 
-				if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
-					grid_expand(sim->grid, sim->ant);
+			if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
+				grid_expand(sim->grid, sim->ant);
+				if (!grid_changed) {
 					draw_grid_full(sim->grid);
+				}
+				if (!menu_changed) {
 					draw_menu_full();
-				} else {
+				}
+			} else {
 #if OPT_DELAY_LOOP
-					unsigned d;
-					for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
+				unsigned d;
+				for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
 #endif
+				if (!grid_changed) {
 					draw_grid_iter(sim->grid, oldp);
+				}
+				if (!menu_changed) {
 					draw_menu_iter();
 				}
-
-				++(sim->steps);
 			}
+
+			++(sim->steps);
+		}
+	
+		if (grid_changed) {
+			draw_grid_full(sim->grid);
+		}
+		if (menu_changed) {
+			draw_menu_full();
 		}
 
 		doupdate();
