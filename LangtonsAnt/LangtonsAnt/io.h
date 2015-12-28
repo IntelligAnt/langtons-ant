@@ -13,7 +13,7 @@
 #define FILENAME_BUF_LEN   256
 
 /** Total number of fields in a Colors struct */
-#define RULES_TOTAL_FIELDS COLOR_COUNT*2+4
+#define RULES_TOTAL_FIELDS (COLOR_COUNT*2 + 4)
 
 /**
  * Attemps to read rules from a .lant textfile

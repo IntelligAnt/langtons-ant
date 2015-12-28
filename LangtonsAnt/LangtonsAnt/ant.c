@@ -61,7 +61,7 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 
 	// In-place color changing
 	if (is_color_special(colors, grid->c[y][x])) {
-		grid->c[y][x] = colors->next[grid->c[y][x]];
+		grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
 	}
 
 	turn = colors->turn[grid->c[y][x]];

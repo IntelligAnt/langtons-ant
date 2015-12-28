@@ -68,7 +68,7 @@
 
 /** @name Utility color macros */
 ///@{
-#define GET_PAIR_FOR(c)  (COLOR_PAIR(c+1))
+#define GET_PAIR_FOR(c)  (COLOR_PAIR((c)+1))
 #define GET_COLOR_FOR(p) (PAIR_NUMBER(p)-1)
 #define AVAILABLE_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
 ///@}
@@ -145,6 +145,9 @@ typedef struct settings {
 	Simulation *linked_sim; /**< Currently active simulation */
 } Settings;
 
+/** Status indicator type for IO operations in the menu */
+typedef enum { STATUS_NONE, STATUS_SUCCESS, STATUS_FAILURE } IOStatus;
+
 /** @name Dialog window attributes */
 ///@{
 #define DIALOG_TILE_SIZE     3
@@ -193,11 +196,12 @@ extern chtype fg_pair, bg_pair;
 extern WINDOW *gridw, *menuw, *dialogw;
 extern ScrollInfo gridscrl;
 extern Settings stgs;
+extern IOStatus load_status, save_status;
 extern const Vector2i grid_pos, menu_pos;
-extern Vector2i dialog_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
+extern Vector2i dialog_pos;
 ///@}
 
 

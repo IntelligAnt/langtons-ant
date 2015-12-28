@@ -94,13 +94,10 @@ static void read_filename(char *filename)
 static input_t io_button_clicked(bool load)
 {
 	Colors *colors;
-	short status;
 	char filename[FILENAME_BUF_LEN];
 	read_filename(filename);
 	if (load) {
-		status = (colors = load_rules(filename)) ? COLOR_LIME : COLOR_RED;
-		wattrset(menuw, GET_PAIR_FOR(status));	// TODO Separate drawing from controls
-		mvwvline(menuw, menu_load_pos.y, MENU_WINDOW_WIDTH-3, ACS_BLOCK, MENU_BUTTON_HEIGHT);
+		load_status = (colors = load_rules(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
 		if (colors) {
 			if (stgs.colors) {
 				assert(stgs.linked_sim->colors);
@@ -108,14 +105,12 @@ static input_t io_button_clicked(bool load)
 			}
 			memcpy(stgs.colors, colors, sizeof(Colors));
 			free(colors);
+			return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 		}
-		return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 	} else {
-		status = (save_rules(filename, stgs.colors) != EOF) ? COLOR_LIME : COLOR_RED;
-		wattrset(menuw, GET_PAIR_FOR(status));
-		mvwvline(menuw, menu_save_pos.y, MENU_WINDOW_WIDTH-3, ACS_BLOCK, MENU_BUTTON_HEIGHT);
-		return INPUT_MENU_CHANGED;
+		save_status = (save_rules(filename, stgs.colors) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
 	}
+	return INPUT_MENU_CHANGED;
 }
 
 input_t menu_key_command(int key)

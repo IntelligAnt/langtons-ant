@@ -4,6 +4,7 @@
 
 WINDOW *menuw;
 Settings stgs;
+IOStatus load_status, save_status;
 
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
 const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT+1, MENU_WINDOW_WIDTH-9 };
@@ -296,6 +297,16 @@ static void draw_io_buttons(void)
 	mvwaddstr(menuw, inner2.y+1, inner2.x+1, "SAVE");
 	mvwaddstr(menuw, inner2.y+2, inner2.x+3, "TO");
 	mvwaddstr(menuw, inner2.y+3, inner2.x+4, "FILE");
+
+	/* Draw status indicators */
+	if (load_status) {
+		wattrset(menuw, GET_PAIR_FOR((load_status == STATUS_SUCCESS) ? COLOR_LIME : COLOR_RED));
+		mvwvline(menuw, menu_load_pos.y, menu_load_pos.x+MENU_BUTTON_WIDTH, ACS_BLOCK, MENU_BUTTON_HEIGHT);
+	}
+	if (save_status) {
+		wattrset(menuw, GET_PAIR_FOR((save_status == STATUS_SUCCESS) ? COLOR_LIME : COLOR_RED));
+		mvwvline(menuw, menu_save_pos.y, menu_save_pos.x+MENU_BUTTON_WIDTH, ACS_BLOCK, MENU_BUTTON_HEIGHT);
+	}
 }
 
 static void draw_size(void)
