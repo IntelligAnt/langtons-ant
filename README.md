@@ -1,2 +1,5 @@
-# langtons-ant
-Langton's ant turing machine simulator with ASCII graphics, written in C
+# Langton's Ant
+
+Langton's ant Turing machine simulator with ASCII graphics, written in C
+
+v1.0

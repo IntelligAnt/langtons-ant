@@ -88,20 +88,20 @@ static void scrollbar_clicked(Grid *grid, MEVENT event, ScrollbarType sbtype)
 {
 	int n = GRID_VIEW_SIZE, mid = n/2, step = n-2;
 	Vector2i pos = { event.y, event.x }, rel;
-	
-	if (sbtype == SB_VERTICAL) {
-		rel = abs2rel(pos, (Vector2i) { mid, GRID_VIEW_SIZE });
-	} else {
-		rel = abs2rel(pos, (Vector2i) { GRID_VIEW_SIZE, mid });
-	}
 
 	if (event.bstate & BUTTON1_CLICKED) {
-		rel.y -= gridscrl.vcenter, rel.x -= gridscrl.hcenter;
+		if (sbtype == SB_VERTICAL) {
+			rel = abs2rel(pos, (Vector2i) { mid+gridscrl.vcenter, GRID_VIEW_SIZE });
+		} else {
+			rel = abs2rel(pos, (Vector2i) { GRID_VIEW_SIZE, mid+gridscrl.hcenter });
+		}
 		scroll_grid(grid, sgn(rel.y)*step, sgn(rel.x)*step);
 	} else if (event.bstate & BUTTON3_CLICKED) {
 		if (sbtype == SB_VERTICAL) {
+			rel = abs2rel(pos, (Vector2i) { mid, GRID_VIEW_SIZE });
 			set_scroll(grid, (int)(rel.y/gridscrl.scale), gridscrl.x);
 		} else {
+			rel = abs2rel(pos, (Vector2i) { GRID_VIEW_SIZE, mid });
 			set_scroll(grid, gridscrl.y, (int)(rel.x/gridscrl.scale));
 		}
 	}

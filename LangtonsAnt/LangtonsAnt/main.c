@@ -1,23 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "logic.h"
 #include "graphics.h"
 #include "io.h"
 
 int main(int argc, char *argv[])
 {
-	Colors *colors = NULL;
-
 	if (argc > 2) {
 		printf("Usage: LangtonsAnt.exe [rulesfile]\n");
 		return;
 	}
 	if (argc == 2) {
-		colors = load_rules(argv[1]);
+		stgs.colors = load_rules(argv[1]);
 	}
 
-	if (!colors) {
+	if (!stgs.colors) {
 		stgs.colors = colors_new(COLOR_SILVER);
 	}
 	stgs.init_size = GRID_DEF_INIT_SIZE;
@@ -25,10 +22,10 @@ int main(int argc, char *argv[])
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE);
 	draw_loop();
+	end_graphics();
 
 	simulation_delete(stgs.linked_sim);
 	colors_delete(stgs.colors);
-	end_graphics();
 	
 	return EXIT_SUCCESS;
 }

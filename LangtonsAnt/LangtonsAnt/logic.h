@@ -23,12 +23,12 @@
 typedef unsigned char bool;
 
 /** Vector container */
-typedef struct vector2i {      ///@{
+typedef struct vector2i {         ///@{
 	int y, x; /**< Coordinates */ ///@}
 } Vector2i;
 
 /** Ant directions enum */
-typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
+typedef enum { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT } Direction;
 
 /** Ant container */
 typedef struct ant {
@@ -93,10 +93,9 @@ typedef struct cell {
 typedef struct grid {
 	unsigned char **c, **tmp, def_color;
 	Cell **csr;
-	size_t size, init_size, tmp_size, colored;
+	size_t init_size, size, tmp_size, colored;
 	Vector2i top_left, bottom_right;
 } Grid;
-
 
 /** Simulation attributes and types */
 typedef struct simulation {
@@ -107,12 +106,16 @@ typedef struct simulation {
 	bool is_running;
 } Simulation;
 
-/* logic.c */
+
+/* ant.c */
 
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
 bool ant_move(Ant *ant, Grid *grid, Colors *colors);
 bool is_ant_out_of_bounds(Ant *ant, Grid *grid);
+
+
+/* colors.c */
 
 Colors *colors_new(short def);
 void colors_delete(Colors *colors);
@@ -126,6 +129,7 @@ bool color_exists(Colors *colors, short c);
 bool is_color_special(Colors *colors, short c);
 bool has_enough_colors(Colors *colors);
 
+
 /* grid.c */
 
 Grid *grid_new(Colors *colors, size_t init_size);
@@ -137,13 +141,13 @@ bool is_grid_sparse(Grid *grid);
 void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
 
+
 /* simulation.c */
 
 Simulation *simulation_new(Colors *colors, size_t init_size);
 void simulation_delete(Simulation *sim);
 void run_simulation(Simulation *sim);
-void stop_simulation(Simulation *sim);
-bool is_simulation_valid(Simulation *sim);
+void halt_simulation(Simulation *sim);
 bool is_simulation_running(Simulation *sim);
 bool has_simulation_started(Simulation *sim);
 

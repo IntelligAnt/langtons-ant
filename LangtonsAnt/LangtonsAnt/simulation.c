@@ -4,10 +4,11 @@
 
 Simulation *simulation_new(Colors *colors, size_t init_size)
 {
+	assert(colors);
 	Simulation *sim = malloc(sizeof(Simulation));
 	sim->colors = colors;
 	sim->grid = grid_new(colors, init_size);
-	sim->ant = ant_new(sim->grid, UP);
+	sim->ant = ant_new(sim->grid, DIR_UP);
 	sim->steps = 0;
 	sim->is_running = FALSE;
 	return sim;
@@ -27,16 +28,11 @@ void run_simulation(Simulation *sim)
 	}
 }
 
-void stop_simulation(Simulation *sim)
+void halt_simulation(Simulation *sim)
 {
 	if (sim) {
 		sim->is_running = FALSE;
 	}
-}
-
-bool is_simulation_valid(Simulation *sim)
-{
-	return sim && sim->colors && sim->grid && sim->ant;
 }
 
 bool is_simulation_running(Simulation *sim)

@@ -59,10 +59,10 @@
 #define COLOR_WHITE   15
 
 #ifndef COLOR_COUNT
-#define COLOR_COUNT 16
+#define COLOR_COUNT   16
 #endif
 #ifndef COLOR_NONE
-#define COLOR_NONE -1
+#define COLOR_NONE    -1
 #endif
 ///@}
 
@@ -153,6 +153,8 @@ typedef struct settings {
 #define DIALOG_BUTTON_WIDTH  7
 #define DIALOG_BUTTON_HEIGHT 3
 #define DIALOG_BUTTON_COLOR  COLOR_YELLOW
+#define DIALOG_DELETE_WIDTH  5
+#define DIALOG_DELETE_HEIGHT DIALOG_BUTTON_HEIGHT
 #define DIALOG_DELETE_COLOR  COLOR_RED
 #define DIALOG_WINDOW_WIDTH  (DIALOG_TILE_COLS*DIALOG_TILE_SIZE + 2)
 #define DIALOG_WINDOW_HEIGHT (DIALOG_TILE_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT*2 + 4)
@@ -168,7 +170,7 @@ typedef struct settings {
 #define KEY_ESC 0x1B
 
 /** Window state change as a result of input events (bitwise OR of INPUT_* fields) */
-typedef char input_t;
+typedef unsigned char input_t;
 
 /** @name Window state change flags */
 ///@{
@@ -197,6 +199,7 @@ extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 ///@}
+
 
 /* graphics.c */
 
@@ -281,10 +284,10 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin);
  * @param top_left Area origin
  * @param width Area width
  * @param height Area height
- * @param vector Vector to be checked
+ * @param v Vector to be checked
  * @return Does area contain the vector?
  */
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i vector);
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 
 /**
  * Standard signum function
@@ -416,7 +419,7 @@ input_t menu_mouse_command(void);
 /**
  * Opens a temporary dialog window for picking colors
  * @param pos Dialog origin relative to menu
- * @param color_index Index of the color that is to be set
+ * @param color_index Index of the color that is to be set (CIDX_NEWCOLOR to add a color, CIDX_DEFAULT to change the default)
  */
 void open_dialog(Vector2i pos, int color_index);
 
@@ -438,16 +441,9 @@ void draw_dialog(void);
 Vector2i get_dialog_tile_pos(int index);
 
 /**
- * Finds the relative pos of a button in the dialog
- * @param index Button index
- * @return Relative pos of found button
- */
-Vector2i get_dialog_button_pos(int index);
-
-/**
  * Handles mouse command passed to the dialog
  * @param event Mouse event
  */
-void dialog_mouse_command(MEVENT event);
+input_t dialog_mouse_command(MEVENT event);
 
 #endif

@@ -90,6 +90,7 @@
     <ClInclude Include="logic.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="colors.c" />
     <ClCompile Include="dialog.c" />
     <ClCompile Include="grid_controls.c" />
     <ClCompile Include="menu_controls.c" />
@@ -98,7 +99,7 @@
     <ClCompile Include="graphics.c" />
     <ClCompile Include="grid.c" />
     <ClCompile Include="grid_window.c" />
-    <ClCompile Include="logic.c" />
+    <ClCompile Include="ant.c" />
     <ClCompile Include="simulation.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>

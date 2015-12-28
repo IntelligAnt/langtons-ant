@@ -46,9 +46,9 @@ void init_def_pairs(short fg_color, short bg_color)
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		init_pair(i+1, i, bg_color);
 		if (i == fg_color) {
-			fg_pair = COLOR_PAIR(i+1);
+			fg_pair = GET_PAIR_FOR(i);
 		} else if (i == bg_color) {
-			bg_pair = COLOR_PAIR(i+1);
+			bg_pair = GET_PAIR_FOR(i);
 		}
 	}
 }
@@ -58,7 +58,7 @@ static input_t handle_input(void)
 	input_t res = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	int ch = getch();
-	if (is_simulation_valid(sim)) {
+	if (sim) {
 		res |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
 	}
 	res |= menu_key_command(ch);
@@ -67,35 +67,48 @@ static input_t handle_input(void)
 
 void draw_loop(void)
 {
+	draw_grid_full(stgs.linked_sim->grid);
+	draw_menu_full();
+
 	while (do_draw) {
-		Simulation *sim = stgs.linked_sim;
 		input_t input = handle_input();
+		input_t grid_changed = input & INPUT_GRID_CHANGED, menu_changed = input & INPUT_MENU_CHANGED;
+		Simulation *sim = stgs.linked_sim;
 
-		if (is_simulation_valid(sim) || input) { // TODO Fix drawing logic w/ input
-			if (!is_simulation_running(sim) || !has_simulation_started(sim)) {
-				draw_grid_full(sim->grid);
-				draw_menu_full();
-			}
-			if (is_simulation_running(sim)) {
-				Vector2i oldp = sim->ant->pos;
-				ant_move(sim->ant, sim->grid, sim->colors);
-				grid_silent_expand(sim->grid);
+		if (is_simulation_running(sim)) {
+			Vector2i oldp = sim->ant->pos;
+			ant_move(sim->ant, sim->grid, sim->colors);
+			grid_silent_expand(sim->grid);
 
-				if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
-					grid_expand(sim->grid, sim->ant);
+			if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
+				grid_expand(sim->grid, sim->ant);
+				if (!grid_changed) {
 					draw_grid_full(sim->grid);
+				}
+				if (!menu_changed) {
 					draw_menu_full();
-				} else {
+				}
+			} else {
 #if OPT_DELAY_LOOP
-					unsigned d;
-					for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
+				unsigned d;
+				for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
 #endif
+				if (!grid_changed) {
 					draw_grid_iter(sim->grid, oldp);
+				}
+				if (!menu_changed) {
 					draw_menu_iter();
 				}
-
-				++(sim->steps);
 			}
+
+			++(sim->steps);
+		}
+	
+		if (grid_changed) {
+			draw_grid_full(sim->grid);
+		}
+		if (menu_changed) {
+			draw_menu_full();
 		}
 
 		doupdate();
@@ -164,10 +177,10 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin)
 	};
 }
 
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i vector)
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v)
 {
-	return (vector.y >= top_left.y && vector.y < top_left.y+height
-		 && vector.x >= top_left.x && vector.x < top_left.x+width);
+	return (v.y >= top_left.y && v.y < top_left.y+(int)height
+		 && v.x >= top_left.x && v.x < top_left.x+(int)width);
 }
 
 int sgn(int x)
