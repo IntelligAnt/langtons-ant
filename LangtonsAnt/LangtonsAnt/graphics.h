@@ -282,10 +282,10 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin);
  * @param top_left Area origin
  * @param width Area width
  * @param height Area height
- * @param vector Vector to be checked
+ * @param v Vector to be checked
  * @return Does area contain the vector?
  */
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i vector);
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 
 /**
  * Standard signum function

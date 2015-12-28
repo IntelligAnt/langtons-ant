@@ -93,7 +93,7 @@ typedef struct cell {
 typedef struct grid {
 	unsigned char **c, **tmp, def_color;
 	Cell **csr;
-	size_t size, init_size, tmp_size, colored;
+	size_t init_size, size, tmp_size, colored;
 	Vector2i top_left, bottom_right;
 } Grid;
 

@@ -83,7 +83,7 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	Cell **t = grid->csr + y;
 
 	while (*t && CELL_GET_COLUMN(*t) < x) {
-		t = &((*t)->next);
+		t = &(*t)->next;
 	}
 	if (!*t || CELL_GET_COLUMN(*t) != x) {
 		if (!*t) {

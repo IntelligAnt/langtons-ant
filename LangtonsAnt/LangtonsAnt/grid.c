@@ -130,8 +130,6 @@ static void grid_expand_n(Grid *grid)
 	grid->c = grid->tmp;
 	grid->tmp = NULL;
 	grid->tmp_size = 0;
-	transfer_vector(&grid->top_left, grid->size);
-	transfer_vector(&grid->bottom_right, grid->size);
 	grid->size = size;
 }
 
@@ -162,6 +160,8 @@ static void grid_expand_s(Grid *grid)
 void grid_expand(Grid *grid, Ant *ant)
 {
 	transfer_vector(&ant->pos, grid->size);
+	transfer_vector(&grid->top_left, grid->size);
+	transfer_vector(&grid->bottom_right, grid->size);
 	if (!is_grid_sparse(grid)) {
 		if (grid->size*GRID_MUL > GRID_SIZE_THRESHOLD && GRID_EFFICIENCY(grid) < 1) {
 			grid_make_sparse(grid);
@@ -190,7 +190,7 @@ void grid_make_sparse(Grid *grid)
 			c = grid->c[i][j];
 			if (c != grid->def_color) {
 				new_cell(cur, j, c);
-				cur = &((*cur)->next);
+				cur = &(*cur)->next;
 			}
 		}
 		free(grid->c[i]);

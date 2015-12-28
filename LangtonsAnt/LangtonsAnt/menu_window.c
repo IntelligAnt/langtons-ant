@@ -376,6 +376,7 @@ void draw_menu_full(void)
 
 void draw_menu_iter(void)
 {
+	// TODO draw border and logo
 	draw_steps();
 	wnoutrefresh(menuw);
 }

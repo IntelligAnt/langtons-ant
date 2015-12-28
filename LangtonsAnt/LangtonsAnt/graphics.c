@@ -177,10 +177,10 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin)
 	};
 }
 
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i vector)
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v)
 {
-	return (vector.y >= top_left.y && vector.y < top_left.y+height
-		 && vector.x >= top_left.x && vector.x < top_left.x+width);
+	return (v.y >= top_left.y && v.y < top_left.y+(int)height
+		 && v.x >= top_left.x && v.x < top_left.x+(int)width);
 }
 
 int sgn(int x)

@@ -1,7 +1,7 @@
 #include "graphics.h"
 
 WINDOW *dialogw;
-Vector2i dialog_pos = { -1, -1 }; // TODO can do better
+Vector2i dialog_pos;
 
 int cidx;
 short picked_color = COLOR_NONE, picked_turn = TURN_NONE;
