@@ -55,14 +55,14 @@ void init_def_pairs(short fg_color, short bg_color)
 
 static input_t handle_input(void)
 {
-	input_t result = INPUT_NO_CHANGE;
+	input_t res = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	int ch = getch();
 	if (sim) {
-		result |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
+		res |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
 	}
-	result |= menu_key_command(ch);
-	return result;
+	res |= menu_key_command(ch);
+	return res;
 }
 
 void draw_loop(void)

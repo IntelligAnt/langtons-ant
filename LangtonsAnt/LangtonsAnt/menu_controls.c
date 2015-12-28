@@ -52,16 +52,16 @@ static input_t isz_button_clicked(int i)
 
 static input_t play_button_clicked(void)
 {
-	input_t result = INPUT_NO_CHANGE;
+	input_t res = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		result |= reset_sim();
+		res |= reset_sim();
 	}
 	if (sim && has_enough_colors(sim->colors)) {
 		run_simulation(sim);
-		result |= INPUT_MENU_CHANGED;
+		res |= INPUT_MENU_CHANGED;
 	}
-	return result;
+	return res;
 }
 
 static input_t pause_button_clicked(void)
@@ -149,61 +149,63 @@ input_t menu_key_command(int key)
 
 input_t menu_mouse_command(void)
 {
+	input_t res = INPUT_NO_CHANGE;
 	MEVENT event;
 	Vector2i event_pos, pos, tile;
 	int i;
 
 	nc_getmouse(&event);
-	if (event.bstate & BUTTON1_CLICKED) {
-		event_pos.y = event.y, event_pos.x = event.x;
-		pos = abs2rel(event_pos, menu_pos);
+	if (!(event.bstate & BUTTON1_CLICKED)) {
+		return INPUT_NO_CHANGE;
+	}
 
-		if (dialogw) {
-			if (area_contains(dialog_pos, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT, event_pos)) {
-				return dialog_mouse_command(event);
-			} else {
-				close_dialog();
-				return INPUT_MENU_CHANGED;
-			}
-		}
+	event_pos.y = event.y, event_pos.x = event.x;
+	pos = abs2rel(event_pos, menu_pos);
 
-		/* Init size buttons clicked */
-		if (area_contains(menu_isz_u_pos, 3, 2, pos)) {
-			return isz_button_clicked(1);
-		}
-		if (area_contains(menu_isz_d_pos, 3, 2, pos)) {
-			return isz_button_clicked(-1);
-		}
-
-		/* Control buttons clicked */
-		if (area_contains(menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			return play_button_clicked();
-		}
-		if (area_contains(menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			return pause_button_clicked();
-		}
-		if (area_contains(menu_stop_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			return stop_button_clicked();
-		}
-
-		/* IO buttons clicked */
-		if (area_contains(menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			return io_button_clicked(TRUE);
-		}
-		if (area_contains(menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-			return io_button_clicked(FALSE);
-		}
-
-		/* Color tiles clicked */
-		for (i = 0; i < MENU_TILE_COUNT; ++i) {
-			tile = get_menu_tile_pos(i);
-			if (i <= stgs.colors->n &&
-					area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
-				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : i);
-				return INPUT_MENU_CHANGED;
-			}
+	if (dialogw) {
+		if (area_contains(dialog_pos, DIALOG_WINDOW_WIDTH, DIALOG_WINDOW_HEIGHT, event_pos)) {
+			return dialog_mouse_command(event);
+		} else {
+			close_dialog();
+			res = INPUT_MENU_CHANGED;
 		}
 	}
 
-	return INPUT_NO_CHANGE;
+	/* Color tiles clicked */
+	for (i = 0; i <= stgs.colors->n; ++i) {
+		tile = get_menu_tile_pos(i);
+		if (area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
+			open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : i);
+			return res | INPUT_MENU_CHANGED;
+		}
+	}
+
+	/* Control buttons clicked */
+	if (area_contains(menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return res | play_button_clicked();
+	}
+	if (area_contains(menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return res | pause_button_clicked();
+	}
+	if (area_contains(menu_stop_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return res | stop_button_clicked();
+	}
+
+	/* IO buttons clicked */
+	if (area_contains(menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return res | io_button_clicked(TRUE);
+	}
+	if (area_contains(menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return res | io_button_clicked(FALSE);
+	}
+
+	/* Init size buttons clicked */
+	if (area_contains(menu_isz_u_pos, 3, 2, pos)) {
+		return res | isz_button_clicked(1);
+	}
+	if (area_contains(menu_isz_d_pos, 3, 2, pos)) {
+		return res | isz_button_clicked(-1);
+	}
+
+	return res;
 }

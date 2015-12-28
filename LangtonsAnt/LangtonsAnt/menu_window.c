@@ -339,7 +339,7 @@ void draw_menu_full(void)
 		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
 	} else {
 		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
-		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', MENU_WINDOW_WIDTH-2);
+		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', strlen(sparse_msg));
 	}
 
 	/* Draw border */
@@ -376,19 +376,6 @@ void draw_menu_full(void)
 
 void draw_menu_iter(void)
 {
-	static bool dialog_opened = FALSE;
-
-	if (dialogw) {
-		//draw_dialog();
-		if (!dialog_opened) {
-			dialog_opened = TRUE;
-		}
-	} else if (dialog_opened) {
-		draw_menu_full();
-		dialog_opened = FALSE;
-		return;
-	}
-
 	draw_steps();
 	wnoutrefresh(menuw);
 }

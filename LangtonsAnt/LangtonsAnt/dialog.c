@@ -14,6 +14,7 @@ const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_H
 
 void open_dialog(Vector2i pos, int color_index)
 {
+	size_t height = (color_index < 0) ? delete_pos.y : DIALOG_WINDOW_HEIGHT;
 	cidx = color_index;
 
 	if (pos.x + DIALOG_WINDOW_WIDTH >= MENU_WINDOW_WIDTH) {
@@ -21,7 +22,7 @@ void open_dialog(Vector2i pos, int color_index)
 	}
 	dialog_pos = rel2abs(pos, menu_pos);
 
-	dialogw = newwin(DIALOG_WINDOW_HEIGHT, DIALOG_WINDOW_WIDTH, dialog_pos.y, dialog_pos.x);
+	dialogw = newwin(height, DIALOG_WINDOW_WIDTH, dialog_pos.y, dialog_pos.x);
 	keypad(dialogw, TRUE);
 	nodelay(dialogw, TRUE);
 }
@@ -72,10 +73,12 @@ static void draw_buttons() // TODO draw line borders around selected buttons
 	mvwaddstr(dialogw, left_pos.y+mid,  left_pos.x+3,  "<");
 	mvwaddstr(dialogw, right_pos.y+mid, right_pos.x+3, ">");
 
-	wattrset(dialogw, GET_PAIR_FOR(DIALOG_DELETE_COLOR));
-	draw_rect(dialogw, delete_pos, DIALOG_BUTTON_WIDTH-2, DIALOG_BUTTON_HEIGHT);
-	wattron(dialogw, A_REVERSE);
-	mvwaddstr(dialogw, delete_pos.y+mid, delete_pos.x+2,  "X"); // TODO don't draw when cidx < 0
+	if (cidx >= 0) {
+		wattrset(dialogw, GET_PAIR_FOR(DIALOG_DELETE_COLOR));
+		draw_rect(dialogw, delete_pos, DIALOG_BUTTON_WIDTH-2, DIALOG_BUTTON_HEIGHT);
+		wattron(dialogw, A_REVERSE);
+		mvwaddstr(dialogw, delete_pos.y+mid, delete_pos.x+2, "X");
+	}
 }
 
 void draw_dialog(void)
@@ -138,7 +141,7 @@ input_t dialog_mouse_command(MEVENT event)
 	}
 
 	top_left = get_dialog_button_pos(0);
-	if (area_contains(top_left, DIALOG_WINDOW_WIDTH - 2, DIALOG_BUTTON_HEIGHT, pos)) {
+	if (cidx >= 0 && area_contains(top_left, DIALOG_WINDOW_WIDTH - 2, DIALOG_BUTTON_HEIGHT, pos)) {
 		del = TRUE;
 		goto exit;
 	}
