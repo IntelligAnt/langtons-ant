@@ -46,9 +46,9 @@ void init_def_pairs(short fg_color, short bg_color)
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		init_pair(i+1, i, bg_color);
 		if (i == fg_color) {
-			fg_pair = COLOR_PAIR(i+1);
+			fg_pair = GET_PAIR_FOR(i);
 		} else if (i == bg_color) {
-			bg_pair = COLOR_PAIR(i+1);
+			bg_pair = GET_PAIR_FOR(i);
 		}
 	}
 }

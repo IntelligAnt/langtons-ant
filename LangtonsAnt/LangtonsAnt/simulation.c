@@ -8,7 +8,7 @@ Simulation *simulation_new(Colors *colors, size_t init_size)
 	Simulation *sim = malloc(sizeof(Simulation));
 	sim->colors = colors;
 	sim->grid = grid_new(colors, init_size);
-	sim->ant = ant_new(sim->grid, UP);
+	sim->ant = ant_new(sim->grid, DIR_UP);
 	sim->steps = 0;
 	sim->is_running = FALSE;
 	return sim;

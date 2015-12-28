@@ -1,5 +1,4 @@
 #include <stdlib.h>
-
 #include "graphics.h"
 #include "io.h"
 

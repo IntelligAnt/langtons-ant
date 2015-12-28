@@ -153,6 +153,8 @@ typedef struct settings {
 #define DIALOG_BUTTON_WIDTH  7
 #define DIALOG_BUTTON_HEIGHT 3
 #define DIALOG_BUTTON_COLOR  COLOR_YELLOW
+#define DIALOG_DELETE_WIDTH  5
+#define DIALOG_DELETE_HEIGHT DIALOG_BUTTON_HEIGHT
 #define DIALOG_DELETE_COLOR  COLOR_RED
 #define DIALOG_WINDOW_WIDTH  (DIALOG_TILE_COLS*DIALOG_TILE_SIZE + 2)
 #define DIALOG_WINDOW_HEIGHT (DIALOG_TILE_ROWS*DIALOG_TILE_SIZE + DIALOG_BUTTON_HEIGHT*2 + 4)
@@ -437,13 +439,6 @@ void draw_dialog(void);
  * @return Relative pos of found tile
  */
 Vector2i get_dialog_tile_pos(int index);
-
-/**
- * Finds the relative pos of a button in the dialog
- * @param index Button index
- * @return Relative pos of found button
- */
-Vector2i get_dialog_button_pos(int index);
 
 /**
  * Handles mouse command passed to the dialog

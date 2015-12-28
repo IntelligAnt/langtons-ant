@@ -288,7 +288,7 @@ static void draw_steps(void)
 	size_t steps = sim ? sim->steps : 0;
 	int digit, len = (int)log10(steps) + 1;
 	char digits_str[9], *p;
-	Vector2i top_left = steps_pos;
+	Vector2i tl = steps_pos;
 
 #if OPT_STEPS
 	static size_t prev_steps;
@@ -305,7 +305,7 @@ static void draw_steps(void)
 
 	wattrset(menuw, fg_pair);
 	if (len > 8) {
-		draw_bitmap(menuw, top_left, inf_bitmap, 31, 5, TRUE);
+		draw_bitmap(menuw, tl, inf_bitmap, 31, 5, TRUE);
 		do_draw = FALSE;
 		return;
 	}
@@ -315,12 +315,12 @@ static void draw_steps(void)
 		if (*p != ' ') {
 			digit = *p - '0';
 			wattroff(menuw, A_REVERSE);
-			draw_bitmap(menuw, top_left, digit_bitmaps[digit], 3, 5, TRUE);
+			draw_bitmap(menuw, tl, digit_bitmaps[digit], 3, 5, TRUE);
 		} else {
 			wattron(menuw, A_REVERSE);
-			draw_rect(menuw, top_left, 3, 5);
+			draw_rect(menuw, tl, 3, 5);
 		}
-		top_left.x += 4;
+		tl.x += 4;
 	}
 
 #if OPT_STEPS

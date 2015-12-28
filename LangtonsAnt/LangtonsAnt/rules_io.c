@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "io.h"
 
 Colors *load_rules(char *filename) // TODO format checks

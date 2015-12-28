@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "logic.h"
 #include "graphics.h"
 #include "io.h"

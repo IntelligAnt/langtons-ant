@@ -23,12 +23,12 @@
 typedef unsigned char bool;
 
 /** Vector container */
-typedef struct vector2i {      ///@{
+typedef struct vector2i {         ///@{
 	int y, x; /**< Coordinates */ ///@}
 } Vector2i;
 
 /** Ant directions enum */
-typedef enum { UP, RIGHT, DOWN, LEFT } Direction;
+typedef enum { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT } Direction;
 
 /** Ant container */
 typedef struct ant {
@@ -107,12 +107,15 @@ typedef struct simulation {
 } Simulation;
 
 
-/* logic.c */
+/* ant.c */
 
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
 bool ant_move(Ant *ant, Grid *grid, Colors *colors);
 bool is_ant_out_of_bounds(Ant *ant, Grid *grid);
+
+
+/* colors.c */
 
 Colors *colors_new(short def);
 void colors_delete(Colors *colors);

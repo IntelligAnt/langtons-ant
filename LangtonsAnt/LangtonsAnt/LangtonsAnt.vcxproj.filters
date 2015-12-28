@@ -38,9 +38,6 @@
     <ClCompile Include="grid_window.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="logic.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rules_io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,6 +57,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ant.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colors.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
