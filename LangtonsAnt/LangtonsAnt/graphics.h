@@ -59,10 +59,10 @@
 #define COLOR_WHITE   15
 
 #ifndef COLOR_COUNT
-#define COLOR_COUNT 16
+#define COLOR_COUNT   16
 #endif
 #ifndef COLOR_NONE
-#define COLOR_NONE -1
+#define COLOR_NONE    -1
 #endif
 ///@}
 

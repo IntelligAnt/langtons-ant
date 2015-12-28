@@ -90,6 +90,33 @@ Vector2i get_menu_tile_pos(int index)
 	return pos;
 }
 
+static void draw_border()
+{
+	Simulation *sim = stgs.linked_sim;
+	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
+
+	if (sim && is_grid_sparse(sim->grid)) {
+		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
+		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
+	} else {
+		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', strlen(sparse_msg));
+	}
+
+	mvwhline(menuw, 0, 0, ACS_BLOCK, h);
+	mvwvline(menuw, 0, 0, ACS_BLOCK, v);
+	mvwhline(menuw, v-1, 0, ACS_BLOCK, h);
+	mvwvline(menuw, 0, h-1, ACS_BLOCK, v);
+}
+
+static void draw_logo()
+{
+	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	draw_bitmap(menuw, logo_pos, logo_bitmap, 40, 8, FALSE);
+	wattron(menuw, A_REVERSE);
+	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
+}
+
 static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 {
 	int ts = MENU_TILE_SIZE, o = MENU_TILE_SIZE/2, dy, dx;
@@ -330,28 +357,14 @@ static void draw_steps(void)
 
 void draw_menu_full(void)
 {
-	Simulation *sim = stgs.linked_sim;
-	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
-
-	/* Border and logo color */
-	if (sim && is_grid_sparse(sim->grid)) {
-		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
-		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
-	} else {
-		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
-		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', strlen(sparse_msg));
-	}
-
-	/* Draw border */
-	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
-	mvwvline(menuw, 0,   0,   ACS_BLOCK, v);
-	mvwhline(menuw, v-1, 0,   ACS_BLOCK, h);
-	mvwvline(menuw, 0,   h-1, ACS_BLOCK, v);
-
-	/* Draw logo */
-	draw_bitmap(menuw, logo_pos, logo_bitmap, 40, 8, FALSE);
-	wattron(menuw, A_REVERSE);
-	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
+	draw_border();
+	draw_logo();
+	draw_color_list();
+	draw_init_size();
+	draw_control_buttons();
+	draw_io_buttons();
+	draw_size();
+	draw_steps();
 
 	/* Draw messages */
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
@@ -359,13 +372,6 @@ void draw_menu_full(void)
 	mvwaddstr(menuw, tiles_msg_pos.y, tiles_msg_pos.x, tiles_msg);
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
 	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
-
-	draw_color_list();
-	draw_init_size();
-	draw_control_buttons();
-	draw_io_buttons();
-	draw_size();
-	draw_steps();
 
 	wnoutrefresh(menuw);
 
@@ -376,7 +382,14 @@ void draw_menu_full(void)
 
 void draw_menu_iter(void)
 {
-	// TODO draw border and logo
+	static bool sparse = FALSE;
+	
+	assert(stgs.linked_sim);
+	if (!sparse && is_grid_sparse(stgs.linked_sim->grid)) {
+		draw_border();
+		sparse = TRUE;
+	}
+
 	draw_steps();
 	wnoutrefresh(menuw);
 }
