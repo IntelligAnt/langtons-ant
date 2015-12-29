@@ -40,9 +40,9 @@ typedef struct ant {
 ///@{
 #define COLOR_COUNT 16
 #define COLOR_NONE  -1
-#define TURN_LEFT -1
-#define TURN_NONE  0
-#define TURN_RIGHT 1
+#define TURN_LEFT   -1
+#define TURN_NONE   0
+#define TURN_RIGHT  1
 ///@}
 
 /** @name Color utility macros */

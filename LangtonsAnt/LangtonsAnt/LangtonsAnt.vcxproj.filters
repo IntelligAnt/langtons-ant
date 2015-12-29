@@ -65,5 +65,8 @@
     <ClCompile Include="io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ant_bitmaps.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

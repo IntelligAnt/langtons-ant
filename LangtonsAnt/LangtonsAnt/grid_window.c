@@ -75,6 +75,18 @@ static void draw_scrollbars(short def)
 	mvwvline(gridw, v, n, ACS_BLOCK, size);
 }
 
+static void draw_cell(Grid *grid, Vector2i pos, Vector2i yx, int cell_size)
+{
+	Ant *ant = stgs.linked_sim->ant; // TODO without stgs
+	const unsigned char *ant_bitmap = get_ant_bitmap(cell_size, ant->dir);
+	wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, pos)));
+	draw_square(gridw, yx, cell_size);
+	if (ant_bitmap) {
+		wattrset(gridw, fg_pair);
+		draw_bitmap(gridw, ant_bitmap, yx, cell_size, cell_size, FALSE);
+	}
+}
+
 static void bordered(Grid *grid, int line_width)
 {
 	int gs = grid->size, i, j;
@@ -101,8 +113,7 @@ static void bordered(Grid *grid, int line_width)
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, line_width, cs, o);
-			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, pos)));
-			draw_square(gridw, yx, cs);
+			draw_cell(grid, pos, yx, cs);
 		}
 	}
 }
@@ -134,8 +145,7 @@ static void borderless(Grid *grid)
 		for (j = 0; j < vgs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
-			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
-			draw_square(gridw, yx, cs);
+			draw_cell(grid, rel2abs(pos, origin), yx, cs);
 		}
 	}
 }
@@ -180,9 +190,7 @@ void draw_grid_iter(Grid *grid, Vector2i oldp)
 		return;
 	}
 
-	wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, oldp)));
-	draw_square(gridw, yx, cs);
-	// TODO draw ant transition
+	draw_cell(grid, oldp, yx, cs);
 
 	wnoutrefresh(gridw);
 }

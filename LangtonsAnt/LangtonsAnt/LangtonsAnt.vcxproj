@@ -90,6 +90,7 @@
     <ClInclude Include="logic.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ant_bitmaps.c" />
     <ClCompile Include="colors.c" />
     <ClCompile Include="dialog.c" />
     <ClCompile Include="grid_controls.c" />

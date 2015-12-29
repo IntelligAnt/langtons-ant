@@ -316,6 +316,16 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 int sgn(int x);
 
 
+/* ant_bitmaps.c */
+
+/**
+ * Finds a suitable bitmap for the given cell size and ant direction
+ * @param size Cell size
+ * @param dir Current ant direction
+ * @return Ant bitmap with requested size and dir if found; NULL otherwise
+ */
+const unsigned char* get_ant_bitmap(size_t size, Direction dir);
+
 /* grid_window.c */
 
 /**
