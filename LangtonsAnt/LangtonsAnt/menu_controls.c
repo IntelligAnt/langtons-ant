@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "graphics.h"
 #include "io.h"
 
@@ -9,7 +10,7 @@ static WINDOW *iow;
 static const Vector2i io_pos = { MENU_CONTROLS_POS-22,
                                  GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH-INPUT_WINDOW_WIDTH-2 };
 
-static input_t reset_sim(void)
+input_t reset_sim(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (sim) {
@@ -20,7 +21,7 @@ static input_t reset_sim(void)
 	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
-static input_t clear_sim(void)
+input_t clear_sim(void)
 {
 	remove_all_colors(stgs.colors);
 	return reset_sim();
@@ -99,12 +100,10 @@ static input_t io_button_clicked(bool load)
 	if (load) {
 		load_status = (colors = load_rules(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
 		if (colors) {
-			if (stgs.colors) {
-				assert(stgs.linked_sim->colors);
-				clear_sim();
-			}
+			assert(stgs.colors && stgs.linked_sim->colors);
+			clear_sim();
 			memcpy(stgs.colors, colors, sizeof(Colors));
-			free(colors);
+			colors_delete(colors);
 			return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 		}
 	} else {
@@ -151,10 +150,6 @@ input_t menu_mouse_command(void)
 	int i;
 
 	nc_getmouse(&event);
-	if (!(event.bstate & BUTTON1_CLICKED)) {
-		return INPUT_NO_CHANGE;
-	}
-
 	event_pos.y = event.y, event_pos.x = event.x;
 	pos = abs2rel(event_pos, menu_pos);
 
@@ -171,9 +166,18 @@ input_t menu_mouse_command(void)
 	for (i = 0; i <= stgs.colors->n; ++i) {
 		tile = get_menu_tile_pos(i);
 		if (area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
-			open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : i);
+			if (event.bstate & BUTTON1_CLICKED) {
+				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : i);
+			} else if (event.bstate & BUTTON3_CLICKED) {
+				open_dialog(pos, CIDX_DEFAULT);
+			}
 			return res | INPUT_MENU_CHANGED;
 		}
+	}
+
+	if (area_contains(get_menu_cdef_pos(), strlen(dialog_cdef_msg), 1, pos)) {
+		open_dialog(pos, CIDX_DEFAULT);
+		return res | INPUT_MENU_CHANGED;
 	}
 
 	/* Control buttons clicked */

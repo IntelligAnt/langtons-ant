@@ -2,6 +2,7 @@
 
 WINDOW *dialogw;
 Vector2i dialog_pos;
+const char* dialog_cdef_msg = "Pick def. color";
 
 int cidx;
 short picked_color = COLOR_NONE, picked_turn = TURN_NONE;
@@ -14,7 +15,7 @@ const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_H
 
 void open_dialog(Vector2i pos, int color_index)
 {
-	size_t height = (color_index == CIDX_DEFAULT)  ? left_pos.x
+	size_t height = (color_index == CIDX_DEFAULT)  ? left_pos.y+2
 		          : (color_index == CIDX_NEWCOLOR) ? delete_pos.y
 		          : DIALOG_WINDOW_HEIGHT;
 	cidx = color_index;
@@ -46,19 +47,19 @@ static void draw_tiles(void)
 		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
 			continue;
 		}
-		if (color_exists(stgs.colors, i)) {
-			inner.y = outer.y + 1, inner.x = outer.x + 1;
-			wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
-			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
-			wattrset(dialogw, GET_PAIR_FOR(i));
-			draw_square(dialogw, inner, DIALOG_TILE_SIZE - 2);
-		} else {
+		if (cidx == CIDX_DEFAULT || !color_exists(stgs.colors, i)) {
 			wattrset(dialogw, GET_PAIR_FOR(i));
 			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
 			if (picked_color == i) {
 				wattron(dialogw, A_REVERSE);
 				draw_box_border(dialogw, outer, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE);
-			}
+			}	
+		} else {
+			inner.y = outer.y + 1, inner.x = outer.x + 1;
+			wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
+			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
+			wattrset(dialogw, GET_PAIR_FOR(i));
+			draw_square(dialogw, inner, DIALOG_TILE_SIZE - 2);
 		}
 		if (outer.x+DIALOG_TILE_SIZE+1 >= DIALOG_WINDOW_WIDTH) {
 			outer.y += DIALOG_TILE_SIZE, outer.x = colors_pos.x;
@@ -71,6 +72,8 @@ static void draw_tiles(void)
 static void draw_buttons()
 {
 	if (cidx == CIDX_DEFAULT) {
+		wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def) | A_REVERSE);
+		mvwaddstr(dialogw, left_pos.y, left_pos.x, dialog_cdef_msg);
 		return;
 	}
 
@@ -136,10 +139,6 @@ input_t dialog_mouse_command(MEVENT event)
 	bool del = FALSE;
 	Vector2i pos = abs2rel((Vector2i) { event.y, event.x }, dialog_pos), tl;
 
-	if (!(event.bstate & BUTTON1_CLICKED)) {
-		return INPUT_NO_CHANGE;
-	}
-
 	if (area_contains(left_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT, pos)) {
 		picked_turn = TURN_LEFT;
 		goto exit;
@@ -154,8 +153,8 @@ input_t dialog_mouse_command(MEVENT event)
 	}
 	for (i = 0; i < COLOR_COUNT; i++) {
 		tl = get_dialog_tile_pos(i);
-		if (!color_exists(stgs.colors, i) &&
-			area_contains(tl, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE, pos)) {
+		if ((cidx == CIDX_DEFAULT || !color_exists(stgs.colors, i))
+				&& area_contains(tl, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE, pos)) {
 			picked_color = i;
 			goto exit;
 		}
@@ -172,10 +171,11 @@ exit:
 		}
 		return INPUT_MENU_CHANGED;
 	case CIDX_DEFAULT:
+		assert(stgs.colors && stgs.linked_sim->colors);
 		colors_delete(stgs.colors);
 		stgs.colors = colors_new(picked_color);
 		close_dialog();
-		return INPUT_MENU_CHANGED;
+		return clear_sim();
 	default:
 		if (cidx < 0 || cidx >= COLOR_COUNT) {
 			return INPUT_NO_CHANGE;

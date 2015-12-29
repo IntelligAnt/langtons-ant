@@ -100,9 +100,9 @@
 
 /** Structure for managing scroll data */
 typedef struct scroll_info {
-	bool enabled;		  /**< Scrolling is enabled */               ///@{
-	int y, x;             /**< Current view pos relative to (0,0) */ /**@}*/ ///@{
-	int hcenter, vcenter; /**< Scrollbar slider positions */         ///@}
+	bool enabled;		  /**< Scrolling is enabled */                    ///@{
+	int y, x;             /**< Current view position relative to (0,0) */ /**@}*/ ///@{
+	int hcenter, vcenter; /**< Scrollbar slider positions */              ///@}
 	double scale;         /**< Scaling factor */
 } ScrollInfo;
 
@@ -112,8 +112,20 @@ typedef struct scroll_info {
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
 #define MENU_LOGO_HEIGHT    15
 #define MENU_CONTROLS_POS   88
-#define MENU_BORDER_COLOR   COLOR_BLUE
+#define MENU_BORDER_COLOR   COLOR_NAVY
 #define MENU_BORDER_COLOR_S COLOR_MAROON
+///@}
+
+/** @name Menu buttons attributes */
+///@{
+#define MENU_BUTTON_WIDTH   11
+#define MENU_BUTTON_HEIGHT  7
+#define MENU_PLAY_COLOR     COLOR_GREEN
+#define MENU_PAUSE_COLOR    COLOR_YELLOW
+#define MENU_STOP_COLOR     COLOR_RED
+#define MENU_CLEAR_COLOR    COLOR_TEAL
+#define MENU_ACTIVE_COLOR   COLOR_BLUE
+#define MENU_INACTIVE_COLOR COLOR_GRAY
 ///@}
 
 /** @name Menu color tiles attributes */
@@ -126,17 +138,6 @@ typedef struct scroll_info {
 #define MENU_TILE_COUNT     (MENU_TILE_COLUMNS * MENU_TILES_PER_COL)
 #define MENU_TILES_WIDTH    (MENU_TILE_COLUMNS*MENU_TILE_SIZE + (MENU_TILE_COLUMNS-1)*MENU_TILE_HSEP)
 #define MENU_TILES_HEIGHT   (MENU_TILES_PER_COL*MENU_TILE_SIZE + (MENU_TILES_PER_COL+1)*MENU_TILE_VSEP+2)
-///@}
-
-/** @name Menu buttons attributes */
-///@{
-#define MENU_BUTTON_WIDTH   11
-#define MENU_BUTTON_HEIGHT  7
-#define MENU_PLAY_COLOR     COLOR_GREEN
-#define MENU_PAUSE_COLOR    COLOR_YELLOW
-#define MENU_STOP_COLOR     COLOR_RED
-#define MENU_CLEAR_COLOR    COLOR_TEAL
-#define MENU_INACTIVE_COLOR COLOR_GRAY
 ///@}
 
 /** Structure containing all relevant menu settings */
@@ -193,16 +194,20 @@ typedef unsigned char input_t;
 
 /** @name Globals */
 ///@{
-extern chtype fg_pair, bg_pair;
-extern WINDOW *gridw, *menuw, *dialogw;
-extern ScrollInfo gridscrl;
-extern Settings stgs;
-extern IOStatus load_status, save_status;
+extern chtype         fg_pair, bg_pair;
+extern WINDOW         *gridw, *menuw, *dialogw;
+
+extern ScrollInfo     gridscrl;
+extern Settings       stgs;
+extern IOStatus       load_status, save_status;
+
 extern const Vector2i grid_pos, menu_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
-extern Vector2i dialog_pos;
+
+extern Vector2i       dialog_pos;
+extern const char*    dialog_cdef_msg;
 ///@}
 
 
@@ -368,6 +373,7 @@ void reset_scroll(void);
  * @param ant Ant to be acted upon
  * @param key Key passed to the grid
  * @return INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
+ * @see grid_mouse_command(Grid *)
  */
 input_t grid_key_command(Grid *grid, Ant *ant, int key);
 
@@ -375,6 +381,7 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key);
  * Handles mouse command passed to the grid window
  * @param grid Grid to be acted upon
  * @return INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
+ * @see grid_key_command(Grid *, Ant *, int)
  */
 input_t grid_mouse_command(Grid *grid);
 
@@ -405,25 +412,47 @@ void draw_menu_full(void);
 void draw_menu_iter(void);
 
 /**
- * Finds the relative pos of a color tile in the menu
+ * Finds the relative position of a color tile in the menu
  * @param index Index in the color list
- * @return Relative pos of found tile
+ * @return Relative position of found tile
  */
 Vector2i get_menu_tile_pos(int index);
+
+/**
+ * Finds the relative position of the default color picker button
+ * @return Relative position of found button
+ */
+Vector2i get_menu_cdef_pos(void);
 
 
 /* menu_controls.c */
 
 /**
+ * Resets and remakes the active simulation using the current settings
+ * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
+ * @see clear_sim(void)
+ */
+input_t reset_sim(void);
+
+/**
+ * Clears the current settings and resets the active simulation
+ * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
+ * @see reset_sim(void)
+ */
+input_t clear_sim(void);
+
+/**
  * Handles key Command passed to the menu
  * @param key Key passed to the grid
  * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
+ * @see menu_mouse_command(void)
  */
 input_t menu_key_command(int key);
 
 /**
  * Handles mouse command passed to the menu
  * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
+ * @see menu_key_command(int)
  */
 input_t menu_mouse_command(void);
 
@@ -448,9 +477,9 @@ void close_dialog(void);
 void draw_dialog(void);
 
 /**
- * Finds the relative pos of a color tile in the dialog
+ * Finds the relative position of a color tile in the dialog
  * @param index Color index
- * @return Relative pos of found tile
+ * @return Relative position of found tile
  */
 Vector2i get_dialog_tile_pos(int index);
 

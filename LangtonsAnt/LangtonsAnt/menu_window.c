@@ -74,8 +74,8 @@ void end_menu_window(void)
 
 Vector2i get_menu_tile_pos(int index)
 {
-	int index_y, index_x;
 	Vector2i pos;
+	int index_y, index_x;
 
 	assert(index >= 0 && index < MENU_TILE_COUNT);
 
@@ -89,6 +89,14 @@ Vector2i get_menu_tile_pos(int index)
 	pos.x = tiles_pos.x - index_x*(MENU_TILE_SIZE+MENU_TILE_HSEP);
 
 	return pos;
+}
+
+Vector2i get_menu_cdef_pos(void)
+{
+	return (Vector2i) {
+		.y = get_menu_tile_pos(min(stgs.colors->n, MENU_TILES_PER_COL)).y + MENU_TILE_SIZE + MENU_TILE_VSEP + 1,
+		.x = tiles_pos.x - MENU_TILE_SIZE - MENU_TILE_HSEP + 1
+	};
 }
 
 static void draw_border()
@@ -144,12 +152,12 @@ static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 			mvwaddch(menuw, pos1.y+ts+dy, pos2.x+o, ACS_LLCORNER);
 			mvwaddch(menuw, pos1.y+ts,    pos2.x+o, ACS_UARROW);
 		} else {
-			mvwvline(menuw, pos1.y-dy-1, pos1.x+o, ACS_VLINE, dy+1);
-			mvwhline(menuw, pos1.y-dy-1, pos1.x+o, ACS_HLINE, dx);
-			mvwvline(menuw, pos1.y-dy-1, pos2.x+o, ACS_VLINE, dy+1);
-			mvwaddch(menuw, pos1.y-dy-1, pos1.x+o, ACS_ULCORNER);
-			mvwaddch(menuw, pos1.y-dy-1, pos2.x+o, ACS_URCORNER);
-			mvwaddch(menuw, pos1.y-1,    pos2.x+o, ACS_DARROW);
+			mvwvline(menuw, pos1.y-dy-1,  pos1.x+o, ACS_VLINE, dy+1);
+			mvwhline(menuw, pos1.y-dy-1,  pos1.x+o, ACS_HLINE, dx);
+			mvwvline(menuw, pos1.y-dy-1,  pos2.x+o, ACS_VLINE, dy+1);
+			mvwaddch(menuw, pos1.y-dy-1,  pos1.x+o, ACS_ULCORNER);
+			mvwaddch(menuw, pos1.y-dy-1,  pos2.x+o, ACS_URCORNER);
+			mvwaddch(menuw, pos1.y-1,     pos2.x+o, ACS_DARROW);
 		}
 	} else {
 		dy = pos1.y - pos2.y;
@@ -190,7 +198,7 @@ static void draw_color_list(void)
 {
 	short c, i = 0;
 	bool do_for = TRUE;
-	Vector2i pos1, pos2;
+	Vector2i pos1, pos2, cdef_pos;
 
 	pos1.y = tiles_pos.y - MENU_TILE_VSEP - 1;
 	pos1.x = tiles_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
@@ -230,8 +238,10 @@ static void draw_color_list(void)
 		draw_color_arrow(pos1, get_menu_tile_pos(0));
 	}
 
-	/* Draw current function */
-	//mvwaddstr(menuw, MENU_CONTROLS_POS-3, 2, "f(q0, @) = (q1, #, -1)");
+	/* Draw default color picker message */
+	cdef_pos = get_menu_cdef_pos();
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	mvwaddstr(menuw, cdef_pos.y, cdef_pos.x, dialog_cdef_msg);
 }
 
 static void draw_init_size(void)
@@ -239,7 +249,7 @@ static void draw_init_size(void)
 	if (stgs.init_size < GRID_MIN_INIT_SIZE || stgs.init_size > GRID_MAX_INIT_SIZE) {
 		return;
 	}
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
 	draw_bitmap(menuw, isz_bitmaps[0], menu_isz_u_pos, 3, 2, FALSE);
 	draw_bitmap(menuw, isz_bitmaps[1], menu_isz_d_pos, 3, 2, FALSE);
 	wattrset(menuw, fg_pair);
@@ -335,7 +345,7 @@ static void draw_steps(void)
 	bool skip_draw = FALSE;
 #endif
 
-	if (steps == 0) {
+	if (steps <= 1) {
 		do_draw = TRUE;
 	} else if (!do_draw || skip_draw) {
 		return;
@@ -400,7 +410,7 @@ void draw_menu_iter(void)
 		draw_border();
 		sparse = TRUE;
 	}
-
 	draw_steps();
+
 	wnoutrefresh(menuw);
 }
