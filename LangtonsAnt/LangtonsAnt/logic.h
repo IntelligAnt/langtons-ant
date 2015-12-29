@@ -127,6 +127,7 @@ void set_turn(Colors *colors, short index, short turn);
 short get_color_at(Colors *colors, int index);
 bool color_exists(Colors *colors, short c);
 bool is_color_special(Colors *colors, short c);
+bool is_colors_empty(Colors *colors);
 bool has_enough_colors(Colors *colors);
 
 

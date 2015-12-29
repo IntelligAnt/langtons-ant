@@ -70,7 +70,7 @@ static input_t pause_button_clicked(void)
 	if (is_simulation_running(sim)) {
 		halt_simulation(sim);
 	}
-	return INPUT_NO_CHANGE;
+	return INPUT_MENU_CHANGED;
 }
 
 static input_t stop_button_clicked(void)

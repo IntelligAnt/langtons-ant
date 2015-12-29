@@ -259,17 +259,20 @@ static void draw_control_buttons(void)
 	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_stop_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
-	wattrset(menuw, GET_PAIR_FOR(MENU_PLAY_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors)
+								 ? MENU_PLAY_COLOR : MENU_INACTIVE_COLOR));
 	draw_bitmap(menuw, button_bitmaps[0], pos1, 5, 5, FALSE);
 
-	wattrset(menuw, GET_PAIR_FOR(MENU_PAUSE_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(is_simulation_running(stgs.linked_sim)
+								 ? MENU_PAUSE_COLOR : MENU_INACTIVE_COLOR));
 	draw_bitmap(menuw, button_bitmaps[1], pos2, 5, 5, FALSE);
 	
 	if (has_simulation_started(stgs.linked_sim)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_STOP_COLOR));
 		draw_bitmap(menuw, button_bitmaps[2], pos3, 5, 5, FALSE);
 	} else {
-		wattrset(menuw, GET_PAIR_FOR(MENU_CLEAR_COLOR));
+		wattrset(menuw, GET_PAIR_FOR(!is_colors_empty(stgs.colors)
+									 ? MENU_CLEAR_COLOR : MENU_INACTIVE_COLOR));
 		draw_bitmap(menuw, button_bitmaps[3], pos3, 5, 5, FALSE);
 	}
 }

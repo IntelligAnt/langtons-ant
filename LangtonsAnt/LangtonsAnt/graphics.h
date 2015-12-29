@@ -111,6 +111,7 @@ typedef struct scroll_info {
 #define MENU_WINDOW_WIDTH   42
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
 #define MENU_LOGO_HEIGHT    15
+#define MENU_CONTROLS_POS   88
 #define MENU_BORDER_COLOR   COLOR_BLUE
 #define MENU_BORDER_COLOR_S COLOR_MAROON
 ///@}
@@ -129,13 +130,13 @@ typedef struct scroll_info {
 
 /** @name Menu buttons attributes */
 ///@{
-#define MENU_CONTROLS_POS   88
 #define MENU_BUTTON_WIDTH   11
 #define MENU_BUTTON_HEIGHT  7
 #define MENU_PLAY_COLOR     COLOR_GREEN
 #define MENU_PAUSE_COLOR    COLOR_YELLOW
 #define MENU_STOP_COLOR     COLOR_RED
 #define MENU_CLEAR_COLOR    COLOR_TEAL
+#define MENU_INACTIVE_COLOR COLOR_GRAY
 ///@}
 
 /** Structure containing all relevant menu settings */
