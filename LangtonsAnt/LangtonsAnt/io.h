@@ -32,4 +32,21 @@ Colors* load_rules(char *filename);
  */
 int save_rules(char *filename, Colors *colors);
 
+/**
+ * Attemps to read a simulation from a .lant textfile
+ * @param filename Path of file from which to load
+ * @return Pointer to a Simulation struct if successful; NULL otherwise
+ * @see save_simulation(char *, Simulation *)
+ */
+Simulation *load_simulation(char *filename);
+
+/**
+ * Attempts to write a simulation to a .lant textfile
+ * @param filename Path of file from which to load
+ * @param simulation Simulation to be written
+ * @return Number of read fields if successful; EOF otherwise
+ * @see load_simulation(char *)
+ */
+int save_simulation(char *filename, Simulation *simulation);
+
 #endif

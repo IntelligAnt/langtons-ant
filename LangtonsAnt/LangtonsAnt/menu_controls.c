@@ -94,20 +94,22 @@ static void read_filename(char *filename)
 
 static input_t io_button_clicked(bool load)
 {
-	Colors *colors;
+	Simulation *sim;
 	char filename[FILENAME_BUF_LEN];
 	read_filename(filename);
 	if (load) {
-		load_status = (colors = load_rules(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
-		if (colors) {
-			assert(stgs.colors && stgs.linked_sim->colors);
-			clear_sim();
-			memcpy(stgs.colors, colors, sizeof(Colors));
-			colors_delete(colors);
+		load_status = (sim = load_simulation(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
+		if (sim) {
+			assert(stgs.linked_sim);
+			simulation_delete(stgs.linked_sim);
+			stgs.linked_sim = sim;
+			colors_delete(stgs.colors);
+			stgs.colors = sim->colors;
+			stgs.init_size = sim->grid->init_size;
 			return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 		}
 	} else {
-		save_status = (save_rules(filename, stgs.colors) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
+		save_status = (save_simulation(filename, stgs.linked_sim) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
 	}
 	return INPUT_MENU_CHANGED;
 }
