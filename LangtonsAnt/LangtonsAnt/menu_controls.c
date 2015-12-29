@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "graphics.h"
 #include "io.h"
+#include <string.h>
 
 #define INPUT_WINDOW_WIDTH  (MENU_WINDOW_WIDTH-4)
 #define INPUT_WINDOW_HEIGHT 3
@@ -94,21 +95,27 @@ static void read_filename(char *filename)
 static input_t io_button_clicked(bool load)
 {
 	Colors *colors;
+	Simulation *simulation;
 	char filename[FILENAME_BUF_LEN];
 	read_filename(filename);
 	if (load) {
-		load_status = (colors = load_rules(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
-		if (colors) {
-			if (stgs.colors) {
-				assert(stgs.linked_sim->colors);
+		//load_status = (colors = load_rules(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
+		load_status = (simulation = load_simulation(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
+		if (simulation) {
+			if (stgs.linked_sim) {
+				assert(stgs.linked_sim);
+				assert(stgs.colors);
 				clear_sim();
 			}
-			memcpy(stgs.colors, colors, sizeof(Colors));
-			free(colors);
+			stgs.init_size = simulation->grid->init_size;
+			memcpy(stgs.linked_sim, simulation, sizeof(Simulation));
+			memcpy(stgs.colors, simulation->colors, sizeof(Colors));
+			free(simulation);
 			return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 		}
 	} else {
-		save_status = (save_rules(filename, stgs.colors) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
+		save_status = (save_simulation(filename, stgs.linked_sim) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
+		save_status = (save_rules(strcat(filename, "asdf"), stgs.colors) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
 	}
 	return INPUT_MENU_CHANGED;
 }

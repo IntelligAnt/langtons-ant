@@ -32,4 +32,7 @@ Colors* load_rules(char *filename);
  */
 int save_rules(char *filename, Colors *colors);
 
+Simulation *load_simulation(char *filename);
+int save_simulation(char *filename, Simulation* simulation);
+
 #endif
