@@ -75,7 +75,7 @@ static void draw_buttons()
 	}
 
 	int ymid = DIALOG_BUTTON_HEIGHT/2, xmid = DIALOG_BUTTON_WIDTH/2;
-	wattrset(dialogw, GET_PAIR_FOR(DIALOG_BUTTON_COLOR));
+	wattrset(dialogw, GET_PAIR_FOR((picked_color != COLOR_NONE) ? picked_color : DIALOG_BUTTON_COLOR));
 	draw_rect(dialogw, left_pos,  DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	draw_rect(dialogw, right_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	wattron(dialogw, A_REVERSE);
