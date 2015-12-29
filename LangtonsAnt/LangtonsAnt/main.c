@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #ifndef NDEBUG
-//#include <vld.h>
+#include <vld.h>
 #endif
 #include "logic.h"
 #include "graphics.h"
