@@ -17,7 +17,7 @@ const Vector2i menu_load_pos  = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4,
 const Vector2i menu_save_pos  = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
                                   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
-const char *logo_msg   = " 14-STATE 2D TURING MACHINE SIMULATOR ";
+const char *logo_msg   = " 14-COLOR 2D TURING MACHINE SIMULATOR ";
 const char *tiles_msg  = "RULES:";
 const char *isz_msg    = "INIT SIZE:";
 const char *sparse_msg = "SPARSE MATRIX";
@@ -61,7 +61,7 @@ const unsigned char inf_bitmap[] = {
 void init_menu_window(void)
 {
 	menuw = newwin(MENU_WINDOW_HEIGHT, MENU_WINDOW_WIDTH, menu_pos.y, menu_pos.x);
-	wbkgd(menuw, bg_pair);
+	wbkgd(menuw, fg_pair);
 	keypad(menuw, TRUE);
 	nodelay(menuw, TRUE);
 }
@@ -74,8 +74,8 @@ void end_menu_window(void)
 
 Vector2i get_menu_tile_pos(int index)
 {
-	int index_y, index_x;
 	Vector2i pos;
+	int index_y, index_x;
 
 	assert(index >= 0 && index < MENU_TILE_COUNT);
 
@@ -89,6 +89,14 @@ Vector2i get_menu_tile_pos(int index)
 	pos.x = tiles_pos.x - index_x*(MENU_TILE_SIZE+MENU_TILE_HSEP);
 
 	return pos;
+}
+
+Vector2i get_menu_cdef_pos(void)
+{
+	return (Vector2i) {
+		.y = get_menu_tile_pos(min(stgs.colors->n, MENU_TILES_PER_COL)).y + MENU_TILE_SIZE + MENU_TILE_VSEP + 1,
+		.x = tiles_pos.x - MENU_TILE_SIZE - MENU_TILE_HSEP + 1
+	};
 }
 
 static void draw_border()
@@ -113,7 +121,7 @@ static void draw_border()
 static void draw_logo()
 {
 	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
-	draw_bitmap(menuw, logo_pos, logo_bitmap, 40, 8, FALSE);
+	draw_bitmap(menuw, logo_bitmap, logo_pos, 40, 8, FALSE);
 	wattron(menuw, A_REVERSE);
 	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
 }
@@ -144,12 +152,12 @@ static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 			mvwaddch(menuw, pos1.y+ts+dy, pos2.x+o, ACS_LLCORNER);
 			mvwaddch(menuw, pos1.y+ts,    pos2.x+o, ACS_UARROW);
 		} else {
-			mvwvline(menuw, pos1.y-dy-1, pos1.x+o, ACS_VLINE, dy+1);
-			mvwhline(menuw, pos1.y-dy-1, pos1.x+o, ACS_HLINE, dx);
-			mvwvline(menuw, pos1.y-dy-1, pos2.x+o, ACS_VLINE, dy+1);
-			mvwaddch(menuw, pos1.y-dy-1, pos1.x+o, ACS_ULCORNER);
-			mvwaddch(menuw, pos1.y-dy-1, pos2.x+o, ACS_URCORNER);
-			mvwaddch(menuw, pos1.y-1,    pos2.x+o, ACS_DARROW);
+			mvwvline(menuw, pos1.y-dy-1,  pos1.x+o, ACS_VLINE, dy+1);
+			mvwhline(menuw, pos1.y-dy-1,  pos1.x+o, ACS_HLINE, dx);
+			mvwvline(menuw, pos1.y-dy-1,  pos2.x+o, ACS_VLINE, dy+1);
+			mvwaddch(menuw, pos1.y-dy-1,  pos1.x+o, ACS_ULCORNER);
+			mvwaddch(menuw, pos1.y-dy-1,  pos2.x+o, ACS_URCORNER);
+			mvwaddch(menuw, pos1.y-1,     pos2.x+o, ACS_DARROW);
 		}
 	} else {
 		dy = pos1.y - pos2.y;
@@ -164,23 +172,17 @@ static void draw_color_tile(Vector2i top_left, short c)
 	chtype pair;
 	bool is_def = c == stgs.colors->def;
 	int y = top_left.y, x = top_left.x, s = MENU_TILE_SIZE;
-	short fg;
 
 	/* Draw tile */
 	wattrset(menuw, pair = GET_PAIR_FOR(c));
 	if (is_def) {
 		wattron(menuw, A_REVERSE);
 	}
-	draw_box(menuw, top_left, s);
+	draw_square(menuw, top_left, s);
 
 	/* Draw direction arrow */
 	if (!is_def) {
-		fg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), c, COLOR_GRAY);
-		if (fg == c) {
-			wattron(menuw, A_REVERSE);
-		} else {
-			wattrset(menuw, GET_PAIR_FOR(fg));
-		}
+		wattron(menuw, A_REVERSE);
 		mvwaddch(menuw, y+s/2, x+s/2, (stgs.colors->turn[c] == TURN_LEFT) ? '<' : '>');
 	}
 
@@ -196,7 +198,7 @@ static void draw_color_list(void)
 {
 	short c, i = 0;
 	bool do_for = TRUE;
-	Vector2i pos1, pos2;
+	Vector2i pos1, pos2, cdef_pos;
 
 	pos1.y = tiles_pos.y - MENU_TILE_VSEP - 1;
 	pos1.x = tiles_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
@@ -235,6 +237,11 @@ static void draw_color_list(void)
 		pos1.y += MENU_TILE_SIZE+1;
 		draw_color_arrow(pos1, get_menu_tile_pos(0));
 	}
+
+	/* Draw default color picker message */
+	cdef_pos = get_menu_cdef_pos();
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	mvwaddstr(menuw, cdef_pos.y, cdef_pos.x, dialog_cdef_msg);
 }
 
 static void draw_init_size(void)
@@ -242,11 +249,11 @@ static void draw_init_size(void)
 	if (stgs.init_size < GRID_MIN_INIT_SIZE || stgs.init_size > GRID_MAX_INIT_SIZE) {
 		return;
 	}
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
-	draw_bitmap(menuw, menu_isz_u_pos, isz_bitmaps[0], 3, 2, FALSE);
-	draw_bitmap(menuw, menu_isz_d_pos, isz_bitmaps[1], 3, 2, FALSE);
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	draw_bitmap(menuw, isz_bitmaps[0], menu_isz_u_pos, 3, 2, FALSE);
+	draw_bitmap(menuw, isz_bitmaps[1], menu_isz_d_pos, 3, 2, FALSE);
 	wattrset(menuw, fg_pair);
-	draw_bitmap(menuw, isz_pos, digit_bitmaps[stgs.init_size], 3, 5, TRUE);
+	draw_bitmap(menuw, digit_bitmaps[stgs.init_size], isz_pos, 3, 5, TRUE);
 }
 
 static void draw_control_buttons(void)
@@ -262,18 +269,21 @@ static void draw_control_buttons(void)
 	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_stop_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
-	wattrset(menuw, GET_PAIR_FOR(MENU_PLAY_COLOR));
-	draw_bitmap(menuw, pos1, button_bitmaps[0], 5, 5, FALSE);
+	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors)
+								 ? MENU_PLAY_COLOR : MENU_INACTIVE_COLOR));
+	draw_bitmap(menuw, button_bitmaps[0], pos1, 5, 5, FALSE);
 
-	wattrset(menuw, GET_PAIR_FOR(MENU_PAUSE_COLOR));
-	draw_bitmap(menuw, pos2, button_bitmaps[1], 5, 5, FALSE);
+	wattrset(menuw, GET_PAIR_FOR(is_simulation_running(stgs.linked_sim)
+								 ? MENU_PAUSE_COLOR : MENU_INACTIVE_COLOR));
+	draw_bitmap(menuw, button_bitmaps[1], pos2, 5, 5, FALSE);
 	
 	if (has_simulation_started(stgs.linked_sim)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_STOP_COLOR));
-		draw_bitmap(menuw, pos3, button_bitmaps[2], 5, 5, FALSE);
+		draw_bitmap(menuw, button_bitmaps[2], pos3, 5, 5, FALSE);
 	} else {
-		wattrset(menuw, GET_PAIR_FOR(MENU_CLEAR_COLOR));
-		draw_bitmap(menuw, pos3, button_bitmaps[3], 5, 5, FALSE);
+		wattrset(menuw, GET_PAIR_FOR(!is_colors_empty(stgs.colors)
+									 ? MENU_CLEAR_COLOR : MENU_INACTIVE_COLOR));
+		draw_bitmap(menuw, button_bitmaps[3], pos3, 5, 5, FALSE);
 	}
 }
 
@@ -299,11 +309,11 @@ static void draw_io_buttons(void)
 	mvwaddstr(menuw, inner2.y+3, inner2.x+4, "FILE");
 
 	/* Draw status indicators */
-	if (load_status) {
+	if (load_status != STATUS_NONE) {
 		wattrset(menuw, GET_PAIR_FOR((load_status == STATUS_SUCCESS) ? COLOR_LIME : COLOR_RED));
 		mvwvline(menuw, menu_load_pos.y, menu_load_pos.x+MENU_BUTTON_WIDTH, ACS_BLOCK, MENU_BUTTON_HEIGHT);
 	}
-	if (save_status) {
+	if (save_status != STATUS_NONE) {
 		wattrset(menuw, GET_PAIR_FOR((save_status == STATUS_SUCCESS) ? COLOR_LIME : COLOR_RED));
 		mvwvline(menuw, menu_save_pos.y, menu_save_pos.x+MENU_BUTTON_WIDTH, ACS_BLOCK, MENU_BUTTON_HEIGHT);
 	}
@@ -335,7 +345,7 @@ static void draw_steps(void)
 	bool skip_draw = FALSE;
 #endif
 
-	if (steps == 0) {
+	if (steps <= 1) {
 		do_draw = TRUE;
 	} else if (!do_draw || skip_draw) {
 		return;
@@ -343,7 +353,7 @@ static void draw_steps(void)
 
 	wattrset(menuw, fg_pair);
 	if (len > 8) {
-		draw_bitmap(menuw, tl, inf_bitmap, 31, 5, TRUE);
+		draw_bitmap(menuw, inf_bitmap, tl, 31, 5, TRUE);
 		do_draw = FALSE;
 		return;
 	}
@@ -353,7 +363,7 @@ static void draw_steps(void)
 		if (*p != ' ') {
 			digit = *p - '0';
 			wattroff(menuw, A_REVERSE);
-			draw_bitmap(menuw, tl, digit_bitmaps[digit], 3, 5, TRUE);
+			draw_bitmap(menuw, digit_bitmaps[digit], tl, 3, 5, TRUE);
 		} else {
 			wattron(menuw, A_REVERSE);
 			draw_rect(menuw, tl, 3, 5);
@@ -400,7 +410,7 @@ void draw_menu_iter(void)
 		draw_border();
 		sparse = TRUE;
 	}
-
 	draw_steps();
+
 	wnoutrefresh(menuw);
 }

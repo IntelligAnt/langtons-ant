@@ -136,6 +136,11 @@ bool is_color_special(Colors *colors, short c)
 	return colors->next[c] != colors->def && colors->turn[c] == TURN_NONE;
 }
 
+bool is_colors_empty(Colors *colors)
+{
+	return colors->n == 0;
+}
+
 bool has_enough_colors(Colors *colors)
 {
 	return colors->n >= 2;
