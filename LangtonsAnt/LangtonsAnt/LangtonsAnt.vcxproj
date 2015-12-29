@@ -95,7 +95,7 @@
     <ClCompile Include="grid_controls.c" />
     <ClCompile Include="menu_controls.c" />
     <ClCompile Include="menu_window.c" />
-    <ClCompile Include="rules_io.c" />
+    <ClCompile Include="io.c" />
     <ClCompile Include="graphics.c" />
     <ClCompile Include="grid.c" />
     <ClCompile Include="grid_window.c" />
