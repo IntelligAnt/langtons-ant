@@ -3,19 +3,85 @@
 #include <string.h>
 #include "io.h"
 
+Colors *load_rules(char *filename) // TODO format checks
+{
+	Colors *colors;
+	FILE *input;
+	int e;
+	short def, c;
+
+	if (!(input = fopen(filename, "r"))) {
+		return NULL;
+	}
+
+	e = fscanf(input, "%hd\n", &def);
+	if (def < 0 || def >= COLOR_COUNT) {
+		return NULL;
+	}
+	colors = colors_new(def);
+	colors->def = def;
+
+	for (c = 0; c < COLOR_COUNT; ++c) {
+		e += fscanf(input, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->next+c);
+	}
+	for (c = 0; c < COLOR_COUNT; ++c) {
+		e += fscanf(input, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->turn+c);
+	}
+	e += fscanf(input, "%hd %hd\n", &colors->first, &colors->last);
+	e += fscanf(input, "%hd\n", &colors->n);
+
+	if (fclose(input) == EOF) {
+		return NULL;
+	}
+
+	if (e < RULES_TOTAL_FIELDS) {
+		colors_delete(colors);
+		return NULL;
+	}
+
+	return colors;
+}
+
+int save_rules(char *filename, Colors* colors)
+{
+	FILE *output;
+	int e;
+	short c;
+
+	if (!(output = fopen(filename, "w"))) {
+		return EOF;
+	}
+
+	e = fprintf(output, "%hd\n", colors->def);
+	for (c = 0; c < COLOR_COUNT; ++c) {
+		e += fprintf(output, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->next[c]);
+	}
+	for (c = 0; c < COLOR_COUNT; ++c) {
+		e += fprintf(output, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->turn[c]);
+	}
+	e += fprintf(output, "%hd %hd\n", colors->first, colors->last);
+	e += fprintf(output, "%hd\n", colors->n);
+
+	if (fclose(output) == EOF || e < RULES_TOTAL_FIELDS) {
+		e = EOF;
+	}
+	return e;
+}
+
 Simulation *load_simulation(char *filename)
 {
-	Simulation *simulation = malloc(sizeof(Simulation));
-	simulation->is_running = FALSE;
+	Simulation *simulation;
+	Colors *colors;
 	FILE *input;
-	int nn = 0;
-	size_t i, j;
+	size_t nn = 0, i, j;
 	char c;
 	bool is_sparse;
 
-	if (!(simulation->colors = load_rules(filename))) {
+	if (!(colors = load_rules(filename))) {
 		return NULL;
 	}
+
+	simulation = simulation_new(colors, GRID_DEF_INIT_SIZE);
 
 	if (!(input = fopen(filename, "r"))) {
 		return NULL;
@@ -28,10 +94,8 @@ Simulation *load_simulation(char *filename)
 		}
 	}
 
-	simulation->ant = malloc(sizeof(Ant));
-
-	if (fscanf(input, "%d %d %u\n", &simulation->ant->pos.x, &simulation->ant->pos.y, &simulation->ant->dir) < 0) {
-		goto error_end;
+	if (fscanf(input, "%d %d %u\n", &simulation->ant->pos.x, &simulation->ant->pos.y, &simulation->ant->dir) < 3) {
+		return simulation;
 	}
 	if (fscanf(input, "%zu\n", &simulation->steps) < 0) {
 		goto error_end;
@@ -40,6 +104,7 @@ Simulation *load_simulation(char *filename)
 		goto error_end;
 	}
 
+	grid_delete(simulation->grid);
 	simulation->grid = malloc(sizeof(Grid));
 	simulation->grid->c = NULL;
 	simulation->grid->tmp = NULL;
@@ -47,10 +112,12 @@ Simulation *load_simulation(char *filename)
 	simulation->grid->csr = NULL;
 
 
-	if (fscanf(input, "%hhu %zu %zu %zu\n", &simulation->grid->def_color, &simulation->grid->init_size, &simulation->grid->size, &simulation->grid->colored) < 0) {
+	if (fscanf(input, "%hhu %zu %zu %zu\n", &simulation->grid->def_color,
+			   &simulation->grid->init_size, &simulation->grid->size, &simulation->grid->colored) < 0) {
 		goto error_end;
 	}
-	if (fscanf(input, "%d %d %d %d\n", &simulation->grid->top_left.x, &simulation->grid->top_left.y, &simulation->grid->bottom_right.x, &simulation->grid->bottom_right.y) < 0) {
+	if (fscanf(input, "%d %d %d %d\n", &simulation->grid->top_left.x, &simulation->grid->top_left.y,
+			   &simulation->grid->bottom_right.x, &simulation->grid->bottom_right.y) < 0) {
 		goto error_end;
 	}
 
@@ -130,10 +197,12 @@ int save_simulation(char *filename, Simulation* simulation)
 	if (fprintf(output, "%c\n", is_grid_sparse(simulation->grid)) < 0) {
 		return EOF;
 	}
-	if (fprintf(output, "%hhu %zu %zu %zu\n", simulation->grid->def_color, simulation->grid->init_size, simulation->grid->size, simulation->grid->colored) < 0) {
+	if (fprintf(output, "%hhu %zu %zu %zu\n", simulation->grid->def_color,
+				simulation->grid->init_size, simulation->grid->size, simulation->grid->colored) < 0) {
 		return EOF;
 	}
-	if (fprintf(output, "%d %d %d %d\n", simulation->grid->top_left.x, simulation->grid->top_left.y, simulation->grid->bottom_right.x, simulation->grid->bottom_right.y) < 0) {
+	if (fprintf(output, "%d %d %d %d\n", simulation->grid->top_left.x, simulation->grid->top_left.y,
+				simulation->grid->bottom_right.x, simulation->grid->bottom_right.y) < 0) {
 		return EOF;
 	}
 	Cell *temp;
@@ -164,71 +233,5 @@ int save_simulation(char *filename, Simulation* simulation)
 		return EOF;
 	}
 
-	return 0;
-}
-
-
-Colors *load_rules(char *filename) // TODO format checks
-{
-	Colors *colors;
-	FILE *input;
-	int e;
-	short def, c;
-
-	if (!(input = fopen(filename, "r"))) {
-		return NULL;
-	}
-
-	e = fscanf(input, "%hd\n", &def);
-	if (def < 0 || def >= COLOR_COUNT) {
-		return NULL;
-	}
-	colors = colors_new(def);
-	colors->def = def;
-
-	for (c = 0; c < COLOR_COUNT; ++c) {
-		e += fscanf(input, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->next+c);
-	}
-	for (c = 0; c < COLOR_COUNT; ++c) {
-		e += fscanf(input, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->turn+c);
-	}
-	e += fscanf(input, "%hd %hd\n", &colors->first, &colors->last);
-	e += fscanf(input, "%hd\n", &colors->n);
-
-	if (fclose(input) == EOF) {
-		return NULL;
-	}
-
-	if (e < RULES_TOTAL_FIELDS) {
-		colors_delete(colors);
-		return NULL;
-	}
-
-	return colors;
-}
-
-int save_rules(char *filename, Colors* colors)
-{
-	FILE *output;
-	int e;
-	short c;
-
-	if (!(output = fopen(filename, "w"))) {
-		return EOF;
-	}
-
-	e = fprintf(output, "%hd\n", colors->def);
-	for (c = 0; c < COLOR_COUNT; ++c) {
-		e += fprintf(output, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->next[c]);
-	}
-	for (c = 0; c < COLOR_COUNT; ++c) {
-		e += fprintf(output, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->turn[c]);
-	}
-	e += fprintf(output, "%hd %hd\n", colors->first, colors->last);
-	e += fprintf(output, "%hd\n", colors->n);
-
-	if (fclose(output) == EOF || e < RULES_TOTAL_FIELDS) {
-		e = EOF;
-	}
-	return e;
+	return 0; // TODO return # of fields read
 }
