@@ -102,7 +102,7 @@ static void bordered(Grid *grid, int line_width)
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, line_width, cs, o);
 			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, pos)));
-			draw_box(gridw, yx, cs);
+			draw_square(gridw, yx, cs);
 		}
 	}
 }
@@ -135,7 +135,7 @@ static void borderless(Grid *grid)
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
 			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
-			draw_box(gridw, yx, cs);
+			draw_square(gridw, yx, cs);
 		}
 	}
 }
@@ -181,7 +181,7 @@ void draw_grid_iter(Grid *grid, Vector2i oldp)
 	}
 
 	wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, oldp)));
-	draw_box(gridw, yx, cs);
+	draw_square(gridw, yx, cs);
 	// TODO draw ant transition
 
 	wnoutrefresh(gridw);

@@ -14,7 +14,9 @@ const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_H
 
 void open_dialog(Vector2i pos, int color_index)
 {
-	size_t height = (color_index < 0) ? delete_pos.y : DIALOG_WINDOW_HEIGHT;
+	size_t height = (color_index == CIDX_DEFAULT)  ? left_pos.x
+		          : (color_index == CIDX_NEWCOLOR) ? delete_pos.y
+		          : DIALOG_WINDOW_HEIGHT;
 	cidx = color_index;
 
 	if (pos.x + DIALOG_WINDOW_WIDTH >= MENU_WINDOW_WIDTH) {
@@ -47,14 +49,18 @@ static void draw_tiles(void)
 		if (color_exists(stgs.colors, i)) {
 			inner.y = outer.y + 1, inner.x = outer.x + 1;
 			wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
-			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
+			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
 			wattrset(dialogw, GET_PAIR_FOR(i));
-			draw_box(dialogw, inner, DIALOG_TILE_SIZE - 2);
+			draw_square(dialogw, inner, DIALOG_TILE_SIZE - 2);
 		} else {
 			wattrset(dialogw, GET_PAIR_FOR(i));
-			draw_box(dialogw, outer, DIALOG_TILE_SIZE);
+			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
+			if (picked_color == i) {
+				wattron(dialogw, A_REVERSE);
+				draw_box_border(dialogw, outer, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE);
+			}
 		}
-		if (outer.x + DIALOG_TILE_SIZE + 1 >= DIALOG_WINDOW_WIDTH) {
+		if (outer.x+DIALOG_TILE_SIZE+1 >= DIALOG_WINDOW_WIDTH) {
 			outer.y += DIALOG_TILE_SIZE, outer.x = colors_pos.x;
 		} else {
 			outer.x += DIALOG_TILE_SIZE;
@@ -62,8 +68,12 @@ static void draw_tiles(void)
 	}
 }
 
-static void draw_buttons() // TODO draw line borders around selected buttons
+static void draw_buttons()
 {
+	if (cidx == CIDX_DEFAULT) {
+		return;
+	}
+
 	int ymid = DIALOG_BUTTON_HEIGHT/2, xmid = DIALOG_BUTTON_WIDTH/2;
 	wattrset(dialogw, GET_PAIR_FOR(DIALOG_BUTTON_COLOR));
 	draw_rect(dialogw, left_pos,  DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
@@ -71,6 +81,10 @@ static void draw_buttons() // TODO draw line borders around selected buttons
 	wattron(dialogw, A_REVERSE);
 	mvwaddstr(dialogw, left_pos.y+ymid,  left_pos.x+xmid,  "<");
 	mvwaddstr(dialogw, right_pos.y+ymid, right_pos.x+xmid, ">");
+	if (picked_turn != TURN_NONE) {
+		draw_box_border(dialogw, (picked_turn == TURN_LEFT) ? left_pos : right_pos,
+						DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
+	}
 
 	if (cidx >= 0) {
 		ymid = DIALOG_DELETE_HEIGHT/2, xmid = DIALOG_DELETE_WIDTH/2;
@@ -147,43 +161,40 @@ input_t dialog_mouse_command(MEVENT event)
 		}
 	}
 
+	return INPUT_NO_CHANGE;
+
 exit:
 	switch (cidx) {
 	case CIDX_NEWCOLOR:
 		if (picked_color != COLOR_NONE && picked_turn != TURN_NONE) {
 			add_color(stgs.colors, picked_color, picked_turn);
 			close_dialog();
-			return INPUT_MENU_CHANGED;
 		}
-		break;
+		return INPUT_MENU_CHANGED;
 	case CIDX_DEFAULT:
-		if (picked_color != COLOR_NONE) {
-			colors_delete(stgs.colors);
-			stgs.colors = colors_new(picked_color);
+		colors_delete(stgs.colors);
+		stgs.colors = colors_new(picked_color);
+		close_dialog();
+		return INPUT_MENU_CHANGED;
+	default:
+		if (cidx < 0 || cidx >= COLOR_COUNT) {
+			return INPUT_NO_CHANGE;
+		}
+		if (picked_turn != TURN_NONE) {
+			if (picked_color != COLOR_NONE) {
+				set_color(stgs.colors, cidx, picked_color, picked_turn);
+			} else {
+				set_turn(stgs.colors, cidx, picked_turn);
+			}
 			close_dialog();
 			return INPUT_MENU_CHANGED;
-		}
-		break;
-	default:
-		if (cidx >= 0 && cidx < COLOR_COUNT) {
-			if (picked_turn != TURN_NONE) {
-				if (picked_color != COLOR_NONE) {
-					set_color(stgs.colors, cidx, picked_color, picked_turn);
-				} else {
-					set_turn(stgs.colors, cidx, picked_turn);
-				}
-				close_dialog();
-				return INPUT_MENU_CHANGED;
-			} else if (del) {
-				remove_color(stgs.colors, get_color_at(stgs.colors, cidx));
-				if (!has_enough_colors(stgs.colors)) {
-					halt_simulation(stgs.linked_sim);
-				}
-				close_dialog();
-				return INPUT_MENU_CHANGED;
+		} else if (del) {
+			remove_color(stgs.colors, get_color_at(stgs.colors, cidx));
+			if (!has_enough_colors(stgs.colors)) {
+				halt_simulation(stgs.linked_sim);
 			}
+			close_dialog();
 		}
+		return INPUT_MENU_CHANGED;
 	}
-
-	return INPUT_NO_CHANGE;
 }

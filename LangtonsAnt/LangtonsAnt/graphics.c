@@ -44,11 +44,14 @@ void init_def_pairs(short fg_color, short bg_color)
 {
 	short i;
 	for (i = 0; i < COLOR_COUNT; ++i) {
-		init_pair(i+1, i, bg_color);
-		if (i == fg_color) {
-			fg_pair = GET_PAIR_FOR(i);
-		} else if (i == bg_color) {
+		if (i == bg_color) {
+			init_pair(i+1, i, fg_color);
 			bg_pair = GET_PAIR_FOR(i);
+		} else {
+			init_pair(i+1, i, bg_color);
+			if (i == fg_color) {
+				fg_pair = GET_PAIR_FOR(i);
+			}
 		}
 	}
 }
@@ -120,7 +123,7 @@ void exit_draw_loop(bool exit)
 	do_draw = !exit;
 }
 
-void draw_box(WINDOW *w, Vector2i top_left, size_t size)
+void draw_square(WINDOW *w, Vector2i top_left, size_t size)
 {
 	size_t i;
 	if (size == 1) {
@@ -140,12 +143,37 @@ void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 		return;
 	}
 	for (i = 0; i < height; ++i) {
-		mvwhline(w, top_left.y + i, top_left.x, ACS_BLOCK, width);
+		mvwhline(w, top_left.y+i, top_left.x, ACS_BLOCK, width);
 	}
 }
 
-void draw_bitmap(WINDOW *w, Vector2i top_left,
-				 const unsigned char *bitmap, size_t width, size_t height,
+void draw_box_border(WINDOW *w, Vector2i top_left, size_t width, size_t height)
+{
+	size_t y = height-1, x = width-1, i;
+	if (width == 0 || height == 0) {
+		return;
+	}
+	if (width > 1 && height > 1) {
+		mvwaddch(w, top_left.y,   top_left.x,   ACS_ULCORNER);
+		mvwaddch(w, top_left.y,   top_left.x+x, ACS_URCORNER);
+		mvwaddch(w, top_left.y+y, top_left.x,   ACS_LLCORNER);
+		mvwaddch(w, top_left.y+y, top_left.x+x, ACS_LRCORNER);
+	} else {
+		mvwaddch(w, top_left.y,   top_left.x+x, ACS_PLUS);
+		mvwaddch(w, top_left.y+y, top_left.x,   ACS_PLUS);
+	}
+	for (i = 1; i < width-1; ++i) {
+		mvwaddch(w, top_left.y,   top_left.x+i, ACS_HLINE);
+		mvwaddch(w, top_left.y+y, top_left.x+i, ACS_HLINE);
+	}
+	for (i = 1; i < height-1; ++i) {
+		mvwaddch(w, top_left.y+i, top_left.x,   ACS_VLINE);
+		mvwaddch(w, top_left.y+i, top_left.x+x, ACS_VLINE);
+	}
+}
+
+void draw_bitmap(WINDOW *w, const unsigned char *bitmap,
+				 Vector2i top_left, size_t width, size_t height,
 				 bool overwrite)
 {
 	size_t read, y, x;

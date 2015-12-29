@@ -70,7 +70,7 @@
 ///@{
 #define GET_PAIR_FOR(c)  (COLOR_PAIR((c)+1))
 #define GET_COLOR_FOR(p) (PAIR_NUMBER(p)-1)
-#define AVAILABLE_COLOR(def, c, bk) (((def) != (c)) ? (c) : (bk))
+#define AVAILABLE_COLOR(def, c, bk) (((def) == (c)) ? (bk) : (c))
 ///@}
 
 /** @name Grid window attributes */
@@ -110,7 +110,7 @@ typedef struct scroll_info {
 ///@{
 #define MENU_WINDOW_WIDTH   42
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
-#define MENU_LOGO_HEIGHT    16
+#define MENU_LOGO_HEIGHT    15
 #define MENU_BORDER_COLOR   COLOR_BLUE
 #define MENU_BORDER_COLOR_S COLOR_MAROON
 ///@}
@@ -155,7 +155,7 @@ typedef enum { STATUS_NONE, STATUS_SUCCESS, STATUS_FAILURE } IOStatus;
 #define DIALOG_TILE_COLS     5
 #define DIALOG_BUTTON_WIDTH  7
 #define DIALOG_BUTTON_HEIGHT 3
-#define DIALOG_BUTTON_COLOR  COLOR_YELLOW
+#define DIALOG_BUTTON_COLOR  COLOR_WHITE
 #define DIALOG_DELETE_WIDTH  5
 #define DIALOG_DELETE_HEIGHT DIALOG_BUTTON_HEIGHT
 #define DIALOG_DELETE_COLOR  COLOR_RED
@@ -243,7 +243,7 @@ void exit_draw_loop(bool exit);
  * @param top_left Box origin
  * @param size Box size
  */
-void draw_box(WINDOW *w, Vector2i top_left, size_t size);
+void draw_square(WINDOW *w, Vector2i top_left, size_t size);
 
 /**
  * Utility function for drawing rectangular boxes
@@ -255,16 +255,25 @@ void draw_box(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 
 /**
+* Utility function for drawing thin rectangular borders
+* @param w Window to draw to
+* @param top_left Box origin
+* @param width Box width
+* @param height Box height
+*/
+void draw_box_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
+
+/**
  * Utility function for drawing monochrome bitmaps
  * @param w Window to draw to
- * @param top_left Box origin
  * @param bitmap Bitmap to be drawn (byte array)
+ * @param top_left Box origin
  * @param width Box width
  * @param height Box height
  * @param overwrite Should existing content be overwritten?
  */
-void draw_bitmap(WINDOW *w, Vector2i top_left,
-				 const unsigned char *bitmap, size_t width, size_t height,
+void draw_bitmap(WINDOW *w, const unsigned char *bitmap,
+				 Vector2i top_left, size_t width, size_t height,
 				 bool overwrite);
 
 /**
