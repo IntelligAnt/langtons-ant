@@ -25,7 +25,7 @@ Colors* load_rules(char *filename);
 
 /**
  * Attempts to write rules to a .lant textfile
- * @param filename Path of file from which to load
+ * @param filename Path of file to which to save
  * @param colors Rules to be written
  * @return Number of read fields if successful; EOF otherwise
  * @see load_rules(char *)
@@ -42,7 +42,7 @@ Simulation *load_simulation(char *filename);
 
 /**
  * Attempts to write a simulation to a .lant textfile
- * @param filename Path of file from which to load
+ * @param filename Path of file to which to save
  * @param simulation Simulation to be written
  * @return Number of read fields if successful; EOF otherwise
  * @see load_simulation(char *)
