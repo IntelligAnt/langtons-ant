@@ -3,6 +3,7 @@
 #ifndef NDEBUG
 #include <vld.h>
 #endif
+
 #include "logic.h"
 #include "graphics.h"
 #include "io.h"

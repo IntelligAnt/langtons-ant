@@ -1,8 +1,8 @@
 #include <math.h>
 #include "graphics.h"
 
-static bool do_draw = TRUE;
 chtype fg_pair, bg_pair;
+static bool do_draw = TRUE;
 
 void init_graphics(short fg_color, short bg_color)
 {

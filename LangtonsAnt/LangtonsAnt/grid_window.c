@@ -6,7 +6,7 @@
 WINDOW *gridw;
 ScrollInfo gridscrl;
 
-const Vector2i grid_pos = { 0, 0 };
+static const Vector2i grid_pos = { 0, 0 };
 
 void init_grid_window(void)
 {
@@ -31,8 +31,7 @@ static Vector2i pos2yx(Vector2i pos, int line_width, int cell_size, int offset)
 
 static void draw_buffer_zone(int total, int offset)
 {
-	const int n = GRID_WINDOW_SIZE;
-	int i;
+	int n = GRID_WINDOW_SIZE, i;
 	for (i = 0; i < offset; ++i) {
 		mvwhline(gridw, i,     i,     ACS_BLOCK, n-i);
 		mvwvline(gridw, i,     i,     ACS_BLOCK, n-i);
