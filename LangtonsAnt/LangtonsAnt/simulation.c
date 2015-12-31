@@ -22,14 +22,14 @@ void simulation_delete(Simulation *sim)
 	free(sim);
 }
 
-void run_simulation(Simulation *sim)
+void simulation_run(Simulation *sim)
 {
 	if (sim) {
 		sim->is_running = TRUE;
 	}
 }
 
-void halt_simulation(Simulation *sim)
+void simulation_halt(Simulation *sim)
 {
 	if (sim) {
 		sim->is_running = FALSE;

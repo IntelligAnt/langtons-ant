@@ -60,7 +60,7 @@ static input_t play_button_clicked(void)
 		sim = stgs.linked_sim;
 	}
 	if (sim && has_enough_colors(sim->colors)) {
-		run_simulation(sim);
+		simulation_run(sim);
 		res |= INPUT_MENU_CHANGED;
 	}
 	return res;
@@ -70,7 +70,7 @@ static input_t pause_button_clicked(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		halt_simulation(sim);
+		simulation_halt(sim);
 	}
 	return INPUT_MENU_CHANGED;
 }

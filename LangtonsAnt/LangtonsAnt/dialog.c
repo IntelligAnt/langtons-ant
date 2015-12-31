@@ -191,7 +191,7 @@ exit:
 		} else if (del) {
 			remove_color(stgs.colors, get_color_at(stgs.colors, cidx));
 			if (!has_enough_colors(stgs.colors)) {
-				halt_simulation(stgs.linked_sim);
+				simulation_halt(stgs.linked_sim);
 			}
 			close_dialog();
 		}

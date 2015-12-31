@@ -340,16 +340,9 @@ static void draw_steps(void)
 	char digits_str[9], *p;
 	Vector2i tl = steps_pos;
 
-#if OPT_STEPS
-	static size_t prev_steps;
-	bool skip_draw = (double)prev_steps/steps > OPT_STEPS_THRESHOLD;
-#else
-	bool skip_draw = FALSE;
-#endif
-
 	if (steps <= 1) {
 		do_draw = TRUE;
-	} else if (!do_draw || skip_draw) {
+	} else if (!do_draw) {
 		return;
 	}
 
@@ -372,10 +365,6 @@ static void draw_steps(void)
 		}
 		tl.x += 4;
 	}
-
-#if OPT_STEPS
-	prev_steps = steps;
-#endif
 }
 
 void draw_menu_full(void)
@@ -405,14 +394,23 @@ void draw_menu_full(void)
 
 void draw_menu_iter(void)
 {
+	Simulation *sim = stgs.linked_sim;
 	static bool sparse = FALSE;
+
+#if OPT_STEPS
+	static size_t prev_steps;
+	if (sim->steps <= 1 || (double)prev_steps/sim->steps <= OPT_STEPS_THRESHOLD) {
+#endif
+		draw_steps();
+#if OPT_STEPS
+		prev_steps = sim->steps;
+	}
+#endif
 	
-	assert(stgs.linked_sim);
-	if (!sparse && is_grid_sparse(stgs.linked_sim->grid)) {
+	if (!sparse && is_grid_sparse(sim->grid)) {
 		draw_edge();
 		sparse = TRUE;
 	}
-	draw_steps();
 
 	wnoutrefresh(menuw);
 }

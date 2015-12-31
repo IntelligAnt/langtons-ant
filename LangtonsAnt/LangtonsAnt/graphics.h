@@ -194,6 +194,8 @@ typedef unsigned char input_t;
 ///@}
 
 
+/*--------------------- Performance optimization macros ----------------------*/
+
 /** @name Optimization settings */
 ///@{
 #define OPT_DELAY_LOOP      1          /**< Should use a delay loop to extend time between draws? */
@@ -202,6 +204,8 @@ typedef unsigned char input_t;
 #define OPT_STEPS_THRESHOLD 0.9        /**< Ratio of steps between two draws must fall below this value */
 ///@}
 
+
+/*------------------------ Global variables/constants ------------------------*/
 
 /** @name Globals */
 ///@{

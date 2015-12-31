@@ -195,8 +195,8 @@ unsigned char color_at_s(Grid *grid, Vector2i p);
 
 Simulation *simulation_new(Colors *colors, size_t init_size);
 void simulation_delete(Simulation *sim);
-void run_simulation(Simulation *sim);
-void halt_simulation(Simulation *sim);
+void simulation_run(Simulation *sim);
+void simulation_halt(Simulation *sim);
 bool is_simulation_running(Simulation *sim);
 bool has_simulation_started(Simulation *sim);
 
