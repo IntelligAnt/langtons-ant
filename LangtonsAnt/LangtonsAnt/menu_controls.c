@@ -11,7 +11,7 @@ static WINDOW *iow;
 static const Vector2i io_pos = { MENU_CONTROLS_POS-22,
                                  GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH-INPUT_WINDOW_WIDTH-2 };
 
-input_t reset_sim(void)
+input_t reset_simulation(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (sim) {
@@ -22,10 +22,10 @@ input_t reset_sim(void)
 	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
-input_t clear_sim(void)
+input_t clear_simulation(void)
 {
 	remove_all_colors(stgs.colors);
-	return reset_sim();
+	return reset_simulation();
 }
 
 static input_t isz_button_clicked(int i)
@@ -46,7 +46,7 @@ static input_t isz_button_clicked(int i)
 		return INPUT_NO_CHANGE;
 	}
 	if (!is_simulation_running(sim) && !has_simulation_started(sim)) { // Sanity check
-		return reset_sim();
+		return reset_simulation();
 	}
 	return INPUT_MENU_CHANGED;
 }
@@ -56,7 +56,7 @@ static input_t play_button_clicked(void)
 	input_t res = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		res |= reset_sim();
+		res |= reset_simulation();
 		sim = stgs.linked_sim;
 	}
 	if (sim && has_enough_colors(sim->colors)) {
@@ -77,7 +77,7 @@ static input_t pause_button_clicked(void)
 
 static input_t stop_button_clicked(void)
 {
-	return has_simulation_started(stgs.linked_sim) ? reset_sim() : clear_sim();
+	return has_simulation_started(stgs.linked_sim) ? reset_simulation() : clear_simulation();
 }
 
 static void read_filename(char *filename)
@@ -128,10 +128,10 @@ input_t menu_key_command(int key)
 		}
 
 	case 'R': case 'r':
-		return reset_sim();
+		return reset_simulation();
 
 	case KEY_BACKSPACE: case '\b':
-		return clear_sim();
+		return clear_simulation();
 
 	case KEY_ESC:
 		exit_draw_loop(TRUE);

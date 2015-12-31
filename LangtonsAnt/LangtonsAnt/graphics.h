@@ -207,11 +207,11 @@ typedef unsigned char input_t;
 ///@{
 extern chtype         fg_pair, bg_pair;
 
-extern WINDOW            *gridw;
+extern WINDOW         *gridw;
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
 
-extern WINDOW            *menuw;
+extern WINDOW         *menuw;
 extern Settings       stgs;
 extern IOStatus       load_status, save_status;
 extern const Vector2i menu_pos;
@@ -219,9 +219,9 @@ extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 
-extern WINDOW            *dialogw;
+extern WINDOW         *dialogw;
 extern Vector2i       dialog_pos;
-extern const char        *dialog_cdef_msg;
+extern const char     *dialog_cdef_msg;
 ///@}
 
 
@@ -469,16 +469,16 @@ Vector2i get_menu_cdef_pos(void);
 /**
  * Resets and remakes the active simulation using the current settings
  * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
- * @see clear_sim(void)
+ * @see clear_simulation(void)
  */
-input_t reset_sim(void);
+input_t reset_simulation(void);
 
 /**
  * Clears the current settings and resets the active simulation
  * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
- * @see reset_sim(void)
+ * @see reset_simulation(void)
  */
-input_t clear_sim(void);
+input_t clear_simulation(void);
 
 /**
  * Handles key Command passed to the menu

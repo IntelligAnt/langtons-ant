@@ -175,7 +175,7 @@ exit:
 		colors_delete(stgs.colors);
 		stgs.colors = colors_new(picked_color);
 		close_dialog();
-		return clear_sim();
+		return clear_simulation();
 	default:
 		if (cidx < 0 || cidx >= COLOR_COUNT) {
 			return INPUT_NO_CHANGE;
