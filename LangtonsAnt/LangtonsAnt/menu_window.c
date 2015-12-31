@@ -1,5 +1,6 @@
 #include <math.h>
 #include <string.h>
+
 #include "graphics.h"
 
 WINDOW *menuw;
@@ -17,43 +18,43 @@ const Vector2i menu_load_pos  = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4,
 const Vector2i menu_save_pos  = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
                                   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
-const char *logo_msg   = " 14-COLOR 2D TURING MACHINE SIMULATOR ";
-const char *tiles_msg  = "RULES:";
-const char *isz_msg    = "INIT SIZE:";
-const char *sparse_msg = "SPARSE MATRIX";
-const char *size_msg   = "GRID SIZE:";
-const char *steps_msg  = "STEPS:";
+static const char *logo_msg   = " 14-COLOR 2D TURING MACHINE SIMULATOR ";
+static const char *tiles_msg  = "RULES:";
+static const char *isz_msg    = "INIT SIZE:";
+static const char *sparse_msg = "SPARSE MATRIX";
+static const char *size_msg   = "GRID SIZE:";
+static const char *steps_msg  = "STEPS:";
 
-const Vector2i logo_pos       = { 3,  1 };
-const Vector2i logo_msg_pos   = { 12, 2 };
-const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
-const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
-const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-5 };
-const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-20 };
-const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
-const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
-const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
-const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  9 };
-const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
+static const Vector2i logo_pos       = { 3,  1 };
+static const Vector2i logo_msg_pos   = { 12, 2 };
+static const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
+static const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
+static const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-5 };
+static const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-20 };
+static const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
+static const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
+static const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
+static const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  9 };
+static const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
 
-const unsigned char logo_bitmap[] = {
+static const unsigned char logo_bitmap[] = {
 	0x1C, 0x00, 0x00, 0x80, 0x00, 0x08, 0x00, 0x00,
 	0x80, 0x00, 0x08, 0x3B, 0x8E, 0xE6, 0x70, 0x08,
 	0x4A, 0x52, 0x89, 0x48, 0x09, 0x4A, 0x52, 0x89,
 	0x48, 0x1F, 0x3A, 0x4E, 0x66, 0x48, 0x00, 0x00,
 	0x02, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00
 };
-const unsigned char isz_bitmaps[][1] = {
+static const unsigned char isz_bitmaps[][1] = {
 	{ 0x5C }, { 0xE8 }
 };
-const unsigned char button_bitmaps[][4] = {
+static const unsigned char button_bitmaps[][4] = {
 	{ 0x43, 0x1C, 0xC4 }, { 0x02, 0x94, 0xA0 }, { 0x03, 0x9C, 0xE0 }, { 0x47, 0x92, 0x17 }
 };
-const unsigned char digit_bitmaps[][2] = {
+static const unsigned char digit_bitmaps[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
 };
-const unsigned char inf_bitmap[] = {
+static const unsigned char inf_bitmap[] = {
 	0x00, 0x00, 0x07, 0x1C, 0x00, 0x00, 0x11, 0x44, 0x00, 0x00,
 	0x21, 0x08, 0x00, 0x00, 0x45, 0x10, 0x00, 0x00, 0x71, 0xC0
 };
@@ -99,28 +100,28 @@ Vector2i get_menu_cdef_pos(void)
 	};
 }
 
-static void draw_border()
+static void draw_edge()
 {
 	Simulation *sim = stgs.linked_sim;
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
 
 	if (sim && is_grid_sparse(sim->grid)) {
-		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
+		wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR_S));
 		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
 	} else {
-		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+		wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', strlen(sparse_msg));
 	}
 
-	mvwhline(menuw, 0, 0, ACS_BLOCK, h);
-	mvwvline(menuw, 0, 0, ACS_BLOCK, v);
-	mvwhline(menuw, v-1, 0, ACS_BLOCK, h);
-	mvwvline(menuw, 0, h-1, ACS_BLOCK, v);
+	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
+	mvwvline(menuw, 0,   0,   ACS_BLOCK, v);
+	mvwhline(menuw, v-1, 0,   ACS_BLOCK, h);
+	mvwvline(menuw, 0,   h-1, ACS_BLOCK, v);
 }
 
 static void draw_logo()
 {
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	draw_bitmap(menuw, logo_bitmap, logo_pos, 40, 8, FALSE);
 	wattron(menuw, A_REVERSE);
 	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
@@ -137,7 +138,7 @@ static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 		dy = abs(pos1.y - pos2.y) - ts;
 		mvwvline(menuw, min(pos1.y, pos2.y)+ts, pos1.x+o, ACS_VLINE, dy);
 		if (pos1.y < pos2.y) {
-			mvwaddch(menuw, pos2.y-1, pos1.x+o, ACS_DARROW);
+			mvwaddch(menuw, pos2.y-1,  pos1.x+o, ACS_DARROW);
 		} else {
 			mvwaddch(menuw, pos2.y+ts, pos1.x+o, ACS_UARROW);
 		}
@@ -325,7 +326,7 @@ static void draw_size(void)
 	size_t size = sim ? sim->grid->size : 0;
 	char size_str[29];
 	sprintf(size_str, "%28d", size);
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	mvwaddstr(menuw, size_pos.y, size_pos.x-28, size_str);
 }
 
@@ -378,7 +379,7 @@ static void draw_steps(void)
 
 void draw_menu_full(void)
 {
-	draw_border();
+	draw_edge();
 	draw_logo();
 	draw_color_list();
 	draw_init_size();
@@ -388,7 +389,7 @@ void draw_menu_full(void)
 	draw_steps();
 
 	/* Draw messages */
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	mvwaddstr(menuw, isz_msg_pos.y,   isz_msg_pos.x,   isz_msg);
 	mvwaddstr(menuw, tiles_msg_pos.y, tiles_msg_pos.x, tiles_msg);
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
@@ -407,7 +408,7 @@ void draw_menu_iter(void)
 	
 	assert(stgs.linked_sim);
 	if (!sparse && is_grid_sparse(stgs.linked_sim->grid)) {
-		draw_border();
+		draw_edge();
 		sparse = TRUE;
 	}
 	draw_steps();

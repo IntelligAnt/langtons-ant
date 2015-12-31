@@ -1,6 +1,6 @@
 /**
  * @file graphics.h
- * File containing all graphics members and functions
+ * Graphics members and function declarations
  * @author IntelligAnt
  */
 #ifndef __GRAPHICS_H__
@@ -9,11 +9,8 @@
 #include "logic.h"
 #include "include/curses.h"
 
-///@{
-/** Standard max/min macro */
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#define min(a, b) (((a) < (b)) ? (a) : (b))
-///@}
+
+/*----------------------- Display colors macros ------------------------*/
 
 #undef COLOR_BLACK
 #undef COLOR_RED
@@ -68,10 +65,13 @@
 
 /** @name Utility color macros */
 ///@{
-#define GET_PAIR_FOR(c)  (COLOR_PAIR((c)+1))
-#define GET_COLOR_FOR(p) (PAIR_NUMBER(p)-1)
+#define GET_PAIR_FOR(c)  (COLOR_PAIR((c) + 1))
+#define GET_COLOR_FOR(p) (PAIR_NUMBER(p) - 1)
 #define AVAILABLE_COLOR(def, c, bk) (((def) == (c)) ? (bk) : (c))
 ///@}
+
+
+/*-------------------- Grid window macros and types --------------------*/
 
 /** @name Grid window attributes */
 ///@{
@@ -100,11 +100,14 @@
 
 /** Structure for managing scroll data */
 typedef struct scroll_info {
-	bool enabled;		  /**< Scrolling is enabled */                    ///@{
-	int y, x;             /**< Current view position relative to (0,0) */ /**@}*/ ///@{
-	int hcenter, vcenter; /**< Scrollbar slider positions */              ///@}
+	bool enabled;		  /**< Scrolling is enabled */                    /**@{*/
+	int y, x;             /**< Current view position relative to (0,0) */ /**@}*/ /**@{*/
+	int hcenter, vcenter; /**< Scrollbar slider positions */              /**@}*/
 	double scale;         /**< Scaling factor */
 } ScrollInfo;
+
+
+/*-------------------- Menu window macros and types --------------------*/
 
 /** @name Menu window attributes */
 ///@{
@@ -112,8 +115,8 @@ typedef struct scroll_info {
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
 #define MENU_LOGO_HEIGHT    15
 #define MENU_CONTROLS_POS   88
-#define MENU_BORDER_COLOR   COLOR_NAVY
-#define MENU_BORDER_COLOR_S COLOR_MAROON
+#define MENU_EDGE_COLOR     COLOR_NAVY
+#define MENU_EDGE_COLOR_S   COLOR_MAROON
 ///@}
 
 /** @name Menu buttons attributes */
@@ -150,6 +153,9 @@ typedef struct settings {
 /** Status indicator type for IO operations in the menu */
 typedef enum { STATUS_NONE, STATUS_SUCCESS, STATUS_FAILURE } IOStatus;
 
+
+/*------------------- Dialog window macros and types -------------------*/
+
 /** @name Dialog window attributes */
 ///@{
 #define DIALOG_TILE_SIZE     3
@@ -171,6 +177,9 @@ typedef enum { STATUS_NONE, STATUS_SUCCESS, STATUS_FAILURE } IOStatus;
 #define CIDX_DEFAULT  -2
 ///@}
 
+
+/*------------------ Input handling macros and types -------------------*/
+
 /** Escape key literal for input handling */
 #define KEY_ESC 0x1B
 
@@ -184,6 +193,7 @@ typedef unsigned char input_t;
 #define INPUT_MENU_CHANGED ((input_t)0x2)
 ///@}
 
+
 /** @name Optimization settings */
 ///@{
 #define OPT_DELAY_LOOP      1          /**< Should use a delay loop to extend time between draws? */
@@ -192,26 +202,32 @@ typedef unsigned char input_t;
 #define OPT_STEPS_THRESHOLD 0.9        /**< Ratio of steps between two draws must fall below this value */
 ///@}
 
+
 /** @name Globals */
 ///@{
 extern chtype         fg_pair, bg_pair;
-extern WINDOW         *gridw, *menuw, *dialogw;
 
+extern WINDOW         *gridw;
 extern ScrollInfo     gridscrl;
+extern const Vector2i grid_pos;
+
+extern WINDOW         *menuw;
 extern Settings       stgs;
 extern IOStatus       load_status, save_status;
-
-extern const Vector2i grid_pos, menu_pos;
+extern const Vector2i menu_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 
+extern WINDOW         *dialogw;
 extern Vector2i       dialog_pos;
 extern const char*    dialog_cdef_msg;
 ///@}
 
 
-/* graphics.c */
+/*----------------------------------------------------------------------*
+ *                              graphics.c                              *
+ *----------------------------------------------------------------------*/
 
 /**
  * Initializes graphics and all windows
@@ -261,13 +277,13 @@ void draw_square(WINDOW *w, Vector2i top_left, size_t size);
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 
 /**
-* Utility function for drawing thin rectangular borders
-* @param w Window to draw to
-* @param top_left Box origin
-* @param width Box width
-* @param height Box height
-*/
-void draw_box_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
+ * Utility function for drawing thin rectangular borders
+ * @param w Window to draw to
+ * @param top_left Box origin
+ * @param width Box width
+ * @param height Box height
+ */
+void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 
 /**
  * Utility function for drawing monochrome bitmaps
@@ -283,7 +299,7 @@ void draw_bitmap(WINDOW *w, const unsigned char *bitmap,
 				 bool overwrite);
 
 /**
- * Utility function for turning relative coords to absolute
+ * Utility function for turning relative coords into absolute
  * @param rel Relative vector
  * @param origin Point of reference
  * @return Absolute vector
@@ -291,7 +307,7 @@ void draw_bitmap(WINDOW *w, const unsigned char *bitmap,
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 
 /**
- * Utility function for turning absolute coords to relative
+ * Utility function for turning absolute coords into relative
  * @param abs Absolute vector
  * @param origin Point of reference
  * @return Relative vector
@@ -316,7 +332,22 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 int sgn(int x);
 
 
-/* grid_window.c */
+/*----------------------------------------------------------------------*
+ *                             ant_bitmap.c                             *
+ *----------------------------------------------------------------------*/
+
+/**
+ * Finds a suitable bitmap for the given cell size and ant direction
+ * @param size Cell size
+ * @param dir Current ant direction
+ * @return Ant bitmap with requested size and direction, if one exists; NULL otherwise
+ */
+const unsigned char* get_ant_bitmap(size_t size, Direction dir);
+
+
+/*----------------------------------------------------------------------*
+ *                            grid_window.c                             *
+ *----------------------------------------------------------------------*/
 
 /**
  * Initializes grid window and related components
@@ -330,19 +361,21 @@ void end_grid_window(void);
 
 /**
  * Draws the entire grid (the portion shown by gridscrl)
- * @param grid Grid from which to draw
+ * @param grid Grid from which to draw (NULL for empty window with no grid)
+ * @param ant Ant to be drawn in the grid (NULL for no ant)
  * @see draw_grid_iter(Grid *, Vector2i)
  */
-void draw_grid_full(Grid *grid);
+void draw_grid_full(Grid *grid, Ant *ant);
 
 /**
- * Draws the given pixel in the grid (the portion shown by gridscrl).
+ * Draws the given cell in the grid (the portion shown by gridscrl).
  * Suitable for calling in loops as it does less work than draw_grid__full.
  * @param grid Grid from which to draw
- * @param oldp Position of pixel that has changed and should be drawn
+ * @param ant Ant to be drawn in the grid (NULL for no ant)
+ * @param oldp Position of cell that has changed and should be drawn
  * @see draw_grid_full(Grid *)
  */
-void draw_grid_iter(Grid *grid, Vector2i oldp);
+void draw_grid_iter(Grid *grid, Ant *ant, Vector2i oldp);
 
 /**
  * Scrolls the grid relative to the current gridscrl position
@@ -360,12 +393,14 @@ void scroll_grid(Grid *grid, int dy, int dx);
 void set_scroll(Grid *grid, int y, int x);
 
 /**
-* Resets gridscrl to its initial state
-*/
+ * Resets gridscrl to its initial state
+ */
 void reset_scroll(void);
 
 
-/* grid_controls.c */
+/*----------------------------------------------------------------------*
+ *                           grid_controls.c                            *
+ *----------------------------------------------------------------------*/
 
 /**
  * Handles key command passed to the grid window
@@ -386,7 +421,9 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key);
 input_t grid_mouse_command(Grid *grid);
 
 
-/* menu_window.c */
+/*----------------------------------------------------------------------*
+ *                            menu_window.c                             *
+ *----------------------------------------------------------------------*/
 
 /**
  * Initializes menu window and related components
@@ -425,7 +462,9 @@ Vector2i get_menu_tile_pos(int index);
 Vector2i get_menu_cdef_pos(void);
 
 
-/* menu_controls.c */
+/*----------------------------------------------------------------------*
+ *                           menu_controls.c                            *
+ *----------------------------------------------------------------------*/
 
 /**
  * Resets and remakes the active simulation using the current settings
@@ -444,25 +483,30 @@ input_t clear_sim(void);
 /**
  * Handles key Command passed to the menu
  * @param key Key passed to the grid
- * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
+ * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed;
+ *         INPUT_NO_CHANGE otherwise
  * @see menu_mouse_command(void)
  */
 input_t menu_key_command(int key);
 
 /**
  * Handles mouse command passed to the menu
- * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed; INPUT_NO_CHANGE otherwise
+ * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed;
+ *         INPUT_NO_CHANGE otherwise
  * @see menu_key_command(int)
  */
 input_t menu_mouse_command(void);
 
 
-/* dialog.c */
+/*----------------------------------------------------------------------*
+ *                               dialog.c                               *
+ *----------------------------------------------------------------------*/
 
 /**
  * Opens a temporary dialog window for picking colors
  * @param pos Dialog origin relative to menu
- * @param color_index Index of the color that is to be set (CIDX_NEWCOLOR to add a color, CIDX_DEFAULT to change the default)
+ * @param color_index Index of the color that is to be set (CIDX_NEWCOLOR to add a color,
+ * CIDX_DEFAULT to change the default)
  */
 void open_dialog(Vector2i pos, int color_index);
 

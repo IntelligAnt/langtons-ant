@@ -1,8 +1,8 @@
 #include <math.h>
 #include "graphics.h"
 
-static bool do_draw = TRUE;
 chtype fg_pair, bg_pair;
+static bool do_draw = TRUE;
 
 void init_graphics(short fg_color, short bg_color)
 {
@@ -22,10 +22,7 @@ void init_graphics(short fg_color, short bg_color)
 	init_grid_window();
 	init_menu_window();
 
-	if (gridw != NULL && menuw != NULL) {
-		draw_grid_full(NULL);
-		draw_menu_full();
-	} else {
+	if (gridw == NULL || menuw == NULL) {
 		printw("Couldn't initialize graphics. Please lower your terminal's font size "
 			   "(raster 8x8 preferred) and try again.");
 		wnoutrefresh(stdscr);
@@ -70,13 +67,14 @@ static input_t handle_input(void)
 
 void draw_loop(void)
 {
-	draw_grid_full(stgs.linked_sim->grid);
+	Simulation *sim = stgs.linked_sim;
+	draw_grid_full(sim->grid, sim->ant);
 	draw_menu_full();
 
 	while (do_draw) {
 		input_t input = handle_input();
 		input_t grid_changed = input & INPUT_GRID_CHANGED, menu_changed = input & INPUT_MENU_CHANGED;
-		Simulation *sim = stgs.linked_sim;
+		sim = stgs.linked_sim;
 
 		if (is_simulation_running(sim)) {
 			Vector2i oldp = sim->ant->pos;
@@ -86,7 +84,7 @@ void draw_loop(void)
 			if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
 				grid_expand(sim->grid, sim->ant);
 				if (!grid_changed) {
-					draw_grid_full(sim->grid);
+					draw_grid_full(sim->grid, sim->ant);
 				}
 				if (!menu_changed) {
 					draw_menu_full();
@@ -97,7 +95,7 @@ void draw_loop(void)
 				for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
 #endif
 				if (!grid_changed) {
-					draw_grid_iter(sim->grid, oldp);
+					draw_grid_iter(sim->grid, sim->ant, oldp);
 				}
 				if (!menu_changed) {
 					draw_menu_iter();
@@ -108,7 +106,7 @@ void draw_loop(void)
 		}
 	
 		if (grid_changed) {
-			draw_grid_full(sim->grid);
+			draw_grid_full(sim->grid, sim->ant);
 		}
 		if (menu_changed) {
 			draw_menu_full();
@@ -147,7 +145,7 @@ void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 	}
 }
 
-void draw_box_border(WINDOW *w, Vector2i top_left, size_t width, size_t height)
+void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 {
 	size_t y = height-1, x = width-1, i;
 	if (width == 0 || height == 0) {

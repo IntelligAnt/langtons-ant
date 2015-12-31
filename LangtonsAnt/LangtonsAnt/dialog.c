@@ -4,14 +4,14 @@ WINDOW *dialogw;
 Vector2i dialog_pos;
 const char* dialog_cdef_msg = "Pick def. color";
 
-int cidx;
-short picked_color = COLOR_NONE, picked_turn = TURN_NONE;
+static int cidx;
+static short picked_color = COLOR_NONE, picked_turn = TURN_NONE;
 
-const Vector2i colors_pos  = { 1, 1 };
-const Vector2i left_pos    = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, 1 };
-const Vector2i right_pos   = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, DIALOG_BUTTON_WIDTH+2 };
-const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT+3,
-                               (DIALOG_WINDOW_WIDTH-DIALOG_DELETE_WIDTH-2)/2+1 };
+static const Vector2i colors_pos  = { 1, 1 };
+static const Vector2i left_pos    = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, 1 };
+static const Vector2i right_pos   = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, DIALOG_BUTTON_WIDTH+2 };
+static const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT+3,
+                                      (DIALOG_WINDOW_WIDTH-DIALOG_DELETE_WIDTH-2)/2+1 };
 
 void open_dialog(Vector2i pos, int color_index)
 {
@@ -52,7 +52,7 @@ static void draw_tiles(void)
 			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
 			if (picked_color == i) {
 				wattron(dialogw, A_REVERSE);
-				draw_box_border(dialogw, outer, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE);
+				draw_border(dialogw, outer, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE);
 			}	
 		} else {
 			inner.y = outer.y + 1, inner.x = outer.x + 1;
@@ -85,7 +85,7 @@ static void draw_buttons()
 	mvwaddstr(dialogw, left_pos.y+ymid,  left_pos.x+xmid,  "<");
 	mvwaddstr(dialogw, right_pos.y+ymid, right_pos.x+xmid, ">");
 	if (picked_turn != TURN_NONE) {
-		draw_box_border(dialogw, (picked_turn == TURN_LEFT) ? left_pos : right_pos,
+		draw_border(dialogw, (picked_turn == TURN_LEFT) ? left_pos : right_pos,
 						DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	}
 
@@ -115,7 +115,7 @@ Vector2i get_dialog_tile_pos(int index)
 	Vector2i pos = { 1, 1 };
 
 	if (index == fg || cidx != CIDX_DEFAULT && index == stgs.colors->def) {
-		return (Vector2i) { -1, -1 };
+		return VECTOR_INVALID;
 	}
 
 	for (i = 0; i < index; ++i) {
