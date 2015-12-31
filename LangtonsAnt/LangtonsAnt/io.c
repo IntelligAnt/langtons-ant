@@ -136,12 +136,12 @@ Simulation *load_simulation(char *filename)
 				}
 				if (!temp) {
 					simulation->grid->csr[i] = malloc(sizeof(Cell));
-					simulation->grid->csr[i]->col_packed = colp;
+					simulation->grid->csr[i]->packed = colp;
 					simulation->grid->csr[i]->next = NULL;
 					temp = simulation->grid->csr[i];
 				} else {
 					temp->next = malloc(sizeof(Cell));
-					temp->next->col_packed = colp;
+					temp->next->packed = colp;
 					temp->next->next = NULL;
 					temp = temp->next;
 				}
@@ -211,7 +211,7 @@ int save_simulation(char *filename, Simulation* simulation)
 		for (i = 0; i < simulation->grid->size; i++) {
 			temp = simulation->grid->csr[i];
 			while (temp) {
-				if (fprintf(output, " %zu", temp->col_packed) < 0) {
+				if (fprintf(output, " %zu", temp->packed) < 0) {
 					return EOF;
 				}
 				temp = temp->next;

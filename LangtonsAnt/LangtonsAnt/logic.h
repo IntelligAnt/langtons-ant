@@ -9,23 +9,54 @@
 #include <assert.h>
 #include <stddef.h>
 
+
+/*------------------ General purpose macros and types ------------------*/
+
+///@{
+/** Max/min integer */
+#ifndef INT_MAX
+#define INT_MAX (int)((unsigned int)-1 >> 1)
+#endif
+#ifndef INT_MIN
+#define INT_MIN ~INT_MAX
+#endif
+///@}
+
+///@{
+/** Standard max/min macro */
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+///@}
+
 ///@{
 /** Curses boolean literal */
 #ifndef FALSE
 #define FALSE 0
 #endif
 #ifndef TRUE
-#define TRUE 1
+#define TRUE  1
 #endif
 ///@}
 
 /** Curses boolean type */
 typedef unsigned char bool;
 
+
+/*---------------------- Vector macros and types -----------------------*/
+
+/** Equality comparison macro for two vectors */
+#define VECTOR_EQ(v1, v2) ((v1).y == (v2).y && (v1).x == (v2).x)
+
+/** Vector representing an out-of-bounds position */
+#define VECTOR_INVALID    (Vector2i) { INT_MIN, INT_MIN }
+
 /** Vector container */
-typedef struct vector2i {         ///@{
-	int y, x; /**< Coordinates */ ///@}
+typedef struct vector2i {         /**@{*/
+	int y, x; /**< Coordinates */ /**@}*/
 } Vector2i;
+
+
+/*------------------------ Ant type definitions ------------------------*/
 
 /** Ant directions enum */
 typedef enum { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT } Direction;
@@ -36,7 +67,10 @@ typedef struct ant {
 	Direction dir;
 } Ant;
 
-/** @name Color struct constants */
+
+/*------------------- Colors/rules-macros-and-types --------------------*/
+
+/** @name Colors struct constants */
 ///@{
 #define COLOR_COUNT 16
 #define COLOR_NONE  -1
@@ -45,7 +79,7 @@ typedef struct ant {
 #define TURN_RIGHT  1
 ///@}
 
-/** @name Color utility macros */
+/** @name Colors utility macros */
 ///@{
 #define COLOR_NEXT(cs, c) (cs)->next[c]
 #define COLOR_TURN(cs, c) (cs)->turn[c]
@@ -56,8 +90,11 @@ typedef struct colors {
 	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def; // TODO Finish logic docs
 } Colors;
 
-/** @name Grid attributes and types */
-///{@
+
+/*----------------------- Grid macros and types ------------------------*/
+
+/** @name Grid struct constants */
+///@{
 #define GRID_MUL                3
 #define GRID_SIZE_THRESHOLD     19682 // 3^9 - 1
 #define GRID_USAGE_THRESHOLD    0.5
@@ -77,15 +114,15 @@ typedef struct colors {
 /** @name Sparse matrix bit packing macros */
 ///@{
 #define CELL_COLOR_MASK         (0xF << 28)
-#define CELL_GET_COLOR(c)	    (((c)->col_packed & CELL_COLOR_MASK) >> 28)
-#define CELL_SET_COLOR(c, col)	((c)->col_packed = (c)->col_packed & ~CELL_COLOR_MASK | ((col) << 28))
-#define CELL_GET_COLUMN(c)	    ((c)->col_packed & ~CELL_COLOR_MASK)
-#define CELL_SET_COLUMN(c, col)	((c)->col_packed = (c)->col_packed & CELL_COLOR_MASK | (col) & ~CELL_COLOR_MASK)
+#define CELL_GET_COLOR(c)	    (((c)->packed & CELL_COLOR_MASK) >> 28)
+#define CELL_SET_COLOR(c, col)	((c)->packed = (c)->packed & ~CELL_COLOR_MASK | ((col)<<28))
+#define CELL_GET_COLUMN(c)	    ((c)->packed & ~CELL_COLOR_MASK)
+#define CELL_SET_COLUMN(c, col)	((c)->packed = (c)->packed & CELL_COLOR_MASK | (col) & ~CELL_COLOR_MASK)
 ///@}
 
 /** Sparse matrix cell container */
 typedef struct cell {
-	size_t col_packed;
+	size_t packed;
 	struct cell *next;
 } Cell;
 
@@ -97,7 +134,10 @@ typedef struct grid {
 	Vector2i top_left, bottom_right;
 } Grid;
 
-/** Simulation attributes and types */
+
+/*--------------------- Simulation type definition ---------------------*/
+
+/** Simulation container */
 typedef struct simulation {
 	Colors *colors;
 	Grid *grid;
@@ -107,7 +147,9 @@ typedef struct simulation {
 } Simulation;
 
 
-/* ant.c */
+/*----------------------------------------------------------------------*
+ *                                ant.c                                 *
+ *----------------------------------------------------------------------*/
 
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
@@ -115,7 +157,9 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors);
 bool is_ant_out_of_bounds(Ant *ant, Grid *grid);
 
 
-/* colors.c */
+/*----------------------------------------------------------------------*
+ *                               colors.c                               *
+ *----------------------------------------------------------------------*/
 
 Colors *colors_new(short def);
 void colors_delete(Colors *colors);
@@ -131,7 +175,9 @@ bool is_colors_empty(Colors *colors);
 bool has_enough_colors(Colors *colors);
 
 
-/* grid.c */
+/*----------------------------------------------------------------------*
+ *                                grid.c                                *
+ *----------------------------------------------------------------------*/
 
 Grid *grid_new(Colors *colors, size_t init_size);
 void grid_delete(Grid *grid);
@@ -143,7 +189,9 @@ void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
 
 
-/* simulation.c */
+/*----------------------------------------------------------------------*
+ *                             simulation.c                             *
+ *----------------------------------------------------------------------*/
 
 Simulation *simulation_new(Colors *colors, size_t init_size);
 void simulation_delete(Simulation *sim);

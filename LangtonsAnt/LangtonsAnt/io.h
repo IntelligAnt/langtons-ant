@@ -9,11 +9,18 @@
 
 #include "logic.h"
 
+/*---------------------- Input/output attributes -----------------------*/
+
 /** Maximum filename buffer length on Windows */
 #define FILENAME_BUF_LEN   256
 
 /** Total number of fields in a Colors struct */
 #define RULES_TOTAL_FIELDS (COLOR_COUNT*2 + 4)
+
+
+/*----------------------------------------------------------------------*
+ *                                 io.c                                 *
+ *----------------------------------------------------------------------*/
 
 /**
  * Attemps to read rules from a .lant textfile

@@ -52,7 +52,7 @@ static void draw_tiles(void)
 			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
 			if (picked_color == i) {
 				wattron(dialogw, A_REVERSE);
-				draw_box_border(dialogw, outer, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE);
+				draw_border(dialogw, outer, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE);
 			}	
 		} else {
 			inner.y = outer.y + 1, inner.x = outer.x + 1;
@@ -85,7 +85,7 @@ static void draw_buttons()
 	mvwaddstr(dialogw, left_pos.y+ymid,  left_pos.x+xmid,  "<");
 	mvwaddstr(dialogw, right_pos.y+ymid, right_pos.x+xmid, ">");
 	if (picked_turn != TURN_NONE) {
-		draw_box_border(dialogw, (picked_turn == TURN_LEFT) ? left_pos : right_pos,
+		draw_border(dialogw, (picked_turn == TURN_LEFT) ? left_pos : right_pos,
 						DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	}
 
@@ -115,7 +115,7 @@ Vector2i get_dialog_tile_pos(int index)
 	Vector2i pos = { 1, 1 };
 
 	if (index == fg || cidx != CIDX_DEFAULT && index == stgs.colors->def) {
-		return (Vector2i) { -1, -1 };
+		return VECTOR_INVALID;
 	}
 
 	for (i = 0; i < index; ++i) {

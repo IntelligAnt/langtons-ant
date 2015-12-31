@@ -5,8 +5,7 @@
 
 WINDOW *gridw;
 ScrollInfo gridscrl;
-
-static const Vector2i grid_pos = { 0, 0 };
+const Vector2i grid_pos = { 0, 0 };
 
 void init_grid_window(void)
 {
@@ -51,7 +50,7 @@ static void draw_scrollbars(short def)
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
 	short sb_fg_color = AVAILABLE_COLOR(def, COLOR_WHITE, COLOR_SILVER);
-	short sb_bg_color = AVAILABLE_COLOR(def, COLOR_GRAY, COLOR_SILVER);
+	short sb_bg_color = AVAILABLE_COLOR(def, COLOR_GRAY,  COLOR_SILVER);
 
 	h -= h > mid;
 	v -= v > mid;
@@ -74,19 +73,16 @@ static void draw_scrollbars(short def)
 	mvwvline(gridw, v, n, ACS_BLOCK, size);
 }
 
-static void draw_cell(Grid *grid, Vector2i pos, Vector2i yx, int cell_size)
+static void draw_ant(Vector2i yx, int cs, Direction dir)
 {
-	Ant *ant = stgs.linked_sim->ant; // TODO without stgs
-	const unsigned char *ant_bitmap = get_ant_bitmap(cell_size, ant->dir);
-	wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, pos)));
-	draw_square(gridw, yx, cell_size);
+	const unsigned char *ant_bitmap = get_ant_bitmap(cs, dir);
 	if (ant_bitmap) {
 		wattrset(gridw, fg_pair);
-		draw_bitmap(gridw, ant_bitmap, yx, cell_size, cell_size, FALSE);
+		draw_bitmap(gridw, ant_bitmap, yx, cs, cs, FALSE);
 	}
 }
 
-static void bordered(Grid *grid, int line_width)
+static void bordered(Grid *grid, Ant* ant, int line_width)
 {
 	int gs = grid->size, i, j;
 	int cs = CELL_SIZE(gs, line_width);
@@ -112,12 +108,16 @@ static void bordered(Grid *grid, int line_width)
 		for (j = 0; j < gs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, line_width, cs, o);
-			draw_cell(grid, pos, yx, cs);
+			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, pos)));
+			draw_square(gridw, yx, cs);
+			if (ant && VECTOR_EQ(pos, ant->pos)) {
+				draw_ant(yx, cs, ant->dir);
+			}
 		}
 	}
 }
 
-static void borderless(Grid *grid)
+static void borderless(Grid *grid, Ant *ant)
 {
 	int gs = grid->size, vgs = min(gs, GRID_VIEW_SIZE), i, j;
 	int cs = CELL_SIZE(vgs, 0);
@@ -144,23 +144,27 @@ static void borderless(Grid *grid)
 		for (j = 0; j < vgs; ++j) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, 0, cs, o);
-			draw_cell(grid, rel2abs(pos, origin), yx, cs);
+			wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, rel2abs(pos, origin))));
+			draw_square(gridw, yx, cs);
+			if (ant && VECTOR_EQ(pos, ant->pos)) {
+				draw_ant(yx, cs, ant->dir);
+			}
 		}
 	}
 }
 
-void draw_grid_full(Grid *grid)
+void draw_grid_full(Grid *grid, Ant* ant)
 {
 	int i;
 
 	if (grid) {
 		if (grid->size == GRID_SIZE_SMALL(grid)) {
-			bordered(grid, LINE_WIDTH_SMALL);
+			bordered(grid, ant, LINE_WIDTH_SMALL);
 		} else if (grid->size == GRID_SIZE_MEDIUM(grid)) {
-			bordered(grid, LINE_WIDTH_MEDIUM);
+			bordered(grid, ant, LINE_WIDTH_MEDIUM);
 		} else {
 			assert(IS_GRID_LARGE(grid));
-			borderless(grid);
+			borderless(grid, ant);
 		}
 	} else {
 		wattrset(gridw, bg_pair);
@@ -172,7 +176,7 @@ void draw_grid_full(Grid *grid)
 	wnoutrefresh(gridw);
 }
 
-void draw_grid_iter(Grid *grid, Vector2i oldp)
+void draw_grid_iter(Grid *grid, Ant* ant, Vector2i oldp)
 {
 	int gs = grid->size, vgs = min(gs, GRID_VIEW_SIZE);
 	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
@@ -184,12 +188,20 @@ void draw_grid_iter(Grid *grid, Vector2i oldp)
 
 	pos = abs2rel(oldp, origin);
 	yx = pos2yx(pos, lw, cs, o);
-
 	if (yx.y < 0 || yx.y >= GRID_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_VIEW_SIZE) {
 		return;
 	}
+	wattrset(gridw, GET_PAIR_FOR(GRID_COLOR_AT(grid, oldp)));
+	draw_square(gridw, yx, cs);
 
-	draw_cell(grid, oldp, yx, cs);
+	if (ant) {
+		pos = abs2rel(ant->pos, origin);
+		yx = pos2yx(pos, lw, cs, o);
+		if (yx.y < 0 || yx.y >= GRID_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_VIEW_SIZE) {
+			return;
+		}
+		draw_ant(yx, cs, ant->dir);
+	}
 
 	wnoutrefresh(gridw);
 }

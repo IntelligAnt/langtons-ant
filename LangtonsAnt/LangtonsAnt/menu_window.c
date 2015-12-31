@@ -100,28 +100,28 @@ Vector2i get_menu_cdef_pos(void)
 	};
 }
 
-static void draw_border()
+static void draw_edge()
 {
 	Simulation *sim = stgs.linked_sim;
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
 
 	if (sim && is_grid_sparse(sim->grid)) {
-		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR_S));
+		wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR_S));
 		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
 	} else {
-		wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+		wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', strlen(sparse_msg));
 	}
 
-	mvwhline(menuw, 0, 0, ACS_BLOCK, h);
-	mvwvline(menuw, 0, 0, ACS_BLOCK, v);
-	mvwhline(menuw, v-1, 0, ACS_BLOCK, h);
-	mvwvline(menuw, 0, h-1, ACS_BLOCK, v);
+	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
+	mvwvline(menuw, 0,   0,   ACS_BLOCK, v);
+	mvwhline(menuw, v-1, 0,   ACS_BLOCK, h);
+	mvwvline(menuw, 0,   h-1, ACS_BLOCK, v);
 }
 
 static void draw_logo()
 {
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	draw_bitmap(menuw, logo_bitmap, logo_pos, 40, 8, FALSE);
 	wattron(menuw, A_REVERSE);
 	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
@@ -138,7 +138,7 @@ static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 		dy = abs(pos1.y - pos2.y) - ts;
 		mvwvline(menuw, min(pos1.y, pos2.y)+ts, pos1.x+o, ACS_VLINE, dy);
 		if (pos1.y < pos2.y) {
-			mvwaddch(menuw, pos2.y-1, pos1.x+o, ACS_DARROW);
+			mvwaddch(menuw, pos2.y-1,  pos1.x+o, ACS_DARROW);
 		} else {
 			mvwaddch(menuw, pos2.y+ts, pos1.x+o, ACS_UARROW);
 		}
@@ -326,7 +326,7 @@ static void draw_size(void)
 	size_t size = sim ? sim->grid->size : 0;
 	char size_str[29];
 	sprintf(size_str, "%28d", size);
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	mvwaddstr(menuw, size_pos.y, size_pos.x-28, size_str);
 }
 
@@ -379,7 +379,7 @@ static void draw_steps(void)
 
 void draw_menu_full(void)
 {
-	draw_border();
+	draw_edge();
 	draw_logo();
 	draw_color_list();
 	draw_init_size();
@@ -389,7 +389,7 @@ void draw_menu_full(void)
 	draw_steps();
 
 	/* Draw messages */
-	wattrset(menuw, GET_PAIR_FOR(MENU_BORDER_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	mvwaddstr(menuw, isz_msg_pos.y,   isz_msg_pos.x,   isz_msg);
 	mvwaddstr(menuw, tiles_msg_pos.y, tiles_msg_pos.x, tiles_msg);
 	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
@@ -408,7 +408,7 @@ void draw_menu_iter(void)
 	
 	assert(stgs.linked_sim);
 	if (!sparse && is_grid_sparse(stgs.linked_sim->grid)) {
-		draw_border();
+		draw_edge();
 		sparse = TRUE;
 	}
 	draw_steps();
