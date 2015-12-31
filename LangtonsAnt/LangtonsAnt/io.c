@@ -43,7 +43,7 @@ Colors *load_rules(char *filename) // TODO format checks
 	return colors;
 }
 
-int save_rules(char *filename, Colors* colors)
+int save_rules(char *filename, Colors *colors)
 {
 	FILE *output;
 	int e;
@@ -176,7 +176,7 @@ error_end:
 
 }
 
-int save_simulation(char *filename, Simulation* simulation)
+int save_simulation(char *filename, Simulation *simulation)
 {
 	size_t i, j;
 	if (save_rules(filename, simulation->colors) == EOF) {
