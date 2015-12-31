@@ -87,7 +87,7 @@ typedef struct ant {
 
 /** Colors container */
 typedef struct colors {
-	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def; // TODO finish logic docs
+	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def; // TODO finish logic docs & add @see
 } Colors;
 
 

@@ -207,11 +207,11 @@ typedef unsigned char input_t;
 ///@{
 extern chtype         fg_pair, bg_pair;
 
-extern WINDOW            *gridw;
+extern WINDOW         *gridw;
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
 
-extern WINDOW            *menuw;
+extern WINDOW         *menuw;
 extern Settings       stgs;
 extern IOStatus       load_status, save_status;
 extern const Vector2i menu_pos;
@@ -219,9 +219,9 @@ extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 
-extern WINDOW            *dialogw;
+extern WINDOW         *dialogw;
 extern Vector2i       dialog_pos;
-extern const char        *dialog_cdef_msg;
+extern const char     *dialog_cdef_msg;
 ///@}
 
 
@@ -337,12 +337,13 @@ int sgn(int x);
  *----------------------------------------------------------------------------*/
 
 /**
- * Finds a suitable bitmap for the given cell size and ant direction
- * @param size Cell size
+ * Finds a suitable ant bitmap for the given size and direction, and changes the passed size to fit it.
+ * The closest matching bitmap of smaller or equal size will be selected.
+ * @param size Pointer to size, which may be changed if a suitable bitmap is found
  * @param dir Current ant direction
  * @return Ant bitmap with requested size and direction, if one exists; NULL otherwise
  */
-const unsigned char *get_ant_bitmap(size_t size, Direction dir);
+const unsigned char *get_ant_bitmap(size_t *psize, Direction dir);
 
 
 /*----------------------------------------------------------------------------*

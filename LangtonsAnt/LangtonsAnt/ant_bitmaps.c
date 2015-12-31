@@ -49,16 +49,18 @@ static const unsigned char *ant24_bitmaps[] = {
 	ant24_up, ant24_rt, ant24_dn, ant24_lf
 };
 
-const unsigned char *get_ant_bitmap(size_t size, Direction dir)
+const unsigned char *get_ant_bitmap(size_t *psize, Direction dir)
 {
-	switch (size) {
-	case 3:
-		return ant3_bitmaps[dir];
-	case 8:
-		return ant8_bitmaps[dir];
-	case 24:
+	if (*psize >= 24) {
+		*psize = 24;
 		return ant24_bitmaps[dir];
-	default:
+	} else if (*psize >= 8) {
+		*psize = 8;
+		return ant8_bitmaps[dir];
+	} else if (*psize >= 3) {
+		*psize = 3;
+		return ant3_bitmaps[dir];
+	} else {
 		return NULL;
 	}
 }
