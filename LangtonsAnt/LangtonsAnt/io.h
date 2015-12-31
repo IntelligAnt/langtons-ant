@@ -1,6 +1,6 @@
 /**
  * @file io.h
- * File containing all input/output members and functions
+ * Input/output members and function declarations
  * @author IntelligAnt
  */
 

@@ -1,6 +1,6 @@
 /**
  * @file graphics.h
- * File containing all graphics members and functions
+ * Graphics members and function declarations
  * @author IntelligAnt
  */
 #ifndef __GRAPHICS_H__

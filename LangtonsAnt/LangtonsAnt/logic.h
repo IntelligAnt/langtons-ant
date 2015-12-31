@@ -1,6 +1,6 @@
 /**
  * @file logic.h
- * File containing all logic members and functions
+ * Logic members and function declarations
  * @author IntelligAnt
  */
 #ifndef __LOGIC_H__
