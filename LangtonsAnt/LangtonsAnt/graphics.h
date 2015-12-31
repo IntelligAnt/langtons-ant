@@ -10,7 +10,7 @@
 #include "include/curses.h"
 
 
-/*----------------------- Display colors macros ------------------------*/
+/*-------------------------- Display colors macros ---------------------------*/
 
 #undef COLOR_BLACK
 #undef COLOR_RED
@@ -71,7 +71,7 @@
 ///@}
 
 
-/*-------------------- Grid window macros and types --------------------*/
+/*----------------------- Grid window macros and types -----------------------*/
 
 /** @name Grid window attributes */
 ///@{
@@ -107,7 +107,7 @@ typedef struct scroll_info {
 } ScrollInfo;
 
 
-/*-------------------- Menu window macros and types --------------------*/
+/*----------------------- Menu window macros and types -----------------------*/
 
 /** @name Menu window attributes */
 ///@{
@@ -140,7 +140,7 @@ typedef struct scroll_info {
 #define MENU_TILES_PER_COL  7
 #define MENU_TILE_COUNT     (MENU_TILE_COLUMNS * MENU_TILES_PER_COL)
 #define MENU_TILES_WIDTH    (MENU_TILE_COLUMNS*MENU_TILE_SIZE + (MENU_TILE_COLUMNS-1)*MENU_TILE_HSEP)
-#define MENU_TILES_HEIGHT   (MENU_TILES_PER_COL*MENU_TILE_SIZE + (MENU_TILES_PER_COL+1)*MENU_TILE_VSEP+2)
+#define MENU_TILES_HEIGHT   (MENU_TILES_PER_COL*MENU_TILE_SIZE + (MENU_TILES_PER_COL+1)*MENU_TILE_VSEP + 3)
 ///@}
 
 /** Structure containing all relevant menu settings */
@@ -154,7 +154,7 @@ typedef struct settings {
 typedef enum { STATUS_NONE, STATUS_SUCCESS, STATUS_FAILURE } IOStatus;
 
 
-/*------------------- Dialog window macros and types -------------------*/
+/*---------------------- Dialog window macros and types ----------------------*/
 
 /** @name Dialog window attributes */
 ///@{
@@ -178,7 +178,7 @@ typedef enum { STATUS_NONE, STATUS_SUCCESS, STATUS_FAILURE } IOStatus;
 ///@}
 
 
-/*------------------ Input handling macros and types -------------------*/
+/*--------------------- Input handling macros and types ----------------------*/
 
 /** Escape key literal for input handling */
 #define KEY_ESC 0x1B
@@ -207,11 +207,11 @@ typedef unsigned char input_t;
 ///@{
 extern chtype         fg_pair, bg_pair;
 
-extern WINDOW         *gridw;
+extern WINDOW            *gridw;
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
 
-extern WINDOW         *menuw;
+extern WINDOW            *menuw;
 extern Settings       stgs;
 extern IOStatus       load_status, save_status;
 extern const Vector2i menu_pos;
@@ -219,15 +219,15 @@ extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 
-extern WINDOW         *dialogw;
+extern WINDOW            *dialogw;
 extern Vector2i       dialog_pos;
-extern const char*    dialog_cdef_msg;
+extern const char        *dialog_cdef_msg;
 ///@}
 
 
-/*----------------------------------------------------------------------*
- *                              graphics.c                              *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                 graphics.c                                 *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Initializes graphics and all windows
@@ -332,9 +332,9 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 int sgn(int x);
 
 
-/*----------------------------------------------------------------------*
- *                             ant_bitmap.c                             *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                ant_bitmap.c                                *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Finds a suitable bitmap for the given cell size and ant direction
@@ -342,12 +342,12 @@ int sgn(int x);
  * @param dir Current ant direction
  * @return Ant bitmap with requested size and direction, if one exists; NULL otherwise
  */
-const unsigned char* get_ant_bitmap(size_t size, Direction dir);
+const unsigned char *get_ant_bitmap(size_t size, Direction dir);
 
 
-/*----------------------------------------------------------------------*
- *                            grid_window.c                             *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                               grid_window.c                                *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Initializes grid window and related components
@@ -398,9 +398,9 @@ void set_scroll(Grid *grid, int y, int x);
 void reset_scroll(void);
 
 
-/*----------------------------------------------------------------------*
- *                           grid_controls.c                            *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                              grid_controls.c                               *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Handles key command passed to the grid window
@@ -421,9 +421,9 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key);
 input_t grid_mouse_command(Grid *grid);
 
 
-/*----------------------------------------------------------------------*
- *                            menu_window.c                             *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                               menu_window.c                                *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Initializes menu window and related components
@@ -462,9 +462,9 @@ Vector2i get_menu_tile_pos(int index);
 Vector2i get_menu_cdef_pos(void);
 
 
-/*----------------------------------------------------------------------*
- *                           menu_controls.c                            *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                              menu_controls.c                               *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Resets and remakes the active simulation using the current settings
@@ -484,7 +484,7 @@ input_t clear_sim(void);
  * Handles key Command passed to the menu
  * @param key Key passed to the grid
  * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed;
- *         INPUT_NO_CHANGE otherwise
+ *            INPUT_NO_CHANGE otherwise
  * @see menu_mouse_command(void)
  */
 input_t menu_key_command(int key);
@@ -492,15 +492,15 @@ input_t menu_key_command(int key);
 /**
  * Handles mouse command passed to the menu
  * @return INPUT_MENU_CHANGED if menu changed | INPUT_GRID_CHANGED if grid changed;
- *         INPUT_NO_CHANGE otherwise
+ *            INPUT_NO_CHANGE otherwise
  * @see menu_key_command(int)
  */
 input_t menu_mouse_command(void);
 
 
-/*----------------------------------------------------------------------*
- *                               dialog.c                               *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                  dialog.c                                  *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Opens a temporary dialog window for picking colors

@@ -10,7 +10,7 @@
 #include <stddef.h>
 
 
-/*------------------ General purpose macros and types ------------------*/
+/*--------------------- General purpose macros and types ---------------------*/
 
 ///@{
 /** Max/min integer */
@@ -42,7 +42,7 @@
 typedef unsigned char bool;
 
 
-/*---------------------- Vector macros and types -----------------------*/
+/*------------------------- Vector macros and types --------------------------*/
 
 /** Equality comparison macro for two vectors */
 #define VECTOR_EQ(v1, v2) ((v1).y == (v2).y && (v1).x == (v2).x)
@@ -56,7 +56,7 @@ typedef struct vector2i {         /**@{*/
 } Vector2i;
 
 
-/*------------------------ Ant type definitions ------------------------*/
+/*--------------------------- Ant type definitions ---------------------------*/
 
 /** Ant directions enum */
 typedef enum { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT } Direction;
@@ -68,7 +68,7 @@ typedef struct ant {
 } Ant;
 
 
-/*------------------- Colors/rules-macros-and-types --------------------*/
+/*---------------------- Colors/rules-macros-and-types -----------------------*/
 
 /** @name Colors struct constants */
 ///@{
@@ -87,11 +87,11 @@ typedef struct ant {
 
 /** Colors container */
 typedef struct colors {
-	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def; // TODO Finish logic docs
+	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def; // TODO finish logic docs
 } Colors;
 
 
-/*----------------------- Grid macros and types ------------------------*/
+/*-------------------------- Grid macros and types ---------------------------*/
 
 /** @name Grid struct constants */
 ///@{
@@ -135,7 +135,7 @@ typedef struct grid {
 } Grid;
 
 
-/*--------------------- Simulation type definition ---------------------*/
+/*------------------------ Simulation type definition ------------------------*/
 
 /** Simulation container */
 typedef struct simulation {
@@ -147,9 +147,9 @@ typedef struct simulation {
 } Simulation;
 
 
-/*----------------------------------------------------------------------*
- *                                ant.c                                 *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                   ant.c                                    *
+ *----------------------------------------------------------------------------*/
 
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
@@ -157,9 +157,9 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors);
 bool is_ant_out_of_bounds(Ant *ant, Grid *grid);
 
 
-/*----------------------------------------------------------------------*
- *                               colors.c                               *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                  colors.c                                  *
+ *----------------------------------------------------------------------------*/
 
 Colors *colors_new(short def);
 void colors_delete(Colors *colors);
@@ -175,9 +175,9 @@ bool is_colors_empty(Colors *colors);
 bool has_enough_colors(Colors *colors);
 
 
-/*----------------------------------------------------------------------*
- *                                grid.c                                *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                   grid.c                                   *
+ *----------------------------------------------------------------------------*/
 
 Grid *grid_new(Colors *colors, size_t init_size);
 void grid_delete(Grid *grid);
@@ -189,9 +189,9 @@ void new_cell(Cell **cur, unsigned column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
 
 
-/*----------------------------------------------------------------------*
- *                             simulation.c                             *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                simulation.c                                *
+ *----------------------------------------------------------------------------*/
 
 Simulation *simulation_new(Colors *colors, size_t init_size);
 void simulation_delete(Simulation *sim);

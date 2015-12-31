@@ -2,7 +2,7 @@
 
 WINDOW *dialogw;
 Vector2i dialog_pos;
-const char* dialog_cdef_msg = "Pick def. color";
+const char *dialog_cdef_msg = "Pick def. color";
 
 static int cidx;
 static short picked_color = COLOR_NONE, picked_turn = TURN_NONE;

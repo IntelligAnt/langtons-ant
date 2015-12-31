@@ -78,10 +78,10 @@ void draw_loop(void)
 
 		if (is_simulation_running(sim)) {
 			Vector2i oldp = sim->ant->pos;
-			ant_move(sim->ant, sim->grid, sim->colors);
+			bool in_bounds = ant_move(sim->ant, sim->grid, sim->colors);
 			grid_silent_expand(sim->grid);
 
-			if (is_ant_out_of_bounds(sim->ant, sim->grid)) {
+			if (!in_bounds) {
 				grid_expand(sim->grid, sim->ant);
 				if (!grid_changed) {
 					draw_grid_full(sim->grid, sim->ant);

@@ -9,7 +9,7 @@
 
 #include "logic.h"
 
-/*---------------------- Input/output attributes -----------------------*/
+/*------------------------- Input/output attributes --------------------------*/
 
 /** Maximum filename buffer length on Windows */
 #define FILENAME_BUF_LEN   256
@@ -18,9 +18,9 @@
 #define RULES_TOTAL_FIELDS (COLOR_COUNT*2 + 4)
 
 
-/*----------------------------------------------------------------------*
- *                                 io.c                                 *
- *----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*
+ *                                    io.c                                    *
+ *----------------------------------------------------------------------------*/
 
 /**
  * Attemps to read rules from a .lant textfile
@@ -28,7 +28,7 @@
  * @return Pointer to a Colors struct if successful; NULL otherwise
  * @see save_rules(char *, Colors *)
  */
-Colors* load_rules(char *filename);
+Colors *load_rules(char *filename);
 
 /**
  * Attempts to write rules to a .lant textfile
