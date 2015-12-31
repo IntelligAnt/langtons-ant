@@ -2,7 +2,7 @@
 
 WINDOW *dialogw;
 Vector2i dialog_pos;
-const char *dialog_cdef_msg = "Pick def. color";
+const char *dialog_cdef_msg = "Pick grid color";
 
 static int cidx;
 static short picked_color = COLOR_NONE, picked_turn = TURN_NONE;
@@ -69,7 +69,7 @@ static void draw_tiles(void)
 	}
 }
 
-static void draw_buttons()
+static void draw_buttons(void)
 {
 	if (cidx == CIDX_DEFAULT) {
 		wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def) | A_REVERSE);

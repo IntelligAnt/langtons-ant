@@ -115,8 +115,11 @@ typedef struct scroll_info {
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
 #define MENU_LOGO_HEIGHT    15
 #define MENU_CONTROLS_POS   88
+#define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+9)
 #define MENU_EDGE_COLOR     COLOR_NAVY
 #define MENU_EDGE_COLOR_S   COLOR_MAROON
+#define MENU_ACTIVE_COLOR   COLOR_BLUE
+#define MENU_INACTIVE_COLOR COLOR_GRAY
 ///@}
 
 /** @name Menu buttons attributes */
@@ -127,8 +130,20 @@ typedef struct scroll_info {
 #define MENU_PAUSE_COLOR    COLOR_YELLOW
 #define MENU_STOP_COLOR     COLOR_RED
 #define MENU_CLEAR_COLOR    COLOR_TEAL
-#define MENU_ACTIVE_COLOR   COLOR_BLUE
-#define MENU_INACTIVE_COLOR COLOR_GRAY
+///@}
+
+///@{
+/** Arrow bitmap dimension */
+#define MENU_UDARROW_WIDTH  3
+#define MENU_UDARROW_HEIGHT 2
+#define MENU_RLARROW_WIDTH  MENU_UDARROW_HEIGHT
+#define MENU_RLARROW_HEIGHT MENU_UDARROW_WIDTH
+///@}
+
+///@{
+/** Digit bitmap dimension */
+#define MENU_DIGIT_WIDTH    3
+#define MENU_DIGIT_HEIGHT   5
 ///@}
 
 /** @name Menu color tiles attributes */
@@ -220,6 +235,7 @@ extern Settings       stgs;
 extern IOStatus       load_status, save_status;
 extern const Vector2i menu_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
+extern const Vector2i menu_dir_u_pos, menu_dir_r_pos, menu_dir_d_pos, menu_dir_l_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 

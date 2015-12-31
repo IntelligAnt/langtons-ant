@@ -105,7 +105,7 @@ void draw_loop(void)
 			++(sim->steps);
 		}
 	
-		if (grid_changed) {
+		if (grid_changed) { // TODO move before the update logic
 			draw_grid_full(sim->grid, sim->ant);
 		}
 		if (menu_changed) {
@@ -178,7 +178,7 @@ void draw_bitmap(WINDOW *w, const unsigned char *bitmap,
 	unsigned char bit;
 	for (read = 0; read < width*height; ++read) {
 		bit = bitmap[read/8] >> (7-read%8) & 0x1;
-		y = read/width, x = read%width;
+		y = read / width, x = read % width;
 		if (overwrite) {
 			mvwaddch(w, top_left.y+y, top_left.x+x, bit ? ACS_BLOCK : ' ');
 		} else if (bit) {

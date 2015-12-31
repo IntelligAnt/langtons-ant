@@ -15,7 +15,7 @@
 ///@{
 /** Max/min integer */
 #ifndef INT_MAX
-#define INT_MAX (int)((unsigned int)-1 >> 1)
+#define INT_MAX 2147483647
 #endif
 #ifndef INT_MIN
 #define INT_MIN ~INT_MAX
@@ -51,8 +51,8 @@ typedef unsigned char bool;
 #define VECTOR_INVALID    (Vector2i) { INT_MIN, INT_MIN }
 
 /** Vector container */
-typedef struct vector2i {         /**@{*/
-	int y, x; /**< Coordinates */ /**@}*/
+typedef struct vector2i {
+	int y, x; /**< Coordinates */
 } Vector2i;
 
 
@@ -63,8 +63,8 @@ typedef enum { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT } Direction;
 
 /** Ant container */
 typedef struct ant {
-	Vector2i pos;
-	Direction dir;
+	Vector2i  pos; /**< Current position */
+	Direction dir; /**< Direction the ant is facing */
 } Ant;
 
 
@@ -87,8 +87,12 @@ typedef struct ant {
 
 /** Colors container */
 typedef struct colors {
-	short next[COLOR_COUNT], turn[COLOR_COUNT], n, first, last, def; // TODO finish logic docs & add @see
-} Colors;
+	short next[COLOR_COUNT];
+	short turn[COLOR_COUNT];
+	short first, last;
+	short def;
+	short n; // TODO change to size_t
+} Colors; // TODO finish logic docs & add @see
 
 
 /*-------------------------- Grid macros and types ---------------------------*/
@@ -168,7 +172,7 @@ void remove_color(Colors *colors, short c);
 void remove_all_colors(Colors *colors);
 void set_color(Colors *colors, short index, short c, short turn);
 void set_turn(Colors *colors, short index, short turn);
-short get_color_at(Colors *colors, int index);
+short get_color_at(Colors *colors, short index);
 bool color_exists(Colors *colors, short c);
 bool is_color_special(Colors *colors, short c);
 bool is_colors_empty(Colors *colors);

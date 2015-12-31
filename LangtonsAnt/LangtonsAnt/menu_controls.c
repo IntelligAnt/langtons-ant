@@ -51,6 +51,31 @@ static input_t isz_button_clicked(int i)
 	return INPUT_MENU_CHANGED;
 }
 
+static input_t dir_button_clicked(int key)
+{
+	Simulation *sim = stgs.linked_sim;
+	if (has_simulation_started(sim)) {
+		return INPUT_NO_CHANGE;
+	}
+	switch (key) {
+	case KEY_UP:
+		sim->ant->dir = DIR_UP;
+		break;
+	case KEY_RIGHT:
+		sim->ant->dir = DIR_RIGHT;
+		break;
+	case KEY_DOWN:
+		sim->ant->dir = DIR_DOWN;
+		break;
+	case KEY_LEFT:
+		sim->ant->dir = DIR_LEFT;
+		break;
+	default:
+		return INPUT_NO_CHANGE;
+	}
+	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
+}
+
 static input_t play_button_clicked(void)
 {
 	input_t res = INPUT_NO_CHANGE;
@@ -120,6 +145,9 @@ input_t menu_key_command(int key)
 	Simulation *sim = stgs.linked_sim;
 
 	switch (key) {
+	case KEY_UP: case KEY_RIGHT: case KEY_DOWN: case KEY_LEFT:
+		return dir_button_clicked(key);
+
 	case ' ':
 		if (is_simulation_running(sim)) {
 			return pause_button_clicked();
@@ -203,11 +231,25 @@ input_t menu_mouse_command(void)
 	}
 
 	/* Init size buttons clicked */
-	if (area_contains(menu_isz_u_pos, 3, 2, pos)) {
+	if (area_contains(menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
 		return res | isz_button_clicked(1);
 	}
-	if (area_contains(menu_isz_d_pos, 3, 2, pos)) {
+	if (area_contains(menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
 		return res | isz_button_clicked(-1);
+	}
+
+	/* Direction buttons clicked */
+	if (area_contains(menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_UP);
+	}
+	if (area_contains(menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_RIGHT);
+	}
+	if (area_contains(menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_DOWN);
+	}
+	if (area_contains(menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_LEFT);
 	}
 
 	return res;
