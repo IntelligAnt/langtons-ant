@@ -69,7 +69,7 @@ int save_rules(char *filename, Colors *colors)
 	return e;
 }
 
-Simulation *load_simulation(char *filename)
+Simulation *load_state(char *filename)
 {
 	Simulation *simulation;
 	Colors *colors;
@@ -176,7 +176,7 @@ error_end:
 
 }
 
-int save_simulation(char *filename, Simulation *simulation)
+int save_state(char *filename, Simulation *simulation)
 {
 	size_t i, j;
 	if (save_rules(filename, simulation->colors) == EOF) {

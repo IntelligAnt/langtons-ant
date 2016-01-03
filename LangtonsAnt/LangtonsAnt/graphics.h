@@ -487,9 +487,19 @@ Vector2i get_menu_cdef_pos(void);
  *----------------------------------------------------------------------------*/
 
 /**
+ * Deletes the old simulation and settings and sets them to the state of the argument
+ * @param sim Simulation whose state to use
+ * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
+ * @see reset_simulation(void)
+ * @see clear_simulation(void)
+ */
+input_t set_simulation(Simulation *sim);
+
+/**
  * Resets and remakes the active simulation using the current settings
  * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
  * @see clear_simulation(void)
+ * @see set_simulation(Simulation *)
  */
 input_t reset_simulation(void);
 
@@ -497,6 +507,7 @@ input_t reset_simulation(void);
  * Clears the current settings and resets the active simulation
  * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
  * @see reset_simulation(void)
+ * @see set_simulation(Simulation *)
  */
 input_t clear_simulation(void);
 
