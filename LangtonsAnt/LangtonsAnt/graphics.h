@@ -203,9 +203,9 @@ typedef unsigned char input_t;
 
 /** @name Window state change flags */
 ///@{
-#define INPUT_NO_CHANGE    ((input_t)0x0)
-#define INPUT_GRID_CHANGED ((input_t)0x1)
-#define INPUT_MENU_CHANGED ((input_t)0x2)
+#define INPUT_NO_CHANGE    ((input_t)0)
+#define INPUT_GRID_CHANGED ((input_t)1)
+#define INPUT_MENU_CHANGED ((input_t)2)
 ///@}
 
 
@@ -226,13 +226,13 @@ typedef unsigned char input_t;
 ///@{
 extern chtype         fg_pair, bg_pair;
 
-extern WINDOW         *gridw;
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
+extern WINDOW         *gridw;
 
-extern WINDOW         *menuw;
 extern Settings       stgs;
 extern IOStatus       load_status, save_status;
+extern WINDOW         *menuw;
 extern const Vector2i menu_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
 extern const Vector2i menu_dir_u_pos, menu_dir_r_pos, menu_dir_d_pos, menu_dir_l_pos;

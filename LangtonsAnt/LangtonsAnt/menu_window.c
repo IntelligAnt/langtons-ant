@@ -32,7 +32,7 @@ static const char *steps_msg  = "STEPS:";
 
 static const Vector2i logo_pos       = { 3,  1 };
 static const Vector2i logo_msg_pos   = { 12, 2 };
-static const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
+static const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+3 };
 static const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
 static const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-5 };
 static const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-20 };
@@ -289,9 +289,9 @@ static void draw_control_buttons(void)
 {
 	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
-	Vector2i pos1 = { menu_play_pos.y + o.y,  menu_play_pos.x + o.x };
+	Vector2i pos1 = { menu_play_pos.y  + o.y, menu_play_pos.x  + o.x };
 	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
-	Vector2i pos3 = { menu_stop_pos.y + o.y,  menu_stop_pos.x + o.x };
+	Vector2i pos3 = { menu_stop_pos.y  + o.y, menu_stop_pos.x  + o.x };
 
 	wattrset(menuw, GET_PAIR_FOR(bg));
 	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);

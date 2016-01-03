@@ -149,14 +149,14 @@ input_t menu_key_command(int key)
 		return dir_button_clicked(key);
 
 	case ' ':
-		if (is_simulation_running(sim)) {
-			return pause_button_clicked();
-		} else {
+		if (!is_simulation_running(sim)) {
 			return play_button_clicked();
+		} else {
+			return pause_button_clicked();
 		}
 
 	case 'R': case 'r':
-		return reset_simulation();
+		return stop_button_clicked();
 
 	case KEY_BACKSPACE: case '\b':
 		return clear_simulation();
