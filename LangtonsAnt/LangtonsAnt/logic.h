@@ -28,6 +28,9 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 ///@}
 
+/** Standard sign macro */
+#define sgn(x)    ((x > 0) - (x < 0))
+
 ///@{
 /** Curses boolean literal */
 #ifndef FALSE

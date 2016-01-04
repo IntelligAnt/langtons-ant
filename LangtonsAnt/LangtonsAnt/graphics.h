@@ -277,7 +277,7 @@ void draw_loop(void);
  * Stops the main draw/update loop
  * @param exit Should loop stop drawing?
  */
-void exit_draw_loop(bool exit);
+void stop_draw_loop(bool stop);
 
 /**
  * Utility function for drawing square boxes
@@ -344,16 +344,9 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin);
  */
 bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 
-/**
- * Standard signum function
- * @param x Number whose sign is to be taken
- * @return Sign of x
- */
-int sgn(int x);
-
 
 /*----------------------------------------------------------------------------*
- *                                ant_bitmap.c                                *
+ *                               ant_bitmaps.c                                *
  *----------------------------------------------------------------------------*/
 
 /**

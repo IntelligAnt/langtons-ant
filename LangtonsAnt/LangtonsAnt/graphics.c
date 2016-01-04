@@ -116,9 +116,9 @@ void draw_loop(void)
 	}
 }
 
-void exit_draw_loop(bool exit)
+void stop_draw_loop(bool stop)
 {
-	do_draw = !exit;
+	do_draw = !stop;
 }
 
 void draw_square(WINDOW *w, Vector2i top_left, size_t size)
@@ -207,9 +207,4 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v)
 {
 	return (v.y >= top_left.y && v.y < top_left.y+(int)height
 		 && v.x >= top_left.x && v.x < top_left.x+(int)width);
-}
-
-int sgn(int x)
-{
-	return (x > 0) - (x < 0);
 }

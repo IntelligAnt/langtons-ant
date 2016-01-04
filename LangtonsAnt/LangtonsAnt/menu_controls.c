@@ -168,7 +168,7 @@ input_t menu_key_command(int key)
 		return clear_simulation();
 
 	case KEY_ESC:
-		exit_draw_loop(TRUE);
+		stop_draw_loop(TRUE);
 		return INPUT_NO_CHANGE;
 
 	case KEY_MOUSE:
