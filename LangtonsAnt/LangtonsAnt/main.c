@@ -4,7 +4,6 @@
 #include <vld.h>
 #endif
 
-#include "logic.h"
 #include "graphics.h"
 #include "io.h"
 
@@ -25,7 +24,7 @@ int main(int argc, char *argv[])
 	stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE);
-	draw_loop();
+	game_loop();
 	end_graphics();
 
 	simulation_delete(stgs.linked_sim);

@@ -250,6 +250,13 @@ extern const char     *dialog_cdef_msg;
  *----------------------------------------------------------------------------*/
 
 /**
+ * Initializes all color pairs (c[0..15], bg_color)
+ * @param fg_color Foreground color
+ * @param bg_color Background color
+ */
+void init_def_pairs(short fg_color, short bg_color);
+
+/**
  * Initializes graphics and all windows
  * @param fg_color Foreground color
  * @param bg_color Background color
@@ -260,24 +267,6 @@ void init_graphics(short fg_color, short bg_color);
  * Closes windows and ends drawing
  */
 void end_graphics(void);
-
-/**
- * Initializes all color pairs (c[0..15], bg_color)
- * @param fg_color Foreground color
- * @param bg_color Background color
- */
-void init_def_pairs(short fg_color, short bg_color);
-
-/**
- * Main draw/update loop
- */
-void draw_loop(void);
-
-/**
- * Stops the main draw/update loop
- * @param exit Should loop stop drawing?
- */
-void stop_draw_loop(bool stop);
 
 /**
  * Utility function for drawing square boxes
@@ -356,6 +345,22 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
  * @return Ant bitmap with requested size and direction, if one exists; NULL otherwise
  */
 const unsigned char *get_ant_bitmap(size_t size, Direction dir);
+
+
+/*----------------------------------------------------------------------------*
+ *                                game_loop.c                                 *
+ *----------------------------------------------------------------------------*/
+
+/**
+ * Main draw/update loop
+ */
+void game_loop(void);
+
+/**
+ * Stops the main draw/update loop
+ * @param exit Should loop stop running?
+ */
+void stop_game_loop(bool stop);
 
 
 /*----------------------------------------------------------------------------*
