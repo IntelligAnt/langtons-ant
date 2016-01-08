@@ -184,7 +184,7 @@ input_t menu_mouse_command(void)
 	input_t res = INPUT_NO_CHANGE;
 	MEVENT event;
 	Vector2i event_pos, pos, tile;
-	int i;
+	size_t i;
 
 	nc_getmouse(&event);
 	event_pos.y = event.y, event_pos.x = event.x;
@@ -204,7 +204,7 @@ input_t menu_mouse_command(void)
 		tile = get_menu_tile_pos(i);
 		if (area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
 			if (event.bstate & BUTTON1_CLICKED) {
-				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : i);
+				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : (short)i);
 			} else if (event.bstate & BUTTON3_CLICKED) {
 				open_dialog(pos, CIDX_DEFAULT);
 			}

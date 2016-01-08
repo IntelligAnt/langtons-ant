@@ -13,7 +13,7 @@ static const Vector2i right_pos   = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, DIALO
 static const Vector2i delete_pos  = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+DIALOG_BUTTON_HEIGHT+3,
                                       (DIALOG_WINDOW_WIDTH-DIALOG_DELETE_WIDTH-2)/2+1 };
 
-void open_dialog(Vector2i pos, int color_index)
+void open_dialog(Vector2i pos, short color_index)
 {
 	size_t height = (color_index == CIDX_DEFAULT)  ? left_pos.y+2
 		          : (color_index == CIDX_NEWCOLOR) ? delete_pos.y
@@ -109,16 +109,16 @@ void draw_dialog(void)
 	wnoutrefresh(dialogw);
 }
 
-Vector2i get_dialog_tile_pos(int index)
+Vector2i get_dialog_tile_pos(short color)
 {
-	int i, fg = GET_COLOR_FOR(fg_pair);
 	Vector2i pos = { 1, 1 };
+	short fg = GET_COLOR_FOR(fg_pair), i;
 
-	if (index == fg || cidx != CIDX_DEFAULT && index == stgs.colors->def) {
+	if (color == fg || cidx != CIDX_DEFAULT && color == stgs.colors->def) {
 		return VECTOR_INVALID;
 	}
 
-	for (i = 0; i < index; ++i) {
+	for (i = 0; i < color; ++i) {
 		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
 			continue;
 		}
@@ -135,9 +135,9 @@ Vector2i get_dialog_tile_pos(int index)
 
 input_t dialog_mouse_command(MEVENT event)
 {
-	int i;
-	bool del = FALSE;
 	Vector2i pos = abs2rel((Vector2i) { event.y, event.x }, dialog_pos), tl;
+	bool del = FALSE;
+	short i;
 
 	if (area_contains(left_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT, pos)) {
 		picked_turn = TURN_LEFT;

@@ -29,7 +29,7 @@ Colors *load_rules(char *filename) // TODO format checks
 		e += fscanf(input, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->turn+c);
 	}
 	e += fscanf(input, "%hd %hd\n", &colors->first, &colors->last);
-	e += fscanf(input, "%hd\n", &colors->n);
+	e += fscanf(input, "%zu\n", &colors->n);
 
 	if (fclose(input) == EOF) {
 		return NULL;
@@ -61,7 +61,7 @@ int save_rules(char *filename, Colors *colors)
 		e += fprintf(output, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->turn[c]);
 	}
 	e += fprintf(output, "%hd %hd\n", colors->first, colors->last);
-	e += fprintf(output, "%hd\n", colors->n);
+	e += fprintf(output, "%zu\n", colors->n);
 
 	if (fclose(output) == EOF || e < RULES_TOTAL_FIELDS) {
 		e = EOF;
