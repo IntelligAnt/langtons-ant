@@ -50,23 +50,24 @@ static bool is_grid_usage_low(Grid *grid)
 
 static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
-	int y = ant->pos.y, x = ant->pos.x, turn;
-	bool is_def = grid->c[y][x] == colors->def;
+	unsigned char *c = &grid->c[ant->pos.y][ant->pos.x];
+	bool is_def = *c == colors->def;
+	short turn;
 
 	if (is_def) {
-		grid->c[y][x] = (unsigned char)colors->first;
+		*c = (unsigned char)colors->first;
 		grid->colored++;
 		update_bounding_box(grid, ant->pos);
 	}
 
 	// In-place color changing
-	if (is_color_special(colors, grid->c[y][x])) {
-		grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
+	if (is_color_special(colors, *c)) {
+		*c = (unsigned char)colors->next[*c];
 	}
 
-	turn = colors->turn[grid->c[y][x]];
+	turn = colors->turn[*c];
 	assert(abs(turn) == 1);
-	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
+	*c = (unsigned char)colors->next[*c];
 	change_dir(ant, turn);
 
 	if (is_def && IS_GRID_LARGE(grid) && is_grid_usage_low(grid)) {

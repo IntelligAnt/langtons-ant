@@ -1,3 +1,4 @@
+#include <math.h>
 #include "graphics.h"
 
 static bool run_loop = TRUE;

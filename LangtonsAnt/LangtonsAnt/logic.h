@@ -66,7 +66,7 @@ typedef enum { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT } Direction;
 
 /** Ant container */
 typedef struct ant {
-	Vector2i  pos; /**< Current position */
+	Vector2i  pos; /**< Current position */ // TODO Use unsigned vector
 	Direction dir; /**< Direction the ant is facing */
 } Ant;
 
@@ -94,7 +94,7 @@ typedef struct colors {
 	short turn[COLOR_COUNT];
 	short first, last;
 	short def;
-	short n; // TODO change to size_t
+	size_t n;
 } Colors; // TODO finish logic docs & add @see
 
 
@@ -173,9 +173,9 @@ void colors_delete(Colors *colors);
 void add_color(Colors *colors, short c, short turn);
 void remove_color(Colors *colors, short c);
 void remove_all_colors(Colors *colors);
-void set_color(Colors *colors, short index, short c, short turn);
-void set_turn(Colors *colors, short index, short turn);
-short get_color_at(Colors *colors, short index);
+void set_color(Colors *colors, size_t index, short c, short turn);
+void set_turn(Colors *colors, size_t index, short turn);
+short get_color_at(Colors *colors, size_t index);
 bool color_exists(Colors *colors, short c);
 bool is_color_special(Colors *colors, short c);
 bool is_colors_empty(Colors *colors);
@@ -192,7 +192,7 @@ void grid_silent_expand(Grid*);
 void grid_expand(Grid *grid, Ant *ant);
 void grid_make_sparse(Grid *grid);
 bool is_grid_sparse(Grid *grid);
-void new_cell(Cell **cur, unsigned column, unsigned char c);
+void new_cell(Cell **cur, size_t column, unsigned char c);
 unsigned char color_at_s(Grid *grid, Vector2i p);
 
 

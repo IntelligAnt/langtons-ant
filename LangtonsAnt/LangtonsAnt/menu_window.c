@@ -84,12 +84,12 @@ void end_menu_window(void)
 	menuw = NULL;
 }
 
-Vector2i get_menu_tile_pos(int index)
+Vector2i get_menu_tile_pos(size_t index)
 {
 	Vector2i pos;
-	int index_y, index_x;
+	size_t index_y, index_x;
 
-	assert(index >= 0 && index < MENU_TILE_COUNT);
+	assert(index < MENU_TILE_COUNT);
 
 	index_y = index % MENU_TILES_PER_COL;
 	index_x = index / MENU_TILES_PER_COL;

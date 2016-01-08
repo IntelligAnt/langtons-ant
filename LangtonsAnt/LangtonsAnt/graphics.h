@@ -471,7 +471,7 @@ void draw_menu_iter(void);
  * @param index Index in the color list
  * @return Relative position of found tile
  */
-Vector2i get_menu_tile_pos(int index);
+Vector2i get_menu_tile_pos(size_t index);
 
 /**
  * Finds the relative position of the default color picker button
@@ -537,7 +537,7 @@ input_t menu_mouse_command(void);
  * @param color_index Index of the color that is to be set (CIDX_NEWCOLOR to add a color,
  * CIDX_DEFAULT to change the default)
  */
-void open_dialog(Vector2i pos, int color_index);
+void open_dialog(Vector2i pos, short color_index);
 
 /**
  * Closes dialog and ends drawing
@@ -551,10 +551,10 @@ void draw_dialog(void);
 
 /**
  * Finds the relative position of a color tile in the dialog
- * @param index Color index
+ * @param color Color of tile
  * @return Relative position of found tile
  */
-Vector2i get_dialog_tile_pos(int index);
+Vector2i get_dialog_tile_pos(short color);
 
 /**
  * Handles mouse command passed to the dialog

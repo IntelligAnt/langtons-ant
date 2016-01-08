@@ -26,7 +26,7 @@ Grid *grid_new(Colors *colors, size_t init_size)
 
 static void grid_delete_tmp(Grid *grid)
 {
-	int i;
+	size_t i;
 	if (grid->tmp) {
 		for (i = 0; i < grid->tmp_size; i++) {
 			if (grid->tmp[i]) {
@@ -40,7 +40,7 @@ static void grid_delete_tmp(Grid *grid)
 
 static void grid_delete_n(Grid *grid)
 {
-	int i;
+	size_t i;
 	grid_delete_tmp(grid);
 	for (i = 0; i < grid->size; ++i) {
 		free(grid->c[i]);
@@ -50,7 +50,7 @@ static void grid_delete_n(Grid *grid)
 
 static void grid_delete_s(Grid *grid)
 {
-	int i;
+	size_t i;
 	Cell *cell;
 	for (i = 0; i < grid->size; i++) {
 		while (grid->csr[i]) {
@@ -74,19 +74,14 @@ static void transfer_vector(Vector2i *v, size_t old_size)
 	v->x += old_size;
 }
 
-static bool is_in_old_matrix(int y, int x, size_t old_size)
+static bool is_in_old_matrix_row(size_t y, size_t old_size)
 {
-	return y >= old_size && y < 2*old_size && x >= old_size && x < 2*old_size;
-}
-
-static bool is_in_old_matrix_row(int y, size_t old_size)
-{
-	return y >= old_size && y < 2 * old_size;
+	return y >= old_size && y < 2*old_size;
 }
 
 void grid_silent_expand(Grid *grid)
 {
-	int size = grid->size*GRID_MUL, i;
+	size_t size = grid->size*GRID_MUL, i;
 	if (is_grid_sparse(grid) || grid->tmp_size >= size) {
 		return;
 	}
@@ -101,7 +96,7 @@ void grid_silent_expand(Grid *grid)
 
 static void grid_fill_tmp(Grid *grid)
 {
-	int size = grid->size * GRID_MUL;
+	size_t size = grid->size * GRID_MUL;
 	if (!grid->tmp) {
 		grid->tmp = malloc(size * sizeof(unsigned char*));
 		grid->tmp_size = 0;
@@ -175,8 +170,7 @@ void grid_expand(Grid *grid, Ant *ant)
 
 void grid_make_sparse(Grid *grid)
 {
-	size_t size = grid->size;
-	int i, j;
+	size_t size = grid->size, i, j;
 	Cell **cur;
 	unsigned char c;
 
@@ -203,7 +197,7 @@ bool is_grid_sparse(Grid *grid)
 	return grid->csr ? assert(!grid->c), TRUE : FALSE;
 }
 
-void new_cell(Cell **cur, unsigned column, unsigned char c)
+void new_cell(Cell **cur, size_t column, unsigned char c)
 {
 	Cell *new = malloc(sizeof(Cell));
 	CELL_SET_COLUMN(new, column);

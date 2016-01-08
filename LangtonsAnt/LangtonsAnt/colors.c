@@ -77,11 +77,11 @@ void remove_all_colors(Colors *colors)
 	colors->n = 0;
 }
 
-void set_color(Colors *colors, short index, short c, short turn)
+void set_color(Colors *colors, size_t index, short c, short turn)
 {
 	short prev = colors->last, i = colors->first, j;
-	assert(index >= 0 && index < colors->n);
-	while (index--) {
+	assert(index < colors->n);
+	for (; index > 0; --index) {
 		prev = i;
 		i = colors->next[i];
 	}
@@ -104,21 +104,21 @@ void set_color(Colors *colors, short index, short c, short turn)
 	}
 }
 
-void set_turn(Colors *colors, short index, short turn)
+void set_turn(Colors *colors, size_t index, short turn)
 {
 	short i = colors->first;
-	assert(index >= 0 && index < colors->n);
-	while (index--) {
+	assert(index < colors->n);
+	for (; index > 0; --index) {
 		i = colors->next[i];
 	}
 	colors->turn[i] = turn;
 }
 
-short get_color_at(Colors *colors, short index)
+short get_color_at(Colors *colors, size_t index)
 {
 	short i = colors->first;
-	assert(index >= 0 && index < colors->n);
-	while (index--) {
+	assert(index < colors->n);
+	for (; index > 0; --index) {
 		i = colors->next[i];
 	}
 	return i;
