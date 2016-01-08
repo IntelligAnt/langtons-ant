@@ -2,7 +2,22 @@
 #include "graphics.h"
 
 chtype fg_pair, bg_pair;
-static bool do_draw = TRUE;
+
+void init_def_pairs(short fg_color, short bg_color)
+{
+	short i;
+	for (i = 0; i < COLOR_COUNT; ++i) {
+		if (i == bg_color) {
+			init_pair(i+1, i, fg_color);
+			bg_pair = GET_PAIR_FOR(i);
+		} else {
+			init_pair(i+1, i, bg_color);
+			if (i == fg_color) {
+				fg_pair = GET_PAIR_FOR(i);
+			}
+		}
+	}
+}
 
 void init_graphics(short fg_color, short bg_color)
 {
@@ -35,90 +50,6 @@ void end_graphics(void)
 {
 	end_grid_window();
 	endwin();
-}
-
-void init_def_pairs(short fg_color, short bg_color)
-{
-	short i;
-	for (i = 0; i < COLOR_COUNT; ++i) {
-		if (i == bg_color) {
-			init_pair(i+1, i, fg_color);
-			bg_pair = GET_PAIR_FOR(i);
-		} else {
-			init_pair(i+1, i, bg_color);
-			if (i == fg_color) {
-				fg_pair = GET_PAIR_FOR(i);
-			}
-		}
-	}
-}
-
-static input_t handle_input(void)
-{
-	input_t res = INPUT_NO_CHANGE;
-	Simulation *sim = stgs.linked_sim;
-	int ch = getch();
-	if (sim) {
-		res |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
-	}
-	res |= menu_key_command(ch);
-	return res;
-}
-
-void draw_loop(void)
-{
-	Simulation *sim = stgs.linked_sim;
-	draw_grid_full(sim->grid, sim->ant);
-	draw_menu_full();
-
-	while (do_draw) {
-		input_t input = handle_input();
-		input_t grid_changed = input & INPUT_GRID_CHANGED, menu_changed = input & INPUT_MENU_CHANGED;
-		sim = stgs.linked_sim;
-
-		if (is_simulation_running(sim)) {
-			Vector2i oldp = sim->ant->pos;
-			bool in_bounds = ant_move(sim->ant, sim->grid, sim->colors);
-			grid_silent_expand(sim->grid);
-
-			if (!in_bounds) {
-				grid_expand(sim->grid, sim->ant);
-				if (!grid_changed) {
-					draw_grid_full(sim->grid, sim->ant);
-				}
-				if (!menu_changed) {
-					draw_menu_full();
-				}
-			} else {
-#if OPT_DELAY_LOOP
-				unsigned d;
-				for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
-#endif
-				if (!grid_changed) {
-					draw_grid_iter(sim->grid, sim->ant, oldp);
-				}
-				if (!menu_changed) {
-					draw_menu_iter();
-				}
-			}
-
-			++(sim->steps);
-		}
-	
-		if (grid_changed) {
-			draw_grid_full(sim->grid, sim->ant);
-		}
-		if (menu_changed) {
-			draw_menu_full();
-		}
-
-		doupdate();
-	}
-}
-
-void exit_draw_loop(bool exit)
-{
-	do_draw = !exit;
 }
 
 void draw_square(WINDOW *w, Vector2i top_left, size_t size)
@@ -178,7 +109,7 @@ void draw_bitmap(WINDOW *w, const unsigned char *bitmap,
 	unsigned char bit;
 	for (read = 0; read < width*height; ++read) {
 		bit = bitmap[read/8] >> (7-read%8) & 0x1;
-		y = read/width, x = read%width;
+		y = read / width, x = read % width;
 		if (overwrite) {
 			mvwaddch(w, top_left.y+y, top_left.x+x, bit ? ACS_BLOCK : ' ');
 		} else if (bit) {
@@ -207,9 +138,4 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v)
 {
 	return (v.y >= top_left.y && v.y < top_left.y+(int)height
 		 && v.x >= top_left.x && v.x < top_left.x+(int)width);
-}
-
-int sgn(int x)
-{
-	return (x > 0) - (x < 0);
 }

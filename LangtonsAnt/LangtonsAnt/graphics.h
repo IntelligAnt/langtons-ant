@@ -115,8 +115,11 @@ typedef struct scroll_info {
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
 #define MENU_LOGO_HEIGHT    15
 #define MENU_CONTROLS_POS   88
+#define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+9)
 #define MENU_EDGE_COLOR     COLOR_NAVY
 #define MENU_EDGE_COLOR_S   COLOR_MAROON
+#define MENU_ACTIVE_COLOR   COLOR_BLUE
+#define MENU_INACTIVE_COLOR COLOR_GRAY
 ///@}
 
 /** @name Menu buttons attributes */
@@ -127,8 +130,20 @@ typedef struct scroll_info {
 #define MENU_PAUSE_COLOR    COLOR_YELLOW
 #define MENU_STOP_COLOR     COLOR_RED
 #define MENU_CLEAR_COLOR    COLOR_TEAL
-#define MENU_ACTIVE_COLOR   COLOR_BLUE
-#define MENU_INACTIVE_COLOR COLOR_GRAY
+///@}
+
+///@{
+/** Arrow bitmap dimension */
+#define MENU_UDARROW_WIDTH  3
+#define MENU_UDARROW_HEIGHT 2
+#define MENU_RLARROW_WIDTH  MENU_UDARROW_HEIGHT
+#define MENU_RLARROW_HEIGHT MENU_UDARROW_WIDTH
+///@}
+
+///@{
+/** Digit bitmap dimension */
+#define MENU_DIGIT_WIDTH    3
+#define MENU_DIGIT_HEIGHT   5
 ///@}
 
 /** @name Menu color tiles attributes */
@@ -188,11 +203,13 @@ typedef unsigned char input_t;
 
 /** @name Window state change flags */
 ///@{
-#define INPUT_NO_CHANGE    ((input_t)0x0)
-#define INPUT_GRID_CHANGED ((input_t)0x1)
-#define INPUT_MENU_CHANGED ((input_t)0x2)
+#define INPUT_NO_CHANGE    ((input_t)0)
+#define INPUT_GRID_CHANGED ((input_t)1)
+#define INPUT_MENU_CHANGED ((input_t)2)
 ///@}
 
+
+/*--------------------- Performance optimization macros ----------------------*/
 
 /** @name Optimization settings */
 ///@{
@@ -203,19 +220,22 @@ typedef unsigned char input_t;
 ///@}
 
 
+/*------------------------ Global variables/constants ------------------------*/
+
 /** @name Globals */
 ///@{
 extern chtype         fg_pair, bg_pair;
 
-extern WINDOW         *gridw;
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
+extern WINDOW         *gridw;
 
-extern WINDOW         *menuw;
 extern Settings       stgs;
 extern IOStatus       load_status, save_status;
+extern WINDOW         *menuw;
 extern const Vector2i menu_pos;
 extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
+extern const Vector2i menu_dir_u_pos, menu_dir_r_pos, menu_dir_d_pos, menu_dir_l_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 
@@ -230,6 +250,13 @@ extern const char     *dialog_cdef_msg;
  *----------------------------------------------------------------------------*/
 
 /**
+ * Initializes all color pairs (c[0..15], bg_color)
+ * @param fg_color Foreground color
+ * @param bg_color Background color
+ */
+void init_def_pairs(short fg_color, short bg_color);
+
+/**
  * Initializes graphics and all windows
  * @param fg_color Foreground color
  * @param bg_color Background color
@@ -240,24 +267,6 @@ void init_graphics(short fg_color, short bg_color);
  * Closes windows and ends drawing
  */
 void end_graphics(void);
-
-/**
- * Initializes all color pairs (c[0..15], bg_color)
- * @param fg_color Foreground color
- * @param bg_color Background color
- */
-void init_def_pairs(short fg_color, short bg_color);
-
-/**
- * Main draw/update loop
- */
-void draw_loop(void);
-
-/**
- * Stops the main draw/update loop
- * @param exit Should loop stop drawing?
- */
-void exit_draw_loop(bool exit);
 
 /**
  * Utility function for drawing square boxes
@@ -324,13 +333,6 @@ Vector2i abs2rel(Vector2i abs, Vector2i origin);
  */
 bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 
-/**
- * Standard signum function
- * @param x Number whose sign is to be taken
- * @return Sign of x
- */
-int sgn(int x);
-
 
 /*----------------------------------------------------------------------------*
  *                                ant_bitmap.c                                *
@@ -344,6 +346,22 @@ int sgn(int x);
  * @return Ant bitmap with requested size and direction, if one exists; NULL otherwise
  */
 const unsigned char *get_ant_bitmap(size_t *psize, Direction dir);
+
+
+/*----------------------------------------------------------------------------*
+ *                                game_loop.c                                 *
+ *----------------------------------------------------------------------------*/
+
+/**
+ * Main draw/update loop
+ */
+void game_loop(void);
+
+/**
+ * Stops the main draw/update loop
+ * @param exit Should loop stop running?
+ */
+void stop_game_loop(bool stop);
 
 
 /*----------------------------------------------------------------------------*
@@ -468,18 +486,29 @@ Vector2i get_menu_cdef_pos(void);
  *----------------------------------------------------------------------------*/
 
 /**
+ * Deletes the old simulation and settings and sets them to the state of the argument
+ * @param sim Simulation whose state to use
+ * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
+ * @see reset_simulation(void)
+ * @see clear_simulation(void)
+ */
+input_t set_simulation(Simulation *sim);
+
+/**
  * Resets and remakes the active simulation using the current settings
  * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
- * @see clear_sim(void)
+ * @see clear_simulation(void)
+ * @see set_simulation(Simulation *)
  */
-input_t reset_sim(void);
+input_t reset_simulation(void);
 
 /**
  * Clears the current settings and resets the active simulation
  * @return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED
- * @see reset_sim(void)
+ * @see reset_simulation(void)
+ * @see set_simulation(Simulation *)
  */
-input_t clear_sim(void);
+input_t clear_simulation(void);
 
 /**
  * Handles key Command passed to the menu

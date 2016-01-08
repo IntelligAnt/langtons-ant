@@ -11,7 +11,19 @@ static WINDOW *iow;
 static const Vector2i io_pos = { MENU_CONTROLS_POS-22,
                                  GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH-INPUT_WINDOW_WIDTH-2 };
 
-input_t reset_sim(void)
+input_t set_simulation(Simulation *sim)
+{
+	assert(stgs.linked_sim);
+	simulation_delete(stgs.linked_sim);
+	stgs.linked_sim = sim;
+	colors_delete(stgs.colors);
+	stgs.colors = sim->colors;
+	stgs.init_size = sim->grid->init_size;
+	reset_scroll();
+	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
+}
+
+input_t reset_simulation(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (sim) {
@@ -22,10 +34,10 @@ input_t reset_sim(void)
 	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
-input_t clear_sim(void)
+input_t clear_simulation(void)
 {
 	remove_all_colors(stgs.colors);
-	return reset_sim();
+	return reset_simulation();
 }
 
 static input_t isz_button_clicked(int i)
@@ -46,9 +58,34 @@ static input_t isz_button_clicked(int i)
 		return INPUT_NO_CHANGE;
 	}
 	if (!is_simulation_running(sim) && !has_simulation_started(sim)) { // Sanity check
-		return reset_sim();
+		return reset_simulation();
 	}
 	return INPUT_MENU_CHANGED;
+}
+
+static input_t dir_button_clicked(int key)
+{
+	Simulation *sim = stgs.linked_sim;
+	if (has_simulation_started(sim)) {
+		return INPUT_NO_CHANGE;
+	}
+	switch (key) {
+	case KEY_UP:
+		sim->ant->dir = DIR_UP;
+		break;
+	case KEY_RIGHT:
+		sim->ant->dir = DIR_RIGHT;
+		break;
+	case KEY_DOWN:
+		sim->ant->dir = DIR_DOWN;
+		break;
+	case KEY_LEFT:
+		sim->ant->dir = DIR_LEFT;
+		break;
+	default:
+		return INPUT_NO_CHANGE;
+	}
+	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
 static input_t play_button_clicked(void)
@@ -56,11 +93,11 @@ static input_t play_button_clicked(void)
 	input_t res = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		res |= reset_sim();
+		res |= reset_simulation();
 		sim = stgs.linked_sim;
 	}
 	if (sim && has_enough_colors(sim->colors)) {
-		run_simulation(sim);
+		simulation_run(sim);
 		res |= INPUT_MENU_CHANGED;
 	}
 	return res;
@@ -70,14 +107,14 @@ static input_t pause_button_clicked(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		halt_simulation(sim);
+		simulation_halt(sim);
 	}
 	return INPUT_MENU_CHANGED;
 }
 
 static input_t stop_button_clicked(void)
 {
-	return has_simulation_started(stgs.linked_sim) ? reset_sim() : clear_sim();
+	return has_simulation_started(stgs.linked_sim) ? reset_simulation() : clear_simulation();
 }
 
 static void read_filename(char *filename)
@@ -99,18 +136,12 @@ static input_t io_button_clicked(bool load)
 	char filename[FILENAME_BUF_LEN];
 	read_filename(filename);
 	if (load) {
-		load_status = (sim = load_simulation(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
+		load_status = (sim = load_state(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
 		if (sim) {
-			assert(stgs.linked_sim);
-			simulation_delete(stgs.linked_sim);
-			stgs.linked_sim = sim;
-			colors_delete(stgs.colors);
-			stgs.colors = sim->colors;
-			stgs.init_size = sim->grid->init_size;
-			return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
+			return set_simulation(sim);
 		}
 	} else {
-		save_status = (save_simulation(filename, stgs.linked_sim) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
+		save_status = (save_state(filename, stgs.linked_sim) != EOF) ? STATUS_SUCCESS : STATUS_FAILURE;
 	}
 	return INPUT_MENU_CHANGED;
 }
@@ -120,21 +151,24 @@ input_t menu_key_command(int key)
 	Simulation *sim = stgs.linked_sim;
 
 	switch (key) {
+	case KEY_UP: case KEY_RIGHT: case KEY_DOWN: case KEY_LEFT:
+		return dir_button_clicked(key);
+
 	case ' ':
-		if (is_simulation_running(sim)) {
-			return pause_button_clicked();
-		} else {
+		if (!is_simulation_running(sim)) {
 			return play_button_clicked();
+		} else {
+			return pause_button_clicked();
 		}
 
 	case 'R': case 'r':
-		return reset_sim();
+		return stop_button_clicked();
 
 	case KEY_BACKSPACE: case '\b':
-		return clear_sim();
+		return clear_simulation();
 
 	case KEY_ESC:
-		exit_draw_loop(TRUE);
+		stop_game_loop(TRUE);
 		return INPUT_NO_CHANGE;
 
 	case KEY_MOUSE:
@@ -203,11 +237,25 @@ input_t menu_mouse_command(void)
 	}
 
 	/* Init size buttons clicked */
-	if (area_contains(menu_isz_u_pos, 3, 2, pos)) {
+	if (area_contains(menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
 		return res | isz_button_clicked(1);
 	}
-	if (area_contains(menu_isz_d_pos, 3, 2, pos)) {
+	if (area_contains(menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
 		return res | isz_button_clicked(-1);
+	}
+
+	/* Direction buttons clicked */
+	if (area_contains(menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_UP);
+	}
+	if (area_contains(menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_RIGHT);
+	}
+	if (area_contains(menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_DOWN);
+	}
+	if (area_contains(menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
+		return res | dir_button_clicked(KEY_LEFT);
 	}
 
 	return res;

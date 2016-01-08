@@ -111,11 +111,10 @@ void set_turn(Colors *colors, short index, short turn)
 	while (index--) {
 		i = colors->next[i];
 	}
-
 	colors->turn[i] = turn;
 }
 
-short get_color_at(Colors *colors, int index)
+short get_color_at(Colors *colors, short index)
 {
 	short i = colors->first;
 	assert(index >= 0 && index < colors->n);

@@ -14,7 +14,7 @@ void ant_delete(Ant *ant)
 	free(ant);
 }
 
-static void ant_dir_turn(Ant *ant, int turn)
+static void change_dir(Ant *ant, int turn)
 {
 	switch (ant->dir) {
 	case DIR_UP:
@@ -67,7 +67,7 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 	turn = colors->turn[grid->c[y][x]];
 	assert(abs(turn) == 1);
 	grid->c[y][x] = (unsigned char)colors->next[grid->c[y][x]];
-	ant_dir_turn(ant, turn);
+	change_dir(ant, turn);
 
 	if (is_def && IS_GRID_LARGE(grid) && is_grid_usage_low(grid)) {
 		grid_make_sparse(grid);
@@ -98,7 +98,7 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	turn = colors->turn[CELL_GET_COLOR(*t)];
 	assert(abs(turn) == 1);
 	CELL_SET_COLOR(*t, (unsigned char)colors->next[CELL_GET_COLOR(*t)]);
-	ant_dir_turn(ant, turn);
+	change_dir(ant, turn);
 }
 
 bool ant_move(Ant *ant, Grid *grid, Colors *colors) // TODO have ant_move return move direction (either relative or absolute)

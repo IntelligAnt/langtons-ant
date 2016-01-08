@@ -68,5 +68,8 @@
     <ClCompile Include="ant_bitmaps.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="game_loop.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

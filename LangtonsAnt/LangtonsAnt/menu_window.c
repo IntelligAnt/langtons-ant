@@ -8,29 +8,35 @@ Settings stgs;
 IOStatus load_status, save_status;
 
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
-const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT+1, MENU_WINDOW_WIDTH-9 };
-const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+4, MENU_WINDOW_WIDTH-9 };
-const Vector2i menu_play_pos  = { MENU_CONTROLS_POS,  2 };
-const Vector2i menu_pause_pos = { MENU_CONTROLS_POS,  MENU_BUTTON_WIDTH+4 };
-const Vector2i menu_stop_pos  = { MENU_CONTROLS_POS,  2*MENU_BUTTON_WIDTH+6 };
+const Vector2i menu_isz_u_pos = { MENU_LOGO_HEIGHT+1,   MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_isz_d_pos = { MENU_LOGO_HEIGHT+4,   MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_dir_u_pos = { MENU_DIRECTION_POS,   MENU_WINDOW_WIDTH-8 };
+const Vector2i menu_dir_r_pos = { MENU_DIRECTION_POS+2, MENU_WINDOW_WIDTH-4 };
+const Vector2i menu_dir_d_pos = { MENU_DIRECTION_POS+5, MENU_WINDOW_WIDTH-8 };
+const Vector2i menu_dir_l_pos = { MENU_DIRECTION_POS+2, MENU_WINDOW_WIDTH-11 };
+const Vector2i menu_play_pos  = { MENU_CONTROLS_POS,    2 };
+const Vector2i menu_pause_pos = { MENU_CONTROLS_POS,    MENU_BUTTON_WIDTH+4 };
+const Vector2i menu_stop_pos  = { MENU_CONTROLS_POS,    2*MENU_BUTTON_WIDTH+6 };
 const Vector2i menu_load_pos  = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4,
-                                  MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
+								                        MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 const Vector2i menu_save_pos  = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
-                                  MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
+                                                        MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
 static const char *logo_msg   = " 14-COLOR 2D TURING MACHINE SIMULATOR ";
 static const char *tiles_msg  = "RULES:";
 static const char *isz_msg    = "INIT SIZE:";
+static const char *dir_msg    = "DIRECTION:";
 static const char *sparse_msg = "SPARSE MATRIX";
 static const char *size_msg   = "GRID SIZE:";
 static const char *steps_msg  = "STEPS:";
 
 static const Vector2i logo_pos       = { 3,  1 };
 static const Vector2i logo_msg_pos   = { 12, 2 };
-static const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+4 };
+static const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+3 };
 static const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
 static const Vector2i isz_pos        = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-5 };
 static const Vector2i isz_msg_pos    = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-20 };
+static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,    MENU_WINDOW_WIDTH-19 };
 static const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 static const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
 static const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
@@ -44,8 +50,12 @@ static const unsigned char logo_bitmap[] = {
 	0x48, 0x1F, 0x3A, 0x4E, 0x66, 0x48, 0x00, 0x00,
 	0x02, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00
 };
-static const unsigned char isz_bitmaps[][1] = {
+static const unsigned char udarrow_bitmaps[][1] = {
 	{ 0x5C }, { 0xE8 }
+};
+
+static const unsigned char rlarrow_bitmaps[][2] = {
+	{ 0xB8 }, { 0x74 }
 };
 static const unsigned char button_bitmaps[][4] = {
 	{ 0x43, 0x1C, 0xC4, 0x00 }, { 0x02, 0x94, 0xA0, 0x00 },
@@ -101,7 +111,7 @@ Vector2i get_menu_cdef_pos(void)
 	};
 }
 
-static void draw_edge()
+static void draw_edge(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	size_t h = MENU_WINDOW_WIDTH, v = MENU_WINDOW_HEIGHT;
@@ -120,7 +130,7 @@ static void draw_edge()
 	mvwvline(menuw, 0,   h-1, ACS_BLOCK, v);
 }
 
-static void draw_logo()
+static void draw_logo(void)
 {
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	draw_bitmap(menuw, logo_bitmap, logo_pos, 40, 8, FALSE);
@@ -252,19 +262,36 @@ static void draw_init_size(void)
 		return;
 	}
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
-	draw_bitmap(menuw, isz_bitmaps[0], menu_isz_u_pos, 3, 2, FALSE);
-	draw_bitmap(menuw, isz_bitmaps[1], menu_isz_d_pos, 3, 2, FALSE);
+	draw_bitmap(menuw, udarrow_bitmaps[0], menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_bitmap(menuw, udarrow_bitmaps[1], menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
 	wattrset(menuw, fg_pair);
 	draw_bitmap(menuw, digit_bitmaps[stgs.init_size], isz_pos, 3, 5, TRUE);
+}
+
+static void draw_direction(void)
+{
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
+	mvwaddstr(menuw, dir_msg_pos.y, dir_msg_pos.x, dir_msg);
+
+	wattrset(menuw, fg_pair);
+	mvwaddstr(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x, "Ant");
+	//draw_rect(menuw, (Vector2i) { menu_dir_u_pos.y+3, menu_dir_u_pos.x }, MENU_UDARROW_WIDTH, 1);
+
+	wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
+								 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
+	draw_bitmap(menuw, udarrow_bitmaps[0], menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_bitmap(menuw, rlarrow_bitmaps[0], menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
+	draw_bitmap(menuw, udarrow_bitmaps[1], menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_bitmap(menuw, rlarrow_bitmaps[1], menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
 }
 
 static void draw_control_buttons(void)
 {
 	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
-	Vector2i pos1 = { menu_play_pos.y + o.y,  menu_play_pos.x + o.x };
+	Vector2i pos1 = { menu_play_pos.y  + o.y, menu_play_pos.x  + o.x };
 	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
-	Vector2i pos3 = { menu_stop_pos.y + o.y,  menu_stop_pos.x + o.x };
+	Vector2i pos3 = { menu_stop_pos.y  + o.y, menu_stop_pos.x  + o.x };
 
 	wattrset(menuw, GET_PAIR_FOR(bg));
 	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
@@ -340,16 +367,9 @@ static void draw_steps(void)
 	char digits_str[9], *p;
 	Vector2i tl = steps_pos;
 
-#if OPT_STEPS
-	static size_t prev_steps;
-	bool skip_draw = (double)prev_steps/steps > OPT_STEPS_THRESHOLD;
-#else
-	bool skip_draw = FALSE;
-#endif
-
 	if (steps <= 1) {
 		do_draw = TRUE;
-	} else if (!do_draw || skip_draw) {
+	} else if (!do_draw) {
 		return;
 	}
 
@@ -372,10 +392,6 @@ static void draw_steps(void)
 		}
 		tl.x += 4;
 	}
-
-#if OPT_STEPS
-	prev_steps = steps;
-#endif
 }
 
 void draw_menu_full(void)
@@ -384,6 +400,7 @@ void draw_menu_full(void)
 	draw_logo();
 	draw_color_list();
 	draw_init_size();
+	draw_direction();
 	draw_control_buttons();
 	draw_io_buttons();
 	draw_size();
@@ -405,14 +422,23 @@ void draw_menu_full(void)
 
 void draw_menu_iter(void)
 {
+	Simulation *sim = stgs.linked_sim;
 	static bool sparse = FALSE;
+
+#if OPT_STEPS
+	static size_t prev_steps;
+	if (sim->steps <= 1 || (double)prev_steps/sim->steps <= OPT_STEPS_THRESHOLD) {
+#endif
+		draw_steps();
+#if OPT_STEPS
+		prev_steps = sim->steps;
+	}
+#endif
 	
-	assert(stgs.linked_sim);
-	if (!sparse && is_grid_sparse(stgs.linked_sim->grid)) {
+	if (!sparse && is_grid_sparse(sim->grid)) {
 		draw_edge();
 		sparse = TRUE;
 	}
-	draw_steps();
 
 	wnoutrefresh(menuw);
 }

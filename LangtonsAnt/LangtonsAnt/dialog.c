@@ -2,7 +2,7 @@
 
 WINDOW *dialogw;
 Vector2i dialog_pos;
-const char *dialog_cdef_msg = "Pick def. color";
+const char *dialog_cdef_msg = "Pick grid color";
 
 static int cidx;
 static short picked_color = COLOR_NONE, picked_turn = TURN_NONE;
@@ -69,7 +69,7 @@ static void draw_tiles(void)
 	}
 }
 
-static void draw_buttons()
+static void draw_buttons(void)
 {
 	if (cidx == CIDX_DEFAULT) {
 		wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def) | A_REVERSE);
@@ -175,7 +175,7 @@ exit:
 		colors_delete(stgs.colors);
 		stgs.colors = colors_new(picked_color);
 		close_dialog();
-		return clear_sim();
+		return clear_simulation();
 	default:
 		if (cidx < 0 || cidx >= COLOR_COUNT) {
 			return INPUT_NO_CHANGE;
@@ -191,7 +191,7 @@ exit:
 		} else if (del) {
 			remove_color(stgs.colors, get_color_at(stgs.colors, cidx));
 			if (!has_enough_colors(stgs.colors)) {
-				halt_simulation(stgs.linked_sim);
+				simulation_halt(stgs.linked_sim);
 			}
 			close_dialog();
 		}
