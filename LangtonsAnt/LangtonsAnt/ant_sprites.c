@@ -1,12 +1,12 @@
 #include "graphics.h"
 
-/* Init size 4 bitmaps */
+/* Init size 4 sprites */
 
-static const unsigned char ant3_bitmaps[][2] = {
+static const unsigned char ant3_sprites[][2] = {
 	{ 0x48, 0x00 }, { 0x0C, 0x00 }, { 0x18, 0x00 }, { 0x09, 0x00 }
 };
 
-static const unsigned char ant8_bitmaps[][8] = {
+static const unsigned char ant8_sprites[][8] = {
 	{ 0x24, 0x18, 0x5A, 0x3C, 0x18, 0x3C, 0x5A, 0x00 },
 	{ 0x00, 0x44, 0x29, 0x7E, 0x7E, 0x29, 0x44, 0x00 },
 	{ 0x00, 0x5A, 0x3C, 0x18, 0x3C, 0x5A, 0x18, 0x24 },
@@ -45,19 +45,19 @@ static const unsigned char ant24_lf[] = {
 	0x03, 0x09, 0x80, 0x00, 0x08, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-static const unsigned char *ant24_bitmaps[] = {
+static const unsigned char *ant24_sprites[] = {
 	ant24_up, ant24_rt, ant24_dn, ant24_lf
 };
 
-const unsigned char *get_ant_bitmap(size_t size, Direction dir)
+const unsigned char *get_ant_sprite(size_t size, Direction dir)
 {
 	switch (size) {
 	case 3:
-		return ant3_bitmaps[dir];
+		return ant3_sprites[dir];
 	case 8:
-		return ant8_bitmaps[dir];
+		return ant8_sprites[dir];
 	case 24:
-		return ant24_bitmaps[dir];
+		return ant24_sprites[dir];
 	default:
 		return NULL;
 	}

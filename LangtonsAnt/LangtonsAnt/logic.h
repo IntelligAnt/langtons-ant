@@ -66,7 +66,7 @@ typedef enum { DIR_UP, DIR_RIGHT, DIR_DOWN, DIR_LEFT } Direction;
 
 /** Ant container */
 typedef struct ant {
-	Vector2i  pos; /**< Current position */ // TODO Use unsigned vector
+	Vector2i  pos; /**< Current position */ // TODO use unsigned vector
 	Direction dir; /**< Direction the ant is facing */
 } Ant;
 

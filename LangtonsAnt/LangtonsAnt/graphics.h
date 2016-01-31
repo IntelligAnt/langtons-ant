@@ -133,7 +133,7 @@ typedef struct scroll_info {
 ///@}
 
 ///@{
-/** Arrow bitmap dimension */
+/** Arrow sprite dimension */
 #define MENU_UDARROW_WIDTH  3
 #define MENU_UDARROW_HEIGHT 2
 #define MENU_RLARROW_WIDTH  MENU_UDARROW_HEIGHT
@@ -141,7 +141,7 @@ typedef struct scroll_info {
 ///@}
 
 ///@{
-/** Digit bitmap dimension */
+/** Digit sprite dimension */
 #define MENU_DIGIT_WIDTH    3
 #define MENU_DIGIT_HEIGHT   5
 ///@}
@@ -295,15 +295,15 @@ void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 
 /**
- * Utility function for drawing monochrome bitmaps
+ * Utility function for drawing monochrome sprites
  * @param w Window to draw to
- * @param bitmap Bitmap to be drawn (byte array)
+ * @param sprite Sprite to be drawn (byte array)
  * @param top_left Box origin
  * @param width Box width
  * @param height Box height
  * @param overwrite Should existing content be overwritten?
  */
-void draw_bitmap(WINDOW *w, const unsigned char *bitmap,
+void draw_sprite(WINDOW *w, const unsigned char *sprite,
 				 Vector2i top_left, size_t width, size_t height,
 				 bool overwrite);
 
@@ -335,16 +335,16 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
 
 
 /*----------------------------------------------------------------------------*
- *                               ant_bitmaps.c                                *
+ *                               ant_sprites.c                                *
  *----------------------------------------------------------------------------*/
 
 /**
- * Finds a suitable bitmap for the given cell size and ant direction
+ * Finds a suitable sprite for the given cell size and ant direction
  * @param size Cell size
  * @param dir Current ant direction
- * @return Ant bitmap with requested size and direction, if one exists; NULL otherwise
+ * @return Ant sprite with requested size and direction, if one exists; NULL otherwise
  */
-const unsigned char *get_ant_bitmap(size_t size, Direction dir);
+const unsigned char *get_ant_sprite(size_t size, Direction dir);
 
 
 /*----------------------------------------------------------------------------*

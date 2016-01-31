@@ -75,15 +75,15 @@ static void draw_scrollbars(short def)
 
 static void draw_cell(Vector2i yx, int cs, short c, Ant *ant)
 {
-	const unsigned char *ant_bitmap;
+	const unsigned char *ant_sprite;
 	if (yx.y < 0 || yx.y >= GRID_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_VIEW_SIZE) {
 		return;
 	}
 	wattrset(gridw, GET_PAIR_FOR(c));
 	draw_square(gridw, yx, cs);
-	if (ant && (ant_bitmap = get_ant_bitmap(cs, ant->dir))) {
+	if (ant && (ant_sprite = get_ant_sprite(cs, ant->dir))) {
 		wattrset(gridw, fg_pair);
-		draw_bitmap(gridw, ant_bitmap, yx, cs, cs, FALSE);
+		draw_sprite(gridw, ant_sprite, yx, cs, cs, FALSE);
 	}
 }
 

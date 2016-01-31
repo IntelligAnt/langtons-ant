@@ -43,29 +43,29 @@ static const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
 static const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  9 };
 static const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
 
-static const unsigned char logo_bitmap[] = {
+static const unsigned char logo_sprite[] = {
 	0x1C, 0x00, 0x00, 0x80, 0x00, 0x08, 0x00, 0x00,
 	0x80, 0x00, 0x08, 0x3B, 0x8E, 0xE6, 0x70, 0x08,
 	0x4A, 0x52, 0x89, 0x48, 0x09, 0x4A, 0x52, 0x89,
 	0x48, 0x1F, 0x3A, 0x4E, 0x66, 0x48, 0x00, 0x00,
 	0x02, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00
 };
-static const unsigned char udarrow_bitmaps[][1] = {
+static const unsigned char udarrow_sprites[][1] = {
 	{ 0x5C }, { 0xE8 }
 };
 
-static const unsigned char rlarrow_bitmaps[][2] = {
+static const unsigned char rlarrow_sprites[][2] = {
 	{ 0xB8 }, { 0x74 }
 };
-static const unsigned char button_bitmaps[][4] = {
+static const unsigned char button_sprites[][4] = {
 	{ 0x43, 0x1C, 0xC4, 0x00 }, { 0x02, 0x94, 0xA0, 0x00 },
 	{ 0x03, 0x9C, 0xE0, 0x00 }, { 0x47, 0x92, 0x17, 0x00 }
 };
-static const unsigned char digit_bitmaps[][2] = {
+static const unsigned char digit_sprites[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
 };
-static const unsigned char inf_bitmap[] = {
+static const unsigned char inf_sprite[] = {
 	0x00, 0x00, 0x07, 0x1C, 0x00, 0x00, 0x11, 0x44, 0x00, 0x00,
 	0x21, 0x08, 0x00, 0x00, 0x45, 0x10, 0x00, 0x00, 0x71, 0xC0
 };
@@ -133,7 +133,7 @@ static void draw_edge(void)
 static void draw_logo(void)
 {
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
-	draw_bitmap(menuw, logo_bitmap, logo_pos, 40, 8, FALSE);
+	draw_sprite(menuw, logo_sprite, logo_pos, 40, 8, FALSE);
 	wattron(menuw, A_REVERSE);
 	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
 }
@@ -262,10 +262,10 @@ static void draw_init_size(void)
 		return;
 	}
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
-	draw_bitmap(menuw, udarrow_bitmaps[0], menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_bitmap(menuw, udarrow_bitmaps[1], menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, udarrow_sprites[0], menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, udarrow_sprites[1], menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
 	wattrset(menuw, fg_pair);
-	draw_bitmap(menuw, digit_bitmaps[stgs.init_size], isz_pos, 3, 5, TRUE);
+	draw_sprite(menuw, digit_sprites[stgs.init_size], isz_pos, 3, 5, TRUE);
 }
 
 static void draw_direction(void)
@@ -279,10 +279,10 @@ static void draw_direction(void)
 
 	wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
 								 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
-	draw_bitmap(menuw, udarrow_bitmaps[0], menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_bitmap(menuw, rlarrow_bitmaps[0], menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
-	draw_bitmap(menuw, udarrow_bitmaps[1], menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_bitmap(menuw, rlarrow_bitmaps[1], menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, udarrow_sprites[0], menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, rlarrow_sprites[0], menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, udarrow_sprites[1], menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, rlarrow_sprites[1], menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
 }
 
 static void draw_control_buttons(void)
@@ -300,19 +300,19 @@ static void draw_control_buttons(void)
 
 	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors)
 								 ? MENU_PLAY_COLOR : MENU_INACTIVE_COLOR));
-	draw_bitmap(menuw, button_bitmaps[0], pos1, 5, 5, FALSE);
+	draw_sprite(menuw, button_sprites[0], pos1, 5, 5, FALSE);
 
 	wattrset(menuw, GET_PAIR_FOR(is_simulation_running(stgs.linked_sim)
 								 ? MENU_PAUSE_COLOR : MENU_INACTIVE_COLOR));
-	draw_bitmap(menuw, button_bitmaps[1], pos2, 5, 5, FALSE);
+	draw_sprite(menuw, button_sprites[1], pos2, 5, 5, FALSE);
 	
 	if (has_simulation_started(stgs.linked_sim)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_STOP_COLOR));
-		draw_bitmap(menuw, button_bitmaps[2], pos3, 5, 5, FALSE);
+		draw_sprite(menuw, button_sprites[2], pos3, 5, 5, FALSE);
 	} else {
 		wattrset(menuw, GET_PAIR_FOR(!is_colors_empty(stgs.colors)
 									 ? MENU_CLEAR_COLOR : MENU_INACTIVE_COLOR));
-		draw_bitmap(menuw, button_bitmaps[3], pos3, 5, 5, FALSE);
+		draw_sprite(menuw, button_sprites[3], pos3, 5, 5, FALSE);
 	}
 }
 
@@ -375,7 +375,7 @@ static void draw_steps(void)
 
 	wattrset(menuw, fg_pair);
 	if (len > 8) {
-		draw_bitmap(menuw, inf_bitmap, tl, 31, 5, TRUE);
+		draw_sprite(menuw, inf_sprite, tl, 31, 5, TRUE);
 		do_draw = FALSE;
 		return;
 	}
@@ -385,7 +385,7 @@ static void draw_steps(void)
 		if (*p != ' ') {
 			digit = *p - '0';
 			wattroff(menuw, A_REVERSE);
-			draw_bitmap(menuw, digit_bitmaps[digit], tl, 3, 5, TRUE);
+			draw_sprite(menuw, digit_sprites[digit], tl, 3, 5, TRUE);
 		} else {
 			wattron(menuw, A_REVERSE);
 			draw_rect(menuw, tl, 3, 5);
