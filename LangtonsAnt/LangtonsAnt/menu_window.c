@@ -53,8 +53,8 @@ static const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
 static const byte logo_sprite[] = {
 	0x70, 0x00, 0x00, 0x00, 0x10, 0x20, 0x00, 0x00,
 	0x00, 0x10, 0x20, 0x00, 0x38, 0x19, 0xC6, 0x20,
-	0x00, 0x48, 0x25, 0x28, 0x24, 0x00, 0x48, 0x25,
-	0x26, 0x7C, 0x00, 0x38, 0x19, 0x2C, 0x00, 0x00,
+	0x00, 0x48, 0x25, 0x24, 0x24, 0x00, 0x48, 0x25,
+	0x22, 0x7C, 0x00, 0x38, 0x19, 0x26, 0x00, 0x00,
 	0x08, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00
 };
 static const byte logo_ant_sprite[] = {
@@ -290,8 +290,9 @@ static void draw_direction(void)
 	mvwaddstr(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x, "Ant");
 	//draw_rect(menuw, (Vector2i) { menu_dir_u_pos.y+3, menu_dir_u_pos.x }, MENU_UDARROW_WIDTH, 1);
 
-	wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
-								 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
+	//wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
+	//							 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
 	draw_sprite(menuw, uarrow_sprite, menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
 	draw_sprite(menuw, larrow_sprite, menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
 	draw_sprite(menuw, darrow_sprite, menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);

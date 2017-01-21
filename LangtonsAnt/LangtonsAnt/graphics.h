@@ -358,9 +358,8 @@ void game_loop(void);
 
 /**
  * Stops the main draw/update loop
- * @param exit Should loop stop running?
  */
-void stop_game_loop(bool stop);
+void stop_game_loop();
 
 
 /*----------------------------------------------------------------------------*

@@ -66,9 +66,9 @@ static input_t isz_button_clicked(int i)
 static input_t dir_button_clicked(int key)
 {
 	Simulation *sim = stgs.linked_sim;
-	if (has_simulation_started(sim)) {
-		return INPUT_NO_CHANGE;
-	}
+	//if (has_simulation_started(sim)) {
+	//	return INPUT_NO_CHANGE;
+	//}
 	switch (key) {
 	case KEY_UP:
 		sim->ant->dir = DIR_UP;
@@ -160,11 +160,17 @@ input_t menu_key_command(int key)
 	case 'R': case 'r':
 		return stop_button_clicked();
 
+	case 'L': case 'l':
+		return io_button_clicked(TRUE);
+
+	case 'S': case 's':
+		return io_button_clicked(FALSE);
+
 	case KEY_BACKSPACE: case '\b':
 		return clear_simulation();
 
 	case KEY_ESC:
-		stop_game_loop(TRUE);
+		stop_game_loop();
 		return INPUT_NO_CHANGE;
 
 	case KEY_MOUSE:

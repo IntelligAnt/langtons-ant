@@ -66,7 +66,7 @@ void game_loop(void)
 	}
 }
 
-void stop_game_loop(bool stop)
+void stop_game_loop()
 {
-	run_loop = !stop;
+	run_loop = FALSE;
 }
