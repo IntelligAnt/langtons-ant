@@ -143,7 +143,7 @@ static void draw_edge(void)
 
 static void draw_logo(void)
 {
-	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR)); // TODO add copyright window
 	draw_sprite(menuw, logo_ant_sprite, logo_pos, 40, 8, FALSE);
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	draw_sprite(menuw, logo_sprite, logo_pos, 40, 8, FALSE);

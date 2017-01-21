@@ -63,28 +63,13 @@ static input_t isz_button_clicked(int i)
 	return INPUT_MENU_CHANGED;
 }
 
-static input_t dir_button_clicked(int key)
+static input_t dir_button_clicked(Direction dir)
 {
 	Simulation *sim = stgs.linked_sim;
 	//if (has_simulation_started(sim)) {
 	//	return INPUT_NO_CHANGE;
 	//}
-	switch (key) {
-	case KEY_UP:
-		sim->ant->dir = DIR_UP;
-		break;
-	case KEY_RIGHT:
-		sim->ant->dir = DIR_RIGHT;
-		break;
-	case KEY_DOWN:
-		sim->ant->dir = DIR_DOWN;
-		break;
-	case KEY_LEFT:
-		sim->ant->dir = DIR_LEFT;
-		break;
-	default:
-		return INPUT_NO_CHANGE;
-	}
+	sim->ant->dir = dir;
 	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
@@ -117,12 +102,12 @@ static input_t stop_button_clicked(void)
 	return has_simulation_started(stgs.linked_sim) ? reset_simulation() : clear_simulation();
 }
 
-static void read_filename(char *filename)
+static void read_filename(char *filename, bool load)
 {
 	iow = newwin(3, INPUT_WINDOW_WIDTH, io_pos.y, io_pos.x); // TODO move to window drawing file
 	wbkgd(iow, GET_PAIR_FOR(COLOR_GRAY) | A_REVERSE);
 	wattron(iow, fg_pair);
-	waddstr(iow, " Path: ");
+	waddstr(iow, load ? " Load path: " : " Save path: ");
 	wattroff(iow, fg_pair);
 	echo();
 	mvwgetnstr(iow, 1, 1, filename, FILENAME_BUF_LEN);
@@ -134,7 +119,7 @@ static input_t io_button_clicked(bool load)
 {
 	Simulation *sim;
 	char filename[FILENAME_BUF_LEN];
-	read_filename(filename);
+	read_filename(filename, load);
 	if (load) {
 		load_status = (sim = load_state(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
 		if (sim) {
@@ -151,8 +136,14 @@ input_t menu_key_command(int key)
 	Simulation *sim = stgs.linked_sim;
 
 	switch (key) {
-	case KEY_UP: case KEY_RIGHT: case KEY_DOWN: case KEY_LEFT:
-		return dir_button_clicked(key);
+	case 'W': case 'w':
+		return dir_button_clicked(DIR_UP);
+	case 'D': case 'd':
+		return dir_button_clicked(DIR_RIGHT);
+	case 'S': case 's':
+		return dir_button_clicked(DIR_DOWN);
+	case 'A': case 'a':
+		return dir_button_clicked(DIR_LEFT);
 
 	case ' ':
 		return is_simulation_running(sim) ? pause_button_clicked() : play_button_clicked();
@@ -160,14 +151,13 @@ input_t menu_key_command(int key)
 	case 'R': case 'r':
 		return stop_button_clicked();
 
-	case 'L': case 'l':
-		return io_button_clicked(TRUE);
-
-	case 'S': case 's':
-		return io_button_clicked(FALSE);
-
 	case KEY_BACKSPACE: case '\b':
 		return clear_simulation();
+
+	case KEY_F(1):
+		return io_button_clicked(TRUE);
+	case KEY_F(2):
+		return io_button_clicked(FALSE);
 
 	case KEY_ESC:
 		stop_game_loop();
@@ -248,16 +238,16 @@ input_t menu_mouse_command(void)
 
 	/* Direction buttons clicked */
 	if (area_contains(menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(KEY_UP);
+		return res | dir_button_clicked(DIR_UP);
 	}
 	if (area_contains(menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(KEY_RIGHT);
+		return res | dir_button_clicked(DIR_RIGHT);
 	}
 	if (area_contains(menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(KEY_DOWN);
+		return res | dir_button_clicked(DIR_DOWN);
 	}
 	if (area_contains(menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(KEY_LEFT);
+		return res | dir_button_clicked(DIR_LEFT);
 	}
 
 	return res;

@@ -62,13 +62,13 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 		set_scroll(grid, gridscrl.y, br.x-o);
 		break;
 
-		/* A - Move to ant */
-	case 'A': case 'a': case '5':
+		/* F - Move to ant */
+	case 'F': case 'f': case '5':
 		set_scroll(grid, pos.y, pos.x);
 		break;
 
-		/* S - Move to origin */
-	case 'S': case 's': case '0':
+		/* C - Move to center */
+	case 'C': case 'c': case '0':
 		set_scroll(grid, 0, 0);
 		break;
 

@@ -139,18 +139,22 @@ input_t dialog_mouse_command(MEVENT event)
 	bool del = FALSE;
 	short i;
 
-	if (area_contains(left_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT, pos)) {
-		picked_turn = TURN_LEFT;
-		goto exit;
+	if (cidx != CIDX_DEFAULT) {
+		if (area_contains(left_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT, pos)) {
+			picked_turn = TURN_LEFT;
+			goto exit;
+		}
+		if (area_contains(right_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT, pos)) {
+			picked_turn = TURN_RIGHT;
+			goto exit;
+		}
 	}
-	if (area_contains(right_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT, pos)) {
-		picked_turn = TURN_RIGHT;
-		goto exit;
-	}
+
 	if (cidx >= 0 && area_contains(delete_pos, DIALOG_DELETE_WIDTH, DIALOG_DELETE_HEIGHT, pos)) {
 		del = TRUE;
 		goto exit;
 	}
+
 	for (i = 0; i < COLOR_COUNT; i++) {
 		tl = get_dialog_tile_pos(i);
 		if ((cidx == CIDX_DEFAULT || !color_exists(stgs.colors, i))
