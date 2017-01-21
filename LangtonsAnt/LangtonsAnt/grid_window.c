@@ -155,8 +155,6 @@ static void borderless(Grid *grid, Ant *ant)
 
 void draw_grid_full(Grid *grid, Ant *ant)
 {
-	int i;
-
 	if (grid) {
 		if (grid->size == GRID_SIZE_SMALL(grid)) {
 			bordered(grid, ant, LINE_WIDTH_SMALL);
@@ -167,12 +165,12 @@ void draw_grid_full(Grid *grid, Ant *ant)
 			borderless(grid, ant);
 		}
 	} else {
+		int i;
 		wattrset(gridw, bg_pair);
 		for (i = 0; i < GRID_WINDOW_SIZE; ++i) {
 			mvwhline(gridw, i, 0, ACS_BLOCK, GRID_WINDOW_SIZE);
 		}
 	}
-
 	wnoutrefresh(gridw);
 }
 

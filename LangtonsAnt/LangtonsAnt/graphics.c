@@ -25,8 +25,8 @@ void init_graphics(short fg_color, short bg_color)
 	resize_term(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH);
 	curs_set(0);
 	
-	cbreak();
 	noecho();
+	cbreak();
 	mousemask(BUTTON1_CLICKED | BUTTON3_CLICKED, NULL); // Left and right click
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
@@ -49,6 +49,7 @@ void init_graphics(short fg_color, short bg_color)
 void end_graphics(void)
 {
 	end_grid_window();
+	end_menu_window();
 	endwin();
 }
 
