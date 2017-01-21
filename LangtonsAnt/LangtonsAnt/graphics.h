@@ -303,7 +303,7 @@ void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
  * @param height Box height
  * @param overwrite Should existing content be overwritten?
  */
-void draw_sprite(WINDOW *w, const unsigned char *sprite,
+void draw_sprite(WINDOW *w, const byte *sprite,
 				 Vector2i top_left, size_t width, size_t height,
 				 bool overwrite);
 
@@ -344,7 +344,7 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
  * @param dir Current ant direction
  * @return Ant sprite with requested size and direction, if one exists; NULL otherwise
  */
-const unsigned char *get_ant_sprite(size_t size, Direction dir);
+const byte *get_ant_sprite(size_t size, Direction dir);
 
 
 /*----------------------------------------------------------------------------*

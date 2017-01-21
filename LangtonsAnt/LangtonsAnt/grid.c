@@ -8,16 +8,16 @@ Grid *grid_new(Colors *colors, size_t init_size)
 {
 	Grid *grid = malloc(sizeof(Grid));
 	size_t i;
-	grid->c = malloc(init_size * sizeof(unsigned char*));
+	grid->c = malloc(init_size * sizeof(byte*));
 	for (i = 0; i < init_size; ++i) {
 		grid->c[i] = malloc(init_size);
-		memset(grid->c[i], (unsigned char)colors->def, init_size);
+		memset(grid->c[i], (byte)colors->def, init_size);
 	}
 	grid->csr = NULL;
 	grid->size = grid->init_size = init_size;
 	grid->tmp = NULL;
 	grid->tmp_size = 0;
-	grid->def_color = (unsigned char)colors->def;
+	grid->def_color = (byte)colors->def;
 	grid->top_left.y = grid->top_left.x = init_size / 2;
 	grid->bottom_right = grid->top_left;
 	grid->colored = 0;
@@ -86,7 +86,7 @@ void grid_silent_expand(Grid *grid)
 		return;
 	}
 	if (!grid->tmp) {
-		grid->tmp = malloc(size * sizeof(unsigned char*));
+		grid->tmp = malloc(size * sizeof(byte*));
 		grid->tmp_size = 0;
 	}
 	for (i = 0; i < GRID_MAX_SILENT_EXPAND && grid->tmp_size < size; i++) {
@@ -98,7 +98,7 @@ static void grid_fill_tmp(Grid *grid)
 {
 	size_t size = grid->size * GRID_MUL;
 	if (!grid->tmp) {
-		grid->tmp = malloc(size * sizeof(unsigned char*));
+		grid->tmp = malloc(size * sizeof(byte*));
 		grid->tmp_size = 0;
 	}
 	while (grid->tmp_size < size) {
@@ -172,7 +172,7 @@ void grid_make_sparse(Grid *grid)
 {
 	size_t size = grid->size, i, j;
 	Cell **cur;
-	unsigned char c;
+	byte c;
 
 	grid_delete_tmp(grid);
 
@@ -197,7 +197,7 @@ bool is_grid_sparse(Grid *grid)
 	return grid->csr ? assert(!grid->c), TRUE : FALSE;
 }
 
-void new_cell(Cell **cur, size_t column, unsigned char c)
+void new_cell(Cell **cur, size_t column, byte c)
 {
 	Cell *new = malloc(sizeof(Cell));
 	CELL_SET_COLUMN(new, column);
@@ -206,7 +206,7 @@ void new_cell(Cell **cur, size_t column, unsigned char c)
 	*cur = new;
 }
 
-unsigned char color_at_s(Grid *grid, Vector2i p)
+byte color_at_s(Grid *grid, Vector2i p)
 {
 	Cell *t = grid->csr[p.y];
 	while (t && CELL_GET_COLUMN(t) < p.x) {

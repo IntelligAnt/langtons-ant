@@ -50,24 +50,24 @@ static bool is_grid_usage_low(Grid *grid)
 
 static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
-	unsigned char *c = &grid->c[ant->pos.y][ant->pos.x];
+	byte *c = &grid->c[ant->pos.y][ant->pos.x];
 	bool is_def = *c == colors->def;
 	short turn;
 
 	if (is_def) {
-		*c = (unsigned char)colors->first;
+		*c = (byte)colors->first;
 		grid->colored++;
 		update_bounding_box(grid, ant->pos);
 	}
 
 	// In-place color changing
 	if (is_color_special(colors, *c)) {
-		*c = (unsigned char)colors->next[*c];
+		*c = (byte)colors->next[*c];
 	}
 
 	turn = colors->turn[*c];
 	assert(abs(turn) == 1);
-	*c = (unsigned char)colors->next[*c];
+	*c = (byte)colors->next[*c];
 	change_dir(ant, turn);
 
 	if (is_def && IS_GRID_LARGE(grid) && is_grid_usage_low(grid)) {
@@ -88,7 +88,7 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 			grid->colored++;
 			update_bounding_box(grid, ant->pos);
 		}
-		new_cell(t, x, (unsigned char)colors->first);
+		new_cell(t, x, (byte)colors->first);
 	}
 
 	// In-place color changing
@@ -98,7 +98,7 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 
 	turn = colors->turn[CELL_GET_COLOR(*t)];
 	assert(abs(turn) == 1);
-	CELL_SET_COLOR(*t, (unsigned char)colors->next[CELL_GET_COLOR(*t)]);
+	CELL_SET_COLOR(*t, (byte)colors->next[CELL_GET_COLOR(*t)]);
 	change_dir(ant, turn);
 }
 

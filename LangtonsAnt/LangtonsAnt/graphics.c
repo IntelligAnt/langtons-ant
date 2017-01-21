@@ -102,12 +102,12 @@ void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 	}
 }
 
-void draw_sprite(WINDOW *w, const unsigned char *sprite,
+void draw_sprite(WINDOW *w, const byte *sprite,
 				 Vector2i top_left, size_t width, size_t height,
 				 bool overwrite)
 {
 	size_t read, y, x;
-	unsigned char pixel;
+	byte pixel;
 	for (read = 0; read < width*height; ++read) {
 		pixel = sprite[read/8] >> (7-read%8) & 0x1;
 		y = read / width, x = read % width;

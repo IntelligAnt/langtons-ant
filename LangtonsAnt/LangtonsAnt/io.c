@@ -148,7 +148,7 @@ Simulation *load_state(char *filename)
 			}
 		}
 	} else {
-		simulation->grid->c = malloc(simulation->grid->size * sizeof(unsigned char*));
+		simulation->grid->c = malloc(simulation->grid->size * sizeof(byte*));
 		for (i = 0; i < simulation->grid->size; i++) {
 			simulation->grid->c[i] = malloc(simulation->grid->size);
 			if (feof(input)) {

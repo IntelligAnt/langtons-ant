@@ -75,7 +75,7 @@ static void draw_scrollbars(short def)
 
 static void draw_cell(Vector2i yx, int cs, short c, Ant *ant)
 {
-	const unsigned char *ant_sprite;
+	const byte *ant_sprite;
 	if (yx.y < 0 || yx.y >= GRID_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_VIEW_SIZE) {
 		return;
 	}

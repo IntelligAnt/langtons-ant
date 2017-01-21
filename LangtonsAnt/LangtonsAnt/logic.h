@@ -44,6 +44,9 @@
 /** Curses boolean type */
 typedef unsigned char bool;
 
+/** Global byte type */
+typedef unsigned char byte;
+
 
 /*------------------------- Vector macros and types --------------------------*/
 
@@ -135,7 +138,7 @@ typedef struct cell {
 
 /** Grid container */
 typedef struct grid {
-	unsigned char **c, **tmp, def_color;
+	byte **c, **tmp, def_color;
 	Cell **csr;
 	size_t init_size, size, tmp_size, colored;
 	Vector2i top_left, bottom_right;
@@ -192,8 +195,8 @@ void grid_silent_expand(Grid*);
 void grid_expand(Grid *grid, Ant *ant);
 void grid_make_sparse(Grid *grid);
 bool is_grid_sparse(Grid *grid);
-void new_cell(Cell **cur, size_t column, unsigned char c);
-unsigned char color_at_s(Grid *grid, Vector2i p);
+void new_cell(Cell **cur, size_t column, byte c);
+byte color_at_s(Grid *grid, Vector2i p);
 
 
 /*----------------------------------------------------------------------------*
