@@ -121,10 +121,10 @@ typedef struct colors {
 /** @name Sparse matrix bit packing macros */
 ///@{
 #define CELL_COLOR_MASK         (0xF << 28)
-#define CELL_GET_COLOR(c)	    (((c)->packed & CELL_COLOR_MASK) >> 28)
-#define CELL_SET_COLOR(c, col)	((c)->packed = (c)->packed & ~CELL_COLOR_MASK | ((col)<<28))
-#define CELL_GET_COLUMN(c)	    ((c)->packed & ~CELL_COLOR_MASK)
-#define CELL_SET_COLUMN(c, col)	((c)->packed = (c)->packed & CELL_COLOR_MASK | (col) & ~CELL_COLOR_MASK)
+#define CELL_GET_COLOR(c)       (((c)->packed & CELL_COLOR_MASK) >> 28)
+#define CELL_SET_COLOR(c, col)  ((c)->packed = (c)->packed & ~CELL_COLOR_MASK | ((col)<<28))
+#define CELL_GET_COLUMN(c)      ((c)->packed & ~CELL_COLOR_MASK)
+#define CELL_SET_COLUMN(c, col) ((c)->packed = (c)->packed & CELL_COLOR_MASK | (col) & ~CELL_COLOR_MASK)
 ///@}
 
 /** Sparse matrix cell container */

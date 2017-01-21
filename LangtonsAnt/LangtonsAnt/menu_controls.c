@@ -155,11 +155,7 @@ input_t menu_key_command(int key)
 		return dir_button_clicked(key);
 
 	case ' ':
-		if (!is_simulation_running(sim)) {
-			return play_button_clicked();
-		} else {
-			return pause_button_clicked();
-		}
+		return is_simulation_running(sim) ? pause_button_clicked() : play_button_clicked();
 
 	case 'R': case 'r':
 		return stop_button_clicked();
