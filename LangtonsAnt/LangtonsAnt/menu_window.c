@@ -43,20 +43,31 @@ static const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
 static const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  9 };
 static const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
 
+//static const byte logo_sprite[] = {
+//	0x1C, 0x00, 0x00, 0x80, 0x00, 0x08, 0x00, 0x00,
+//	0x80, 0x00, 0x08, 0x3B, 0x8E, 0xE6, 0x70, 0x08,
+//	0x4A, 0x52, 0x89, 0x48, 0x09, 0x4A, 0x52, 0x89,
+//	0x48, 0x1F, 0x3A, 0x4E, 0x66, 0x48, 0x00, 0x00,
+//	0x02, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00
+//};
 static const byte logo_sprite[] = {
-	0x1C, 0x00, 0x00, 0x80, 0x00, 0x08, 0x00, 0x00,
-	0x80, 0x00, 0x08, 0x3B, 0x8E, 0xE6, 0x70, 0x08,
-	0x4A, 0x52, 0x89, 0x48, 0x09, 0x4A, 0x52, 0x89,
-	0x48, 0x1F, 0x3A, 0x4E, 0x66, 0x48, 0x00, 0x00,
-	0x02, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00
+	0x70, 0x00, 0x00, 0x00, 0x10, 0x20, 0x00, 0x00,
+	0x00, 0x10, 0x20, 0x00, 0x38, 0x19, 0xC6, 0x20,
+	0x00, 0x48, 0x25, 0x28, 0x24, 0x00, 0x48, 0x25,
+	0x26, 0x7C, 0x00, 0x38, 0x19, 0x2C, 0x00, 0x00,
+	0x08, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00
 };
-static const byte udarrow_sprites[][1] = {
-	{ 0x5C }, { 0xE8 }
+static const byte logo_ant_sprite[] = {
+	0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x02,
+	0x00, 0x00, 0x00, 0xEE, 0x03, 0x80, 0x00, 0x01,
+	0x29, 0x02, 0x00, 0x00, 0x01, 0x29, 0x02, 0x00,
+	0x00, 0x00, 0xE9, 0x01, 0x80, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-
-static const byte rlarrow_sprites[][2] = {
-	{ 0xB8 }, { 0x74 }
-};
+static const byte uarrow_sprite[] = { 0x5C };
+static const byte darrow_sprite[] = { 0xE8 };
+static const byte larrow_sprite[] = { 0xB8 };
+static const byte rarrow_sprite[] = { 0x74 };
 static const byte button_sprites[][4] = {
 	{ 0x43, 0x1C, 0xC4, 0x00 }, { 0x02, 0x94, 0xA0, 0x00 },
 	{ 0x03, 0x9C, 0xE0, 0x00 }, { 0x47, 0x92, 0x17, 0x00 }
@@ -132,6 +143,8 @@ static void draw_edge(void)
 
 static void draw_logo(void)
 {
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	draw_sprite(menuw, logo_ant_sprite, logo_pos, 40, 8, FALSE);
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	draw_sprite(menuw, logo_sprite, logo_pos, 40, 8, FALSE);
 	wattron(menuw, A_REVERSE);
@@ -262,8 +275,8 @@ static void draw_init_size(void)
 		return;
 	}
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
-	draw_sprite(menuw, udarrow_sprites[0], menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, udarrow_sprites[1], menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, uarrow_sprite, menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, darrow_sprite, menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
 	wattrset(menuw, fg_pair);
 	draw_sprite(menuw, digit_sprites[stgs.init_size], isz_pos, 3, 5, TRUE);
 }
@@ -279,10 +292,10 @@ static void draw_direction(void)
 
 	wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
 								 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
-	draw_sprite(menuw, udarrow_sprites[0], menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, rlarrow_sprites[0], menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, udarrow_sprites[1], menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, rlarrow_sprites[1], menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, uarrow_sprite, menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, larrow_sprite, menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, darrow_sprite, menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, rarrow_sprite, menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
 }
 
 static void draw_control_buttons(void)
@@ -331,10 +344,10 @@ static void draw_io_buttons(void)
 
 	wattrset(menuw, fg_pair);
 	mvwaddstr(menuw, inner1.y+1, inner1.x+1, "LOAD");
-	mvwaddstr(menuw, inner1.y+2, inner1.x+2, "FROM");
+	mvwaddstr(menuw, inner1.y+2, inner1.x+2, "RULES");
 	mvwaddstr(menuw, inner1.y+3, inner1.x+4, "FILE");
 	mvwaddstr(menuw, inner2.y+1, inner2.x+1, "SAVE");
-	mvwaddstr(menuw, inner2.y+2, inner2.x+3, "TO");
+	mvwaddstr(menuw, inner2.y+2, inner2.x+2, "RULES");
 	mvwaddstr(menuw, inner2.y+3, inner2.x+4, "FILE");
 
 	/* Draw status indicators */

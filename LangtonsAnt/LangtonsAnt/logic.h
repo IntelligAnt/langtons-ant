@@ -74,7 +74,7 @@ typedef struct ant {
 } Ant;
 
 
-/*---------------------- Colors/rules-macros-and-types -----------------------*/
+/*---------------------- Colors/rules macros and types -----------------------*/
 
 /** @name Colors struct constants */
 ///@{
