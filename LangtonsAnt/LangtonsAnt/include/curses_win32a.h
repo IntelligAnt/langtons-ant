@@ -1,15 +1,11 @@
 /* Public Domain Curses */
 
-/* $Id: curses.h,v 1.295 2008/07/15 17:13:25 wmcbrine Exp $ */
-
 /*----------------------------------------------------------------------*
  *                              PDCurses                                *
  *----------------------------------------------------------------------*/
 
 #ifndef __PDCURSES__
 #define __PDCURSES__ 1
-
-#define PDC_RGB
 
 /*man-start**************************************************************
 
@@ -33,16 +29,13 @@ PDCurses portable platform definitions list:
 
 **man-end****************************************************************/
 
-#define PDC_BUILD 3401
 #define PDCURSES        1      /* PDCurses-only routines */
 #define XOPEN           1      /* X/Open Curses routines */
 #define SYSVcurses      1      /* System V Curses routines */
 #define BSDcurses       1      /* BSD Curses routines */
-#if defined( CHTYPE_16)
-         /* define nothing;  result is 16-bit chtypes */
-#elif defined( CHTYPE_32)
+#if defined( CHTYPE_32)
    #define CHTYPE_LONG     1      /* chtypes will be 32 bits */
-#else
+#elif !defined( CHTYPE_16)
    #define CHTYPE_LONG     2      /* chtypes will be (default) 64 bits */
 #endif
 
@@ -97,19 +90,56 @@ typedef unsigned char bool;    /* PDCurses Boolean type */
     #if(CHTYPE_LONG >= 2)       /* "non-standard" 64-bit chtypes     */
         typedef uint64_t chtype;
     #else                        /* "Standard" CHTYPE_LONG case,  32-bit: */
-        # if _LP64
-            typedef unsigned int chtype;
-        # else
-            typedef unsigned long chtype;  /* 16-bit attr + 16-bit char */
-        # endif
+        typedef uint32_t chtype;
     # endif
 #else
-typedef unsigned short chtype; /* 8-bit attr + 8-bit char */
+typedef uint16_t chtype; /* 8-bit attr + 8-bit char */
 #endif
 
+#ifdef PDC_WIDE
 typedef chtype cchar_t;
+#endif
 
 typedef chtype attr_t;
+
+/* Version constants,  available as of version 4.0 : */
+
+#define PDC_VER_MAJOR    4
+#define PDC_VER_MINOR    0
+#define PDC_VER_CHANGE   0
+#define PDC_VER_YEAR   2017
+
+#define PDC_BUILD (PDC_VER_MAJOR*1000 + PDC_VER_MINOR *100 + PDC_VER_CHANGE)
+
+/* When using PDCurses as a DLL (Windows) or shared library (BSD or *nix),
+it's possible to switch the DLL or shared library.  One may therefore want
+to inquire of the DLL/shared library the port,  version numbers,  and
+chtype_size used, and make sure they're what one was expecting.  The
+'PDC_version' structure lets you do just that. */
+
+enum PDC_port
+{
+    PDC_PORT_X11 = 0,
+    PDC_PORT_WIN32 = 1,
+    PDC_PORT_WIN32A = 2,
+    PDC_PORT_DOS = 3,
+    PDC_PORT_OS2 = 4,
+    PDC_PORT_SDL1 = 5,
+    PDC_PORT_SDL2 = 6
+};
+
+/* Detailed PDC version information */
+
+typedef struct
+{
+   const enum PDC_port port;
+   const int ver_major;
+   const int ver_minor;
+   const int ver_change;
+   const size_t chtype_size;
+   const bool is_wide;
+   const bool is_forced_utf8;
+} PDC_version_info;
 
 /*----------------------------------------------------------------------
  *
@@ -217,7 +247,8 @@ typedef struct
 /* For the ncurses-compatible functions only, BUTTON4_PRESSED and
    BUTTON5_PRESSED are returned for mouse scroll wheel up and down;
    otherwise PDCurses doesn't support buttons 4 and 5... except
-   as described above for Win32a     */
+   as described above for Win32a,  and perhaps to be extended to
+   other PDCurses flavors  */
 
 #define BUTTON4_RELEASED        0x00008000L
 #define BUTTON4_PRESSED         0x00010000L
@@ -350,6 +381,7 @@ typedef struct
     int   sb_total_x;
     int   sb_cur_y;
     int   sb_cur_x;
+    int   exit_key;
 #endif
     short line_color;     /* color of line attributes - default -1 */
 } SCREEN;
@@ -381,6 +413,7 @@ PDCEX  int          COLOR_PAIRS;
 PDCEX  int          TABSIZE;
 PDCEX  chtype       acs_map[];    /* alternate character set map */
 PDCEX  char         ttytype[];    /* terminal name/description */
+PDCEX const PDC_version_info PDC_version;
 
 /*man-start**************************************************************
 
@@ -400,10 +433,10 @@ The following is the structure of a win->_attrs chtype:
 
 short form:
 
--------------------------------------------------
-|15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1| 0|
--------------------------------------------------
-  color number |  attrs |   character eg 'a'
+    +-----------------------------------------------+
+    |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1| 0|
+    +-----------------------------------------------+
+      color number |  attrs |   character eg 'a'
 
 The available non-color attributes are bold, reverse and blink. Others
 have no effect. The high order char is an index into an array of
@@ -412,10 +445,10 @@ pairs (5 bits) plus 3 bits for other attributes.
 
 long form:
 
-----------------------------------------------------------------------------
-|31|30|29|28|27|26|25|24|23|22|21|20|19|18|17|16|15|14|13|12|..| 3| 2| 1| 0|
-----------------------------------------------------------------------------
-      color number      |     modifiers         |      character eg 'a'
+    +--------------------------------------------------------------------+
+    |31|30|29|28|27|26|25|24|23|22|21|20|19|18|17|16|15|14|13|..| 2| 1| 0|
+    +--------------------------------------------------------------------+
+          color number      |     modifiers         |   character eg 'a'
 
 The available non-color attributes are bold, underline, invisible,
 right-line, left-line, protect, reverse and blink. 256 color pairs (8
@@ -432,8 +465,8 @@ defining CHTYPE_LONG to be 2:
 
    We take five more bits for the character (thus allowing Unicode values
 past 64K;  UTF-16 can go up to 0x10ffff,  requiring 21 bits total),  and
-four more bits for attributes.  Two are currently used as A_OVERLINE and
-A_STRIKEOUT;  two more are reserved for future use.  31 bits are then used
+four more bits for attributes.  Three are currently used as A_OVERLINE, A_DIM,
+and A_STRIKEOUT;  one more is reserved for future use.  31 bits are then used
 for color.  These are usually just treated as the usual palette
 indices,  and range from 0 to 255.   However,  if bit 63 is
 set,  the remaining 30 bits are interpreted as foreground RGB (first
@@ -479,9 +512,6 @@ fifteen bits,  five bits for each of the three channels) and background RGB
          | ((chtype)(gback) <<  5) \
          | ((chtype)(rback)      )) << PDC_COLOR_SHIFT) | A_RGB_COLOR)
 # else         /* plain ol' 32-bit chtypes */
-    # define A_OVERLINE   A_NORMAL
-    # define A_STRIKEOUT  A_NORMAL
-    # define A_ATTRIBUTES (chtype)0xffff0000
     # define A_ALTCHARSET (chtype)0x00010000
     # define A_RIGHTLINE  (chtype)0x00020000
     # define A_LEFTLINE   (chtype)0x00040000
@@ -490,10 +520,21 @@ fifteen bits,  five bits for each of the three channels) and background RGB
     # define A_REVERSE    (chtype)0x00200000
     # define A_BLINK      (chtype)0x00400000
     # define A_BOLD       (chtype)0x00800000
-    # define A_CHARTEXT   (chtype)0x0000ffff
     # define A_COLOR      (chtype)0xff000000
     # define A_RGB_COLOR  A_NORMAL
+#ifdef PDC_WIDE
+    # define A_CHARTEXT   (chtype)0x0000ffff
+    # define A_ATTRIBUTES (chtype)0xffff0000
     # define A_DIM        A_NORMAL
+    # define A_OVERLINE   A_NORMAL
+    # define A_STRIKEOUT  A_NORMAL
+#else          /* with 8-bit chars,  we have bits for these attribs : */
+    # define A_CHARTEXT   (chtype)0x000000ff
+    # define A_ATTRIBUTES (chtype)0xffffe000
+    # define A_DIM        (chtype)0x00008000
+    # define A_OVERLINE   (chtype)0x00004000
+    # define A_STRIKEOUT  (chtype)0x00002000
+#endif
     # define PDC_COLOR_SHIFT 24
 #endif
 
@@ -513,6 +554,8 @@ fifteen bits,  five bits for each of the three channels) and background RGB
 # define A_ALTCHARSET A_NORMAL        /* X/Open */
 # define A_PROTECT    A_NORMAL        /* X/Open */
 # define A_UNDERLINE  A_NORMAL        /* X/Open */
+# define A_OVERLINE   A_NORMAL        /* X/Open */
+# define A_STRIKEOUT  A_NORMAL        /* X/Open */
 
 # define A_LEFTLINE   A_NORMAL
 # define A_RIGHTLINE  A_NORMAL
@@ -568,50 +611,141 @@ fifteen bits,  five bits for each of the three channels) and background RGB
 
 /* VT100-compatible symbols -- box chars */
 
-#define ACS_ULCORNER  ACS_PICK('l', '+')
-#define ACS_LLCORNER  ACS_PICK('m', '+')
-#define ACS_URCORNER  ACS_PICK('k', '+')
-#define ACS_LRCORNER  ACS_PICK('j', '+')
-#define ACS_RTEE      ACS_PICK('u', '+')
-#define ACS_LTEE      ACS_PICK('t', '+')
-#define ACS_BTEE      ACS_PICK('v', '+')
-#define ACS_TTEE      ACS_PICK('w', '+')
-#define ACS_HLINE     ACS_PICK('q', '-')
-#define ACS_VLINE     ACS_PICK('x', '|')
-#define ACS_PLUS      ACS_PICK('n', '+')
+#define ACS_LRCORNER      ACS_PICK('V', '+')
+#define ACS_URCORNER      ACS_PICK('W', '+')
+#define ACS_ULCORNER      ACS_PICK('X', '+')
+#define ACS_LLCORNER      ACS_PICK('Y', '+')
+#define ACS_PLUS          ACS_PICK('Z', '+')
+#define ACS_LTEE          ACS_PICK('[', '+')
+#define ACS_RTEE          ACS_PICK('\\', '+')
+#define ACS_BTEE          ACS_PICK(']', '+')
+#define ACS_TTEE          ACS_PICK('^', '+')
+#define ACS_HLINE         ACS_PICK('_', '-')
+#define ACS_VLINE         ACS_PICK('`', '|')
+
+/* PDCurses-only ACS chars.  Don't use if ncurses compatibility matters.
+Some won't work in non-wide X11 builds (see 'acs_defs.h' for details). */
+
+#define ACS_CENT          ACS_PICK('{', 'c')
+#define ACS_YEN           ACS_PICK('|', 'y')
+#define ACS_PESETA        ACS_PICK('}', 'p')
+#define ACS_HALF          ACS_PICK('&', '/')
+#define ACS_QUARTER       ACS_PICK('\'', '/')
+#define ACS_LEFT_ANG_QU   ACS_PICK(')',  '<')
+#define ACS_RIGHT_ANG_QU  ACS_PICK('*',  '>')
+#define ACS_D_HLINE       ACS_PICK('a', '-')
+#define ACS_D_VLINE       ACS_PICK('b', '|')
+#define ACS_CLUB          ACS_PICK( 11, 'C')
+#define ACS_HEART         ACS_PICK( 12, 'H')
+#define ACS_SPADE         ACS_PICK( 13, 'S')
+#define ACS_SMILE         ACS_PICK( 14, 'O')
+#define ACS_REV_SMILE     ACS_PICK( 15, 'O')
+#define ACS_MED_BULLET    ACS_PICK( 16, '.')
+#define ACS_WHITE_BULLET  ACS_PICK( 17, 'O')
+#define ACS_PILCROW       ACS_PICK( 18, 'O')
+#define ACS_SECTION       ACS_PICK( 19, 'O')
+
+#define ACS_SUP2          ACS_PICK(',', '2')
+#define ACS_ALPHA         ACS_PICK('.', 'a')
+#define ACS_BETA          ACS_PICK('/', 'b')
+#define ACS_GAMMA         ACS_PICK('0', 'y')
+#define ACS_UP_SIGMA      ACS_PICK('1', 'S')
+#define ACS_LO_SIGMA      ACS_PICK('2', 's')
+#define ACS_MU            ACS_PICK('4', 'u')
+#define ACS_TAU           ACS_PICK('5', 't')
+#define ACS_UP_PHI        ACS_PICK('6', 'F')
+#define ACS_THETA         ACS_PICK('7', 't')
+#define ACS_OMEGA         ACS_PICK('8', 'w')
+#define ACS_DELTA         ACS_PICK('9', 'd')
+#define ACS_INFINITY      ACS_PICK('-', 'i')
+#define ACS_LO_PHI        ACS_PICK( 22, 'f')
+#define ACS_EPSILON       ACS_PICK(':', 'e')
+#define ACS_INTERSECT     ACS_PICK('e', 'u')
+#define ACS_TRIPLE_BAR    ACS_PICK('f', '=')
+#define ACS_DIVISION      ACS_PICK('c', '/')
+#define ACS_APPROX_EQ     ACS_PICK('d', '~')
+#define ACS_SM_BULLET     ACS_PICK('g', '.')
+#define ACS_SQUARE_ROOT   ACS_PICK('i', '!')
+#define ACS_UBLOCK        ACS_PICK('p', '^')
+#define ACS_BBLOCK        ACS_PICK('q', '_')
+#define ACS_LBLOCK        ACS_PICK('r', '<')
+#define ACS_RBLOCK        ACS_PICK('s', '>')
+
+#define ACS_A_ORDINAL     ACS_PICK(20,  'a')
+#define ACS_O_ORDINAL     ACS_PICK(21,  'o')
+#define ACS_INV_QUERY     ACS_PICK(24,  '?')
+#define ACS_REV_NOT       ACS_PICK(25,  '!')
+#define ACS_NOT           ACS_PICK(26,  '!')
+#define ACS_INV_BANG      ACS_PICK(23,  '!')
+#define ACS_UP_INTEGRAL   ACS_PICK(27,  '|')
+#define ACS_LO_INTEGRAL   ACS_PICK(28,  '|')
+#define ACS_SUP_N         ACS_PICK(29,  'n')
+#define ACS_CENTER_SQU    ACS_PICK(30,  'x')
+#define ACS_F_WITH_HOOK   ACS_PICK(31,  'f')
+
+#define ACS_SD_LRCORNER   ACS_PICK(';', '+')
+#define ACS_SD_URCORNER   ACS_PICK('<', '+')
+#define ACS_SD_ULCORNER   ACS_PICK('=', '+')
+#define ACS_SD_LLCORNER   ACS_PICK('>', '+')
+#define ACS_SD_PLUS       ACS_PICK('?', '+')
+#define ACS_SD_LTEE       ACS_PICK('@', '+')
+#define ACS_SD_RTEE       ACS_PICK('A', '+')
+#define ACS_SD_BTEE       ACS_PICK('B', '+')
+#define ACS_SD_TTEE       ACS_PICK('C', '+')
+
+#define ACS_D_LRCORNER    ACS_PICK('D', '+')
+#define ACS_D_URCORNER    ACS_PICK('E', '+')
+#define ACS_D_ULCORNER    ACS_PICK('F', '+')
+#define ACS_D_LLCORNER    ACS_PICK('G', '+')
+#define ACS_D_PLUS        ACS_PICK('H', '+')
+#define ACS_D_LTEE        ACS_PICK('I', '+')
+#define ACS_D_RTEE        ACS_PICK('J', '+')
+#define ACS_D_BTEE        ACS_PICK('K', '+')
+#define ACS_D_TTEE        ACS_PICK('L', '+')
+
+#define ACS_DS_LRCORNER   ACS_PICK('M', '+')
+#define ACS_DS_URCORNER   ACS_PICK('N', '+')
+#define ACS_DS_ULCORNER   ACS_PICK('O', '+')
+#define ACS_DS_LLCORNER   ACS_PICK('P', '+')
+#define ACS_DS_PLUS       ACS_PICK('Q', '+')
+#define ACS_DS_LTEE       ACS_PICK('R', '+')
+#define ACS_DS_RTEE       ACS_PICK('S', '+')
+#define ACS_DS_BTEE       ACS_PICK('T', '+')
+#define ACS_DS_TTEE       ACS_PICK('U', '+')
 
 /* VT100-compatible symbols -- other */
 
-#define ACS_S1        ACS_PICK('o', '-')
-#define ACS_S9        ACS_PICK('s', '_')
-#define ACS_DIAMOND   ACS_PICK('`', '+')
-#define ACS_CKBOARD   ACS_PICK('a', ':')
-#define ACS_DEGREE    ACS_PICK('f', '\'')
-#define ACS_PLMINUS   ACS_PICK('g', '#')
-#define ACS_BULLET    ACS_PICK('~', 'o')
+#define ACS_S1            ACS_PICK('l', '-')
+#define ACS_S9            ACS_PICK('o', '_')
+#define ACS_DIAMOND       ACS_PICK('j', '+')
+#define ACS_CKBOARD       ACS_PICK('k', ':')
+#define ACS_DEGREE        ACS_PICK('w', '\'')
+#define ACS_PLMINUS       ACS_PICK('x', '#')
+#define ACS_BULLET        ACS_PICK('h', 'o')
 
 /* Teletype 5410v1 symbols -- these are defined in SysV curses, but
    are not well-supported by most terminals. Stick to VT100 characters
    for optimum portability. */
 
-#define ACS_LARROW    ACS_PICK(',', '<')
-#define ACS_RARROW    ACS_PICK('+', '>')
-#define ACS_DARROW    ACS_PICK('.', 'v')
-#define ACS_UARROW    ACS_PICK('-', '^')
-#define ACS_BOARD     ACS_PICK('h', '#')
-#define ACS_LANTERN   ACS_PICK('i', '*')
-#define ACS_BLOCK     ACS_PICK('0', '#')
+#define ACS_LARROW        ACS_PICK('!', '<')
+#define ACS_RARROW        ACS_PICK(' ', '>')
+#define ACS_DARROW        ACS_PICK('#', 'v')
+#define ACS_UARROW        ACS_PICK('"', '^')
+#define ACS_BOARD         ACS_PICK('+', '#')
+#define ACS_LTBOARD       ACS_PICK('y', '#')
+#define ACS_LANTERN       ACS_PICK('z', '*')
+#define ACS_BLOCK         ACS_PICK('t', '#')
 
 /* That goes double for these -- undocumented SysV symbols. Don't use
    them. */
 
-#define ACS_S3        ACS_PICK('p', '-')
-#define ACS_S7        ACS_PICK('r', '-')
-#define ACS_LEQUAL    ACS_PICK('y', '<')
-#define ACS_GEQUAL    ACS_PICK('z', '>')
-#define ACS_PI        ACS_PICK('{', 'n')
-#define ACS_NEQUAL    ACS_PICK('|', '+')
-#define ACS_STERLING  ACS_PICK('}', 'L')
+#define ACS_S3            ACS_PICK('m', '-')
+#define ACS_S7            ACS_PICK('n', '-')
+#define ACS_LEQUAL        ACS_PICK('u', '<')
+#define ACS_GEQUAL        ACS_PICK('v', '>')
+#define ACS_PI            ACS_PICK('$', 'n')
+#define ACS_NEQUAL        ACS_PICK('%', '+')
+#define ACS_STERLING      ACS_PICK('~', 'L')
 
 /* Box char aliases */
 
@@ -630,41 +764,130 @@ fifteen bits,  five bits for each of the three channels) and background RGB
 /* cchar_t aliases */
 
 #ifdef PDC_WIDE
-# define WACS_ULCORNER (&(acs_map['l']))
-# define WACS_LLCORNER (&(acs_map['m']))
-# define WACS_URCORNER (&(acs_map['k']))
-# define WACS_LRCORNER (&(acs_map['j']))
-# define WACS_RTEE     (&(acs_map['u']))
-# define WACS_LTEE     (&(acs_map['t']))
-# define WACS_BTEE     (&(acs_map['v']))
-# define WACS_TTEE     (&(acs_map['w']))
-# define WACS_HLINE    (&(acs_map['q']))
-# define WACS_VLINE    (&(acs_map['x']))
-# define WACS_PLUS     (&(acs_map['n']))
+# define WACS_LRCORNER      (&(acs_map['V']))
+# define WACS_URCORNER      (&(acs_map['W']))
+# define WACS_ULCORNER      (&(acs_map['X']))
+# define WACS_LLCORNER      (&(acs_map['Y']))
+# define WACS_PLUS          (&(acs_map['Z']))
+# define WACS_LTEE          (&(acs_map['[']))
+# define WACS_RTEE          (&(acs_map['\\']))
+# define WACS_BTEE          (&(acs_map[']']))
+# define WACS_TTEE          (&(acs_map['^']))
+# define WACS_HLINE         (&(acs_map['_']))
+# define WACS_VLINE         (&(acs_map['`']))
 
-# define WACS_S1       (&(acs_map['o']))
-# define WACS_S9       (&(acs_map['s']))
-# define WACS_DIAMOND  (&(acs_map['`']))
-# define WACS_CKBOARD  (&(acs_map['a']))
-# define WACS_DEGREE   (&(acs_map['f']))
-# define WACS_PLMINUS  (&(acs_map['g']))
-# define WACS_BULLET   (&(acs_map['~']))
+# define WACS_CENT          (&(acs_map['{']))
+# define WACS_YEN           (&(acs_map['|']))
+# define WACS_PESETA        (&(acs_map['}']))
+# define WACS_HALF          (&(acs_map['&']))
+# define WACS_QUARTER       (&(acs_map['\'']))
+# define WACS_LEFT_ANG_QU   (&(acs_map[')']))
+# define WACS_RIGHT_ANG_QU  (&(acs_map['*']))
+# define WACS_D_HLINE       (&(acs_map['a']))
+# define WACS_D_VLINE       (&(acs_map['b']))
+# define WACS_CLUB          (&(acs_map[ 11]))
+# define WACS_HEART         (&(acs_map[ 12]))
+# define WACS_SPADE         (&(acs_map[ 13]))
+# define WACS_SMILE         (&(acs_map[ 14]))
+# define WACS_REV_SMILE     (&(acs_map[ 15]))
+# define WACS_MED_BULLET    (&(acs_map[ 16]))
+# define WACS_WHITE_BULLET  (&(acs_map[ 17]))
+# define WACS_PILCROW       (&(acs_map[ 18]))
+# define WACS_SECTION       (&(acs_map[ 19]))
 
-# define WACS_LARROW   (&(acs_map[',']))
-# define WACS_RARROW   (&(acs_map['+']))
-# define WACS_DARROW   (&(acs_map['.']))
-# define WACS_UARROW   (&(acs_map['-']))
-# define WACS_BOARD    (&(acs_map['h']))
-# define WACS_LANTERN  (&(acs_map['i']))
-# define WACS_BLOCK    (&(acs_map['0']))
+# define WACS_SUP2          (&(acs_map[',']))
+# define WACS_ALPHA         (&(acs_map['.']))
+# define WACS_BETA          (&(acs_map['/']))
+# define WACS_GAMMA         (&(acs_map['0']))
+# define WACS_UP_SIGMA      (&(acs_map['1']))
+# define WACS_LO_SIGMA      (&(acs_map['2']))
+# define WACS_MU            (&(acs_map['4']))
+# define WACS_TAU           (&(acs_map['5']))
+# define WACS_UP_PHI        (&(acs_map['6']))
+# define WACS_THETA         (&(acs_map['7']))
+# define WACS_OMEGA         (&(acs_map['8']))
+# define WACS_DELTA         (&(acs_map['9']))
+# define WACS_INFINITY      (&(acs_map['-']))
+# define WACS_LO_PHI        (&(acs_map[ 22]))
+# define WACS_EPSILON       (&(acs_map[':']))
+# define WACS_INTERSECT     (&(acs_map['e']))
+# define WACS_TRIPLE_BAR    (&(acs_map['f']))
+# define WACS_DIVISION      (&(acs_map['c']))
+# define WACS_APPROX_EQ     (&(acs_map['d']))
+# define WACS_SM_BULLET     (&(acs_map['g']))
+# define WACS_SQUARE_ROOT   (&(acs_map['i']))
+# define WACS_UBLOCK        (&(acs_map['p']))
+# define WACS_BBLOCK        (&(acs_map['q']))
+# define WACS_LBLOCK        (&(acs_map['r']))
+# define WACS_RBLOCK        (&(acs_map['s']))
 
-# define WACS_S3       (&(acs_map['p']))
-# define WACS_S7       (&(acs_map['r']))
-# define WACS_LEQUAL   (&(acs_map['y']))
-# define WACS_GEQUAL   (&(acs_map['z']))
-# define WACS_PI       (&(acs_map['{']))
-# define WACS_NEQUAL   (&(acs_map['|']))
-# define WACS_STERLING (&(acs_map['}']))
+# define WACS_A_ORDINAL     (&(acs_map[20]))
+# define WACS_O_ORDINAL     (&(acs_map[21]))
+# define WACS_INV_QUERY     (&(acs_map[24]))
+# define WACS_REV_NOT       (&(acs_map[25]))
+# define WACS_NOT           (&(acs_map[26]))
+# define WACS_INV_BANG      (&(acs_map[23]))
+# define WACS_UP_INTEGRAL   (&(acs_map[27]))
+# define WACS_LO_INTEGRAL   (&(acs_map[28]))
+# define WACS_SUP_N         (&(acs_map[29]))
+# define WACS_CENTER_SQU    (&(acs_map[30]))
+# define WACS_F_WITH_HOOK   (&(acs_map[31]))
+
+# define WACS_SD_LRCORNER   (&(acs_map[';']))
+# define WACS_SD_URCORNER   (&(acs_map['<']))
+# define WACS_SD_ULCORNER   (&(acs_map['=']))
+# define WACS_SD_LLCORNER   (&(acs_map['>']))
+# define WACS_SD_PLUS       (&(acs_map['?']))
+# define WACS_SD_LTEE       (&(acs_map['@']))
+# define WACS_SD_RTEE       (&(acs_map['A']))
+# define WACS_SD_BTEE       (&(acs_map['B']))
+# define WACS_SD_TTEE       (&(acs_map['C']))
+
+# define WACS_D_LRCORNER    (&(acs_map['D']))
+# define WACS_D_URCORNER    (&(acs_map['E']))
+# define WACS_D_ULCORNER    (&(acs_map['F']))
+# define WACS_D_LLCORNER    (&(acs_map['G']))
+# define WACS_D_PLUS        (&(acs_map['H']))
+# define WACS_D_LTEE        (&(acs_map['I']))
+# define WACS_D_RTEE        (&(acs_map['J']))
+# define WACS_D_BTEE        (&(acs_map['K']))
+# define WACS_D_TTEE        (&(acs_map['L']))
+
+# define WACS_DS_LRCORNER   (&(acs_map['M']))
+# define WACS_DS_URCORNER   (&(acs_map['N']))
+# define WACS_DS_ULCORNER   (&(acs_map['O']))
+# define WACS_DS_LLCORNER   (&(acs_map['P']))
+# define WACS_DS_PLUS       (&(acs_map['Q']))
+# define WACS_DS_LTEE       (&(acs_map['R']))
+# define WACS_DS_RTEE       (&(acs_map['S']))
+# define WACS_DS_BTEE       (&(acs_map['T']))
+# define WACS_DS_TTEE       (&(acs_map['U']))
+
+# define WACS_S1            (&(acs_map['l']))
+# define WACS_S9            (&(acs_map['o']))
+# define WACS_DIAMOND       (&(acs_map['j']))
+# define WACS_CKBOARD       (&(acs_map['k']))
+# define WACS_DEGREE        (&(acs_map['w']))
+# define WACS_PLMINUS       (&(acs_map['x']))
+# define WACS_BULLET        (&(acs_map['h']))
+
+
+# define WACS_LARROW        (&(acs_map['!']))
+# define WACS_RARROW        (&(acs_map[' ']))
+# define WACS_DARROW        (&(acs_map['#']))
+# define WACS_UARROW        (&(acs_map['"']))
+# define WACS_BOARD         (&(acs_map['+']))
+# define WACS_LTBOARD       (&(acs_map['y']))
+# define WACS_LANTERN       (&(acs_map['z']))
+# define WACS_BLOCK         (&(acs_map['t']))
+
+# define WACS_S3            (&(acs_map['m']))
+# define WACS_S7            (&(acs_map['n']))
+# define WACS_LEQUAL        (&(acs_map['u']))
+# define WACS_GEQUAL        (&(acs_map['v']))
+# define WACS_PI            (&(acs_map['$']))
+# define WACS_NEQUAL        (&(acs_map['%']))
+# define WACS_STERLING      (&(acs_map['~']))
 
 # define WACS_BSSB     WACS_ULCORNER
 # define WACS_SSBB     WACS_LLCORNER
@@ -1532,6 +1755,17 @@ void    PDC_set_resize_limits( const int new_min_lines,
                                const int new_max_lines,
                                const int new_min_cols,
                                const int new_max_cols);
+
+#define FUNCTION_KEY_SHUT_DOWN        0
+#define FUNCTION_KEY_PASTE            1
+#define FUNCTION_KEY_ENLARGE_FONT     2
+#define FUNCTION_KEY_SHRINK_FONT      3
+#define FUNCTION_KEY_CHOOSE_FONT      4
+#define FUNCTION_KEY_ABORT            5
+#define PDC_MAX_FUNCTION_KEYS         6
+
+int     PDC_set_function_key( const unsigned function,
+                              const int new_key);
 
 WINDOW *Xinitscr(int, char **);
 #ifdef XCURSES
