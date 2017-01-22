@@ -80,10 +80,10 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	int y = ant->pos.y, x = ant->pos.x, turn;
 	Cell **t = grid->csr + y;
 
-	while (*t && CELL_GET_COLUMN(*t) < x) {
+	while (*t && CELL_GET_COLUMN(*t) < (size_t)x) {
 		t = &(*t)->next;
 	}
-	if (!*t || CELL_GET_COLUMN(*t) != x) {
+	if (!*t || CELL_GET_COLUMN(*t) != (size_t)x) {
 		if (!*t) {
 			grid->colored++;
 			update_bounding_box(grid, ant->pos);
@@ -114,6 +114,6 @@ bool ant_move(Ant *ant, Grid *grid, Colors *colors) // TODO have ant_move return
 
 bool is_ant_out_of_bounds(Ant *ant, Grid *grid)
 {
-	return ant->pos.y < 0 || ant->pos.y >= grid->size
-		|| ant->pos.x < 0 || ant->pos.x >= grid->size;
+	return ant->pos.y < 0 || (size_t)ant->pos.y >= grid->size
+		|| ant->pos.x < 0 || (size_t)ant->pos.x >= grid->size;
 }

@@ -208,9 +208,10 @@ void new_cell(Cell **cur, size_t column, byte c)
 
 byte color_at_s(Grid *grid, Vector2i p)
 {
+	size_t x = p.x;
 	Cell *t = grid->csr[p.y];
-	while (t && CELL_GET_COLUMN(t) < p.x) {
+	while (t && CELL_GET_COLUMN(t) < x) {
 		t = t->next;
 	}
-	return (!t || CELL_GET_COLUMN(t) != p.x) ? grid->def_color : CELL_GET_COLOR(t);
+	return (!t || CELL_GET_COLUMN(t) != x) ? grid->def_color : CELL_GET_COLOR(t);
 }

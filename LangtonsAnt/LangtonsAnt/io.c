@@ -95,7 +95,8 @@ Simulation *load_state(char *filename)
 		}
 	}
 
-	if (fscanf(input, "%d %d %u\n", &simulation->ant->pos.x, &simulation->ant->pos.y, &simulation->ant->dir) < 3) {
+	if (fscanf(input, "%d %d %u\n", &simulation->ant->pos.x, &simulation->ant->pos.y,
+			   &simulation->ant->dir) < 3) {
 		return simulation;
 	}
 	if (fscanf(input, "%zu\n", &simulation->steps) < 0) {
@@ -155,7 +156,8 @@ Simulation *load_state(char *filename)
 				goto error_end;
 			}
 			for (j = 0; j < simulation->grid->size; j++) {
-				if (fscanf(input, (j == simulation->grid->size - 1) ? "%hhu\n" : "%hhu ", &simulation->grid->c[i][j]) < 0) {
+				if (fscanf(input, (j == simulation->grid->size - 1) ? "%hhu\n" : "%hhu ",
+						   &simulation->grid->c[i][j]) < 0) {
 					goto error_end;
 				}
 			}
@@ -189,7 +191,8 @@ int save_state(char *filename, Simulation *simulation)
 		return EOF;
 	}
 
-	if (fprintf(output, "%d %d %u\n", simulation->ant->pos.x, simulation->ant->pos.y, simulation->ant->dir) < 0) {
+	if (fprintf(output, "%d %d %u\n", simulation->ant->pos.x, simulation->ant->pos.y,
+				simulation->ant->dir) < 0) {
 		return EOF;
 	}
 	if (fprintf(output, "%zu\n", simulation->steps) < 0) {
@@ -223,7 +226,8 @@ int save_state(char *filename, Simulation *simulation)
 	} else {
 		for (i = 0; i < simulation->grid->size; i++) {
 			for (j = 0; j < simulation->grid->size; j++) {
-				if (fprintf(output, (j== simulation->grid->size-1) ? "%hhu\n" : "%hhu ", simulation->grid->c[i][j]) < 0) {
+				if (fprintf(output, (j == simulation->grid->size-1) ? "%hhu\n" : "%hhu ",
+							simulation->grid->c[i][j]) < 0) {
 					return EOF;
 				}
 			}
