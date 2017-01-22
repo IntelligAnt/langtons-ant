@@ -166,7 +166,7 @@ typedef struct scroll_info {
 typedef struct settings {
 	Colors *colors;         /**< Currently active colors/rules */
 	size_t init_size;       /**< Initial grid size */
-	size_t speed;           /**< Speed multiplier */
+	byte speed;             /**< Speed multiplier */
 	Simulation *linked_sim; /**< Currently active simulation */
 } Settings;
 
@@ -203,27 +203,27 @@ typedef enum { STATUS_NONE, STATUS_SUCCESS, STATUS_FAILURE } IOStatus;
 /** Escape key literal for input handling */
 #define KEY_ESC 0x1B
 
+/** @name Window state change flags */
+///@{
+#define INPUT_NO_CHANGE    0
+#define INPUT_GRID_CHANGED 1
+#define INPUT_MENU_CHANGED 2
+///@}
+
 /** Window state change as a result of input events (bitwise OR of INPUT_* fields) */
 typedef unsigned char input_t;
 
-/** @name Window state change flags */
-///@{
-#define INPUT_NO_CHANGE    ((input_t)0)
-#define INPUT_GRID_CHANGED ((input_t)1)
-#define INPUT_MENU_CHANGED ((input_t)2)
-///@}
 
-
-/*--------------------- Performance/optimization macros ----------------------*/
+/*------------------------- Loop performance macros --------------------------*/
 
 /** @name Performance settings */
 ///@{
-#define LOOP_DEF_SPEED      2   /**< Default speed multiplier */
-#define LOOP_MIN_SPEED      1   /**< Minimum allowed speed multiplier */
-#define LOOP_MAX_SPEED      9   /**< Maximum allowed speed multiplier */
-#define LOOP_DELAY          (1 << (LOOP_MAX_SPEED-1)) /**< Base delay in ms */
-#define OPT_STEPS           1   /**< Should optimize drawing of steps in the menu by skipping some? */
-#define OPT_STEPS_THRESHOLD 0.9 /**< Ratio of steps between two draws must fall below this value */
+#define LOOP_DEF_SPEED 2 /**< Default speed multiplier */
+#define LOOP_MIN_SPEED 1 /**< Minimum allowed speed multiplier */
+#define LOOP_MAX_SPEED 9 /**< Maximum allowed speed multiplier */
+#define LOOP_DELAY     (1 << (LOOP_MAX_SPEED-1)) /**< Base delay in ms */
+#define LOOP_OPT_STEPS 1 /**< Should optimize drawing of steps in the menu by skipping? */
+#define LOOP_OPT_SPEED 4 /**< Threshold speed at which to begin skipping */
 ///@}
 
 

@@ -119,7 +119,7 @@ typedef struct colors {
 #define GRID_MIN_INIT_SIZE      2
 #define GRID_MAX_SILENT_EXPAND  (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
 
-#define GRID_SIZE_SMALL(g)      (g)->init_size // 2, 3, 4, 5, 6
+#define GRID_SIZE_SMALL(g)      (g)->init_size // 2, 3, 4, 5, 6, 7
 #define GRID_SIZE_MEDIUM(g)     (GRID_SIZE_SMALL(g) * GRID_MULT)
 #define GRID_SIZE_LARGE(g)      (GRID_SIZE_MEDIUM(g) * GRID_MULT)
 #define IS_GRID_LARGE(g)        ((g)->size >= GRID_SIZE_LARGE(g))

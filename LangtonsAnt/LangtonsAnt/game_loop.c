@@ -31,7 +31,7 @@ void game_loop(void)
 			grid_silent_expand(sim->grid);
 
 			if (in_bounds) {
-				napms(LOOP_DELAY / (1 << stgs.speed));
+				napms(LOOP_DELAY / (1 << stgs.speed)); // TODO fixed timestep loop
 				if (!grid_changed) {
 					draw_grid_iter(sim->grid, sim->ant, oldp);
 				}

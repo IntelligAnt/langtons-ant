@@ -491,14 +491,14 @@ void draw_menu_iter(void)
 	Simulation *sim = stgs.linked_sim;
 	static bool sparse = FALSE;
 
-#if OPT_STEPS
+#if LOOP_OPT_STEPS
 	static size_t prev_steps;
-	if (sim->steps <= 1 || (double)prev_steps/sim->steps <= OPT_STEPS_THRESHOLD) {
+	if (sim->steps-prev_steps >= 1U << max(stgs.speed-LOOP_OPT_SPEED, 0)) {
 #endif
 		draw_direction();
 		draw_func();
 		draw_steps();
-#if OPT_STEPS
+#if LOOP_OPT_STEPS
 		prev_steps = sim->steps;
 	}
 #endif
