@@ -32,7 +32,10 @@ void game_loop(void)
 			grid_silent_expand(sim->grid);
 
 			if (in_bounds) {
-				//napms(100);
+#if OPT_DELAY_LOOP
+				unsigned d;
+				for (d = 0; !IS_GRID_LARGE(sim->grid) && d < OPT_DELAY/pow(sim->steps+1, 0.9); ++d);
+#endif
 				if (!grid_changed) {
 					draw_grid_iter(sim->grid, sim->ant, oldp);
 				}
