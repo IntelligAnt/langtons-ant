@@ -391,10 +391,10 @@ static void draw_io_buttons(void)
 
 	wattrset(menuw, fg_pair);
 	mvwaddstr(menuw, inner1.y+1, inner1.x+1, "LOAD");
-	mvwaddstr(menuw, inner1.y+2, inner1.x+2, "RULES");
+	mvwaddstr(menuw, inner1.y+2, inner1.x+2, "FROM");
 	mvwaddstr(menuw, inner1.y+3, inner1.x+4, "FILE");
 	mvwaddstr(menuw, inner2.y+1, inner2.x+1, "SAVE");
-	mvwaddstr(menuw, inner2.y+2, inner2.x+2, "RULES");
+	mvwaddstr(menuw, inner2.y+2, inner2.x+3, "TO");
 	mvwaddstr(menuw, inner2.y+3, inner2.x+4, "FILE");
 
 	/* Draw status indicators */
