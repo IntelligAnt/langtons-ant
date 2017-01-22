@@ -197,7 +197,7 @@ input_t menu_mouse_command(void)
 		tile = get_menu_tile_pos(i);
 		if (area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
 			if (event.bstate & BUTTON1_CLICKED) {
-				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : (short)i);
+				open_dialog(pos, (i == stgs.colors->n) ? CIDX_NEWCOLOR : (color_t)i);
 			} else if (event.bstate & BUTTON3_CLICKED) {
 				open_dialog(pos, CIDX_DEFAULT);
 			}

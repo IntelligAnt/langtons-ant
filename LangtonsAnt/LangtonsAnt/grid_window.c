@@ -43,14 +43,14 @@ static void draw_buffer_zone(int total, int offset)
 	}
 }
 
-static void draw_scrollbars(short def)
+static void draw_scrollbars(color_t def)
 {
 	int n = GRID_VIEW_SIZE, mid = n/2, step = n-2;
 	int size = (int)(max(step*gridscrl.scale, 1));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
-	short sb_fg_color = AVAILABLE_COLOR(def, COLOR_WHITE, COLOR_SILVER);
-	short sb_bg_color = AVAILABLE_COLOR(def, COLOR_GRAY,  COLOR_SILVER);
+	color_t sb_fg_color = AVAILABLE_COLOR(def, COLOR_WHITE, COLOR_SILVER);
+	color_t sb_bg_color = AVAILABLE_COLOR(def, COLOR_GRAY,  COLOR_SILVER);
 
 	h -= h > mid;
 	v -= v > mid;
@@ -73,7 +73,7 @@ static void draw_scrollbars(short def)
 	mvwvline(gridw, v, n, ACS_BLOCK, size);
 }
 
-static void draw_cell(Vector2i yx, int cs, short c, Ant *ant)
+static void draw_cell(Vector2i yx, int cs, color_t c, Ant *ant)
 {
 	if (yx.y < 0 || yx.y >= GRID_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_VIEW_SIZE) {
 		return;

@@ -9,7 +9,7 @@ Colors *load_rules(char *filename) // TODO format checks
 	Colors *colors;
 	FILE *input;
 	int e;
-	short def, c;
+	color_t def, c;
 
 	if (!(input = fopen(filename, "r"))) {
 		return NULL;
@@ -47,7 +47,7 @@ int save_rules(char *filename, Colors *colors)
 {
 	FILE *output;
 	int e;
-	short c;
+	color_t c;
 
 	if (!(output = fopen(filename, "w"))) {
 		return EOF;

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "logic.h"
 
-Colors *colors_new(short def)
+Colors *colors_new(color_t def)
 {
 	assert(def >= 0 && def < COLOR_COUNT);
 	Colors *colors = malloc(sizeof(Colors));
@@ -27,7 +27,7 @@ static void update_def(Colors *c)
 	c->turn[c->def] = c->turn[c->first];
 }
 
-void add_color(Colors *colors, short c, short turn)
+void add_color(Colors *colors, color_t c, short turn)
 {
 	if (c < 0 || c >= COLOR_COUNT || c == colors->def) {
 		return;
@@ -47,9 +47,9 @@ void add_color(Colors *colors, short c, short turn)
 	++colors->n;
 }
 
-void remove_color(Colors *colors, short c)
+void remove_color(Colors *colors, color_t c)
 {
-	short i;
+	color_t i;
 	if (c < 0 || c >= COLOR_COUNT || c == colors->def || colors->n == 0) {
 		return;
 	}
@@ -77,7 +77,7 @@ void remove_color(Colors *colors, short c)
 
 void remove_all_colors(Colors *colors)
 {
-	short i;
+	color_t i;
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		colors->next[i] = colors->def;
 		colors->turn[i] = TURN_NONE;
@@ -86,9 +86,9 @@ void remove_all_colors(Colors *colors)
 	colors->n = 0;
 }
 
-void set_color(Colors *colors, size_t index, short c, short turn)
+void set_color(Colors *colors, size_t index, color_t c, short turn)
 {
-	short prev = colors->last, i = colors->first, j;
+	color_t prev = colors->last, i = colors->first, j;
 	assert(index < colors->n);
 	for (; index > 0; --index) {
 		prev = i;
@@ -118,7 +118,7 @@ void set_color(Colors *colors, size_t index, short c, short turn)
 
 void set_turn(Colors *colors, size_t index, short turn)
 {
-	short i = colors->first;
+	color_t i = colors->first;
 	assert(index < colors->n);
 	for (; index > 0; --index) {
 		i = colors->next[i];
@@ -127,9 +127,9 @@ void set_turn(Colors *colors, size_t index, short turn)
 	update_def(colors);
 }
 
-short get_color_at(Colors *colors, size_t index)
+color_t get_color_at(Colors *colors, size_t index)
 {
-	short i = colors->first;
+	color_t i = colors->first;
 	assert(index < colors->n);
 	for (; index > 0; --index) {
 		i = colors->next[i];
@@ -137,12 +137,12 @@ short get_color_at(Colors *colors, size_t index)
 	return i;
 }
 
-bool color_exists(Colors *colors, short c)
+bool color_exists(Colors *colors, color_t c)
 {
 	return colors->turn[c] != TURN_NONE;
 }
 
-bool is_color_special(Colors *colors, short c)
+bool is_color_special(Colors *colors, color_t c)
 {
 	return colors->next[c] != colors->def && colors->turn[c] == TURN_NONE;
 }

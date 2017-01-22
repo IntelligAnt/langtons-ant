@@ -4,9 +4,9 @@
 chtype fg_pair, bg_pair;
 chtype arrows[] = { ACS_UARROW, ACS_RARROW, ACS_DARROW, ACS_LARROW };
 
-void init_def_pairs(short fg_color, short bg_color)
+void init_def_pairs(color_t fg_color, color_t bg_color)
 {
-	short i;
+	color_t i;
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		if (i == bg_color) {
 			init_pair(i+1, i, fg_color);
@@ -20,7 +20,7 @@ void init_def_pairs(short fg_color, short bg_color)
 	}
 }
 
-void init_graphics(short fg_color, short bg_color)
+void init_graphics(color_t fg_color, color_t bg_color)
 {
 	initscr();
 	resize_term(GRID_WINDOW_SIZE, GRID_WINDOW_SIZE+MENU_WINDOW_WIDTH);

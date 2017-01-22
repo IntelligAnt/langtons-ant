@@ -191,7 +191,7 @@ static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
 	}
 }
 
-static void draw_color_tile(Vector2i top_left, short c)
+static void draw_color_tile(Vector2i top_left, color_t c)
 {
 	chtype pair;
 	bool is_def = c == stgs.colors->def;
@@ -220,7 +220,7 @@ static void draw_color_tile(Vector2i top_left, short c)
 
 static void draw_color_list(void)
 {
-	short c, i = 0;
+	color_t c, i = 0;
 	bool do_for = TRUE;
 	Vector2i pos1, pos2, cdef_pos;
 
@@ -306,8 +306,8 @@ static void draw_func(void)
 	Simulation *sim = stgs.linked_sim;
 	chtype f_pair = GET_PAIR_FOR(MENU_ACTIVE_COLOR);
 	char f_str[8];
-	short ant_color = GRID_ANT_COLOR(sim->grid, sim->ant);
-	short next_color = sim->colors->next[ant_color]; // uses sim->colors instead of stgs.colors
+	color_t ant_color = GRID_ANT_COLOR(sim->grid, sim->ant);
+	color_t next_color = sim->colors->next[ant_color]; // uses sim->colors instead of stgs.colors
 
 	sprintf(f_str, "f(q%hu, ", ant_color);
 	wattrset(menuw, f_pair);
@@ -328,7 +328,7 @@ static void draw_func(void)
 
 static void draw_control_buttons(void)
 {
-	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
+	color_t bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
 	Vector2i pos1 = { menu_play_pos.y  + o.y, menu_play_pos.x  + o.x };
 	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
@@ -359,7 +359,7 @@ static void draw_control_buttons(void)
 
 static void draw_io_buttons(void)
 {
-	short bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
+	color_t bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i inner1 = { menu_load_pos.y+1, menu_load_pos.x+1 };
 	Vector2i inner2 = { menu_save_pos.y+1, menu_save_pos.x+1 };
 

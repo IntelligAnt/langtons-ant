@@ -118,7 +118,7 @@ typedef struct scroll_info {
 #define MENU_RIGHT_COLUMN   (MENU_WINDOW_WIDTH-18)
 #define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+10)
 #define MENU_SPEED_POS      (MENU_DIRECTION_POS+12)
-#define MENU_FUNC_POS       (MENU_SPEED_POS+25)
+#define MENU_FUNC_POS       (MENU_SPEED_POS+26)
 #define MENU_EDGE_COLOR     COLOR_NAVY
 #define MENU_EDGE_COLOR_S   COLOR_MAROON
 #define MENU_ACTIVE_COLOR   COLOR_BLUE
@@ -266,14 +266,14 @@ extern const char     *dialog_cdef_msg;
  * @param fg_color Foreground color
  * @param bg_color Background color
  */
-void init_def_pairs(short fg_color, short bg_color);
+void init_def_pairs(color_t fg_color, color_t bg_color);
 
 /**
  * Initializes graphics and all windows
  * @param fg_color Foreground color
  * @param bg_color Background color
  */
-void init_graphics(short fg_color, short bg_color);
+void init_graphics(color_t fg_color, color_t bg_color);
 
 /**
  * Closes windows and ends drawing
@@ -558,7 +558,7 @@ input_t menu_mouse_command(void);
  * @param color_index Index of the color that is to be set (CIDX_NEWCOLOR to add a color,
  * CIDX_DEFAULT to change the default)
  */
-void open_dialog(Vector2i pos, short color_index);
+void open_dialog(Vector2i pos, color_t color_index);
 
 /**
  * Closes dialog and ends drawing
@@ -575,7 +575,7 @@ void draw_dialog(void);
  * @param color Color of tile
  * @return Relative position of found tile
  */
-Vector2i get_dialog_tile_pos(short color);
+Vector2i get_dialog_tile_pos(color_t color);
 
 /**
  * Handles mouse command passed to the dialog
