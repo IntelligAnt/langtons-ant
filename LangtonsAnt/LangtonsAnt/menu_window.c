@@ -42,7 +42,7 @@ static const Vector2i isize_pos      = { MENU_LOGO_HEIGHT+2,    MENU_WINDOW_WIDT
 static const Vector2i isize_msg_pos  = { MENU_LOGO_HEIGHT,      MENU_RIGHT_COLUMN };
 static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,    MENU_RIGHT_COLUMN };
 static const Vector2i speed_msg_pos  = { MENU_SPEED_POS,        MENU_RIGHT_COLUMN };
-static const Vector2i func_pos       = { MENU_FUNC_POS+2,       MENU_RIGHT_COLUMN+2 };
+static const Vector2i func_pos       = { MENU_FUNC_POS+2,       MENU_RIGHT_COLUMN+4 };
 static const Vector2i func_msg_pos   = { MENU_FUNC_POS,         MENU_RIGHT_COLUMN };
 static const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 static const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
@@ -318,7 +318,7 @@ static void draw_func(void)
 	waddstr(menuw, ") = ");
 	
 	sprintf(f_str, "(q%hu, ", next_color);
-	mvwaddstr(menuw, func_pos.y+1, func_pos.x+3, f_str);
+	mvwaddstr(menuw, func_pos.y+1, func_pos.x+1, f_str);
 	wattrset(menuw, GET_PAIR_FOR(next_color));
 	waddch(menuw, ACS_BLOCK);
 	sprintf(f_str, ", %c) ", turn2arrow(sim->colors->turn[ant_color]));

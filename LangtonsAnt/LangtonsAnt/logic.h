@@ -94,7 +94,7 @@ typedef struct ant {
 /** Curses color type */
 typedef short color_t;
 
-/**  */
+/** Turn direction for given rule */
 typedef char turn_t;
 
 /** Colors container */
