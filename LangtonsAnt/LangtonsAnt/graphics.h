@@ -211,12 +211,11 @@ typedef unsigned char input_t;
 
 /*--------------------- Performance optimization macros ----------------------*/
 
-/** @name Optimization settings */
+/** @name Performance settings */
 ///@{
-#define OPT_DELAY_LOOP      1          /**< Should use a delay loop to extend time between draws? */
-#define OPT_DELAY           10000000.0 /**< Base value for the delay in the delay loop */
-#define OPT_STEPS           1          /**< Should optimize drawing of steps in the menu by skipping some? */
-#define OPT_STEPS_THRESHOLD 0.9        /**< Ratio of steps between two draws must fall below this value */
+#define FRAMERATE           60
+#define OPT_STEPS           1   /**< Should optimize drawing of steps in the menu by skipping some? */
+#define OPT_STEPS_THRESHOLD 0.9 /**< Ratio of steps between two draws must fall below this value */
 ///@}
 
 
