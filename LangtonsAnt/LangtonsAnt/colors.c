@@ -53,16 +53,17 @@ void remove_color(Colors *colors, short c)
 	if (c < 0 || c >= COLOR_COUNT || c == colors->def || colors->n == 0) {
 		return;
 	}
-	colors->turn[c] = TURN_NONE;
 
-	if (colors->n == 1) {
+	colors->turn[c] = colors->turn[colors->def] = TURN_NONE;
+	if (colors->n-- == 1) {
 		colors->first = colors->last = COLOR_NONE;
-		colors->next[c] = colors->def;
+		colors->next[c] = colors->next[colors->def] = colors->def;
+		return;
 	}
+
 	if (colors->first == c) {
 		colors->first = colors->next[colors->last] = colors->next[c];
 	}
-
 	for (i = 0; i < COLOR_COUNT; ++i) {
 		if (colors->next[i] == c) {
 			colors->next[i] = colors->next[c];
@@ -71,9 +72,7 @@ void remove_color(Colors *colors, short c)
 			}
 		}
 	}
-
 	update_def(colors);
-	--colors->n;
 }
 
 void remove_all_colors(Colors *colors)
