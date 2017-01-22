@@ -111,7 +111,7 @@ typedef struct colors {
 
 /** @name Grid struct constants */
 ///@{
-#define GRID_MUL                3
+#define GRID_MULT               3
 #define GRID_SIZE_THRESHOLD     19682 // 3^9 - 1
 #define GRID_USAGE_THRESHOLD    0.5
 #define GRID_DEF_INIT_SIZE      4
@@ -120,8 +120,8 @@ typedef struct colors {
 #define GRID_MAX_SILENT_EXPAND  (GRID_SIZE_THRESHOLD + 1) // TODO add a dynamic silent expand step
 
 #define GRID_SIZE_SMALL(g)      (g)->init_size // 2, 3, 4, 5, 6
-#define GRID_SIZE_MEDIUM(g)     (GRID_SIZE_SMALL(g) * GRID_MUL)
-#define GRID_SIZE_LARGE(g)      (GRID_SIZE_MEDIUM(g) * GRID_MUL)
+#define GRID_SIZE_MEDIUM(g)     (GRID_SIZE_SMALL(g) * GRID_MULT)
+#define GRID_SIZE_LARGE(g)      (GRID_SIZE_MEDIUM(g) * GRID_MULT)
 #define IS_GRID_LARGE(g)        ((g)->size >= GRID_SIZE_LARGE(g))
 #define GRID_EFFICIENCY(g)      ((g)->size*(g)->size / ((double)sizeof(Cell)*(g)->colored))
 #define GRID_COLOR_AT(g, p)     (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])

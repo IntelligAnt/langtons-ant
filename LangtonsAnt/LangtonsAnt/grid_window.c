@@ -49,14 +49,14 @@ static void draw_scrollbars(color_t def)
 	int size = (int)(max(step*gridscrl.scale, 1));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
-	color_t sb_fg_color = AVAILABLE_COLOR(def, COLOR_WHITE, COLOR_SILVER);
-	color_t sb_bg_color = AVAILABLE_COLOR(def, COLOR_GRAY,  COLOR_SILVER);
+	chtype sb_fg_pair = AVAILABLE_PAIR(def, COLOR_WHITE, COLOR_SILVER);
+	chtype sb_bg_pair = AVAILABLE_PAIR(def, COLOR_GRAY,  COLOR_SILVER);
 
 	h -= h > mid;
 	v -= v > mid;
 
 	/* Scrollbar background */
-	wattrset(gridw, GET_PAIR_FOR(sb_bg_color));
+	wattrset(gridw, sb_bg_pair);
 	mvwhline(gridw, n, 0, ACS_BLOCK, n);
 	mvwvline(gridw, 0, n, ACS_BLOCK, n);
 
@@ -68,7 +68,7 @@ static void draw_scrollbars(color_t def)
 	mvwaddch(gridw, n,   n-1, ACS_RARROW);
 
 	/* Scrollbar sliders */
-	wattrset(gridw, GET_PAIR_FOR(sb_fg_color));
+	wattrset(gridw, sb_fg_pair);
 	mvwhline(gridw, n, h, ACS_BLOCK, size);
 	mvwvline(gridw, v, n, ACS_BLOCK, size);
 }

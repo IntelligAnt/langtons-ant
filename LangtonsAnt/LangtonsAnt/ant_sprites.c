@@ -50,7 +50,7 @@ static const byte *ant24_sprites[] = {
 SpriteInfo get_ant_sprite(size_t size, Direction dir)
 {
 	return (size >= 24) ? (SpriteInfo) { ant24_sprites[dir], 24, 24 }
-		 : (size >= 8)  ? (SpriteInfo) { ant8_sprites[dir],  8,  8  }
-		 : (size >= 3)  ? (SpriteInfo) { ant3_sprites[dir],  3,  3  }
+		 : (size >= 8)  ? (SpriteInfo) { ant8_sprites[dir],  8,  8 }
+		 : (size >= 3)  ? (SpriteInfo) { ant3_sprites[dir],  3,  3 }
 		 : (SpriteInfo) { NULL, 0, 0 };
 }

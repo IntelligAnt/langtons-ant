@@ -14,8 +14,8 @@ const Vector2i menu_dir_u_pos   = { MENU_DIRECTION_POS+2, MENU_WINDOW_WIDTH-8 };
 const Vector2i menu_dir_r_pos   = { MENU_DIRECTION_POS+4, MENU_WINDOW_WIDTH-4 };
 const Vector2i menu_dir_d_pos   = { MENU_DIRECTION_POS+7, MENU_WINDOW_WIDTH-8 };
 const Vector2i menu_dir_l_pos   = { MENU_DIRECTION_POS+4, MENU_WINDOW_WIDTH-11 };
-const Vector2i menu_speed_u_pos = { MENU_SPEED_POS,       MENU_SPEED_POS+5};
-const Vector2i menu_speed_d_pos = { MENU_SPEED_POS+10,    MENU_SPEED_POS+5};
+const Vector2i menu_speed_u_pos = { MENU_SPEED_POS+2,     MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_speed_d_pos = { MENU_SPEED_POS+21,    MENU_WINDOW_WIDTH-9 };
 const Vector2i menu_play_pos    = { MENU_CONTROLS_POS,    2 };
 const Vector2i menu_pause_pos   = { MENU_CONTROLS_POS,    MENU_BUTTON_WIDTH+4 };
 const Vector2i menu_stop_pos    = { MENU_CONTROLS_POS,    2*MENU_BUTTON_WIDTH+6 };
@@ -41,6 +41,7 @@ static const Vector2i rules_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
 static const Vector2i isize_pos      = { MENU_LOGO_HEIGHT+2,    MENU_WINDOW_WIDTH-5 };
 static const Vector2i isize_msg_pos  = { MENU_LOGO_HEIGHT,      MENU_RIGHT_COLUMN };
 static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,    MENU_RIGHT_COLUMN };
+static const Vector2i speed_pos      = { MENU_SPEED_POS+2,        MENU_WINDOW_WIDTH-5 };
 static const Vector2i speed_msg_pos  = { MENU_SPEED_POS,        MENU_RIGHT_COLUMN };
 static const Vector2i func_pos       = { MENU_FUNC_POS+2,       MENU_RIGHT_COLUMN+4 };
 static const Vector2i func_msg_pos   = { MENU_FUNC_POS,         MENU_RIGHT_COLUMN };
@@ -79,6 +80,8 @@ static const byte inf_sprite[] = {
 	0x00, 0x00, 0x07, 0x1C, 0x00, 0x00, 0x11, 0x44, 0x00, 0x00,
 	0x21, 0x08, 0x00, 0x00, 0x45, 0x10, 0x00, 0x00, 0x71, 0xC0
 };
+
+static size_t state_map[COLOR_COUNT] = { 0 };
 
 void init_menu_window(void)
 {
@@ -220,7 +223,8 @@ static void draw_color_tile(Vector2i top_left, color_t c)
 
 static void draw_color_list(void)
 {
-	color_t c, i = 0;
+	color_t c;
+	size_t i = 0;
 	bool do_for = TRUE;
 	Vector2i pos1, pos2, cdef_pos;
 
@@ -243,6 +247,7 @@ static void draw_color_list(void)
 			draw_color_arrow(pos1, pos2);
 		}
 		draw_color_tile(pos1, c);
+		state_map[c] = i;
 		do_for = c != stgs.colors->last;
 	}
 	
@@ -293,12 +298,27 @@ static void draw_direction(void)
 				menu_dir_d_pos, FALSE);
 	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_LEFT],  MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT },
 				menu_dir_l_pos, FALSE);
-
 }
 
 static void draw_speed(void)
 {
-	// TODO
+	int dy = menu_speed_d_pos.y - menu_speed_u_pos.y - 2;
+	Vector2i pos = { speed_pos.y + dy+1 - 2*stgs.speed, speed_pos.x };
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_UP], MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
+				menu_speed_u_pos, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_DOWN], MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
+				menu_speed_d_pos, FALSE);
+	wattrset(menuw, ui_pair);
+	mvwvline(menuw, menu_speed_u_pos.y+2, menu_speed_u_pos.x+1, ACS_VLINE, dy);
+
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	mvwaddch(menuw, pos.y+2, pos.x-3, ACS_BLOCK);
+	wattrset(menuw, fg_pair | A_REVERSE);
+	draw_rect(menuw, speed_pos, MENU_DIGIT_WIDTH, 21);
+	wattroff(menuw, A_REVERSE);
+	draw_sprite(menuw, (SpriteInfo) { digit_sprites[stgs.speed], 3, 5 }, pos, TRUE);
 }
 
 static void draw_func(void)
@@ -309,7 +329,7 @@ static void draw_func(void)
 	color_t ant_color = GRID_ANT_COLOR(sim->grid, sim->ant);
 	color_t next_color = sim->colors->next[ant_color]; // uses sim->colors instead of stgs.colors
 
-	sprintf(f_str, "f(q%hu, ", ant_color);
+	sprintf(f_str, "f(q%hd, ", state_map[ant_color]);
 	wattrset(menuw, f_pair);
 	mvwaddstr(menuw, func_pos.y, func_pos.x, f_str);
 	wattrset(menuw, GET_PAIR_FOR(ant_color));
@@ -317,7 +337,7 @@ static void draw_func(void)
 	wattrset(menuw, f_pair);
 	waddstr(menuw, ") = ");
 	
-	sprintf(f_str, "(q%hu, ", next_color);
+	sprintf(f_str, "(q%hd, ", state_map[next_color]);
 	mvwaddstr(menuw, func_pos.y+1, func_pos.x+1, f_str);
 	wattrset(menuw, GET_PAIR_FOR(next_color));
 	waddch(menuw, ACS_BLOCK);
@@ -328,13 +348,12 @@ static void draw_func(void)
 
 static void draw_control_buttons(void)
 {
-	color_t bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i o = { (MENU_BUTTON_HEIGHT-5)/2, (MENU_BUTTON_WIDTH-5)/2 };
 	Vector2i pos1 = { menu_play_pos.y  + o.y, menu_play_pos.x  + o.x };
 	Vector2i pos2 = { menu_pause_pos.y + o.y, menu_pause_pos.x + o.x };
 	Vector2i pos3 = { menu_stop_pos.y  + o.y, menu_stop_pos.x  + o.x };
 
-	wattrset(menuw, GET_PAIR_FOR(bg));
+	wattrset(menuw, ui_pair);
 	draw_rect(menuw, menu_play_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_stop_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
@@ -359,11 +378,10 @@ static void draw_control_buttons(void)
 
 static void draw_io_buttons(void)
 {
-	color_t bg = AVAILABLE_COLOR(GET_COLOR_FOR(bg_pair), COLOR_SILVER, COLOR_WHITE);
 	Vector2i inner1 = { menu_load_pos.y+1, menu_load_pos.x+1 };
 	Vector2i inner2 = { menu_save_pos.y+1, menu_save_pos.x+1 };
 
-	wattrset(menuw, GET_PAIR_FOR(bg));
+	wattrset(menuw, ui_pair);
 	draw_rect(menuw, menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	wattron(menuw, A_REVERSE);
@@ -488,6 +506,5 @@ void draw_menu_iter(void)
 		draw_edge();
 		sparse = TRUE;
 	}
-
 	wnoutrefresh(menuw);
 }

@@ -1,7 +1,7 @@
 #include <math.h>
 #include "graphics.h"
 
-chtype fg_pair, bg_pair;
+chtype fg_pair, bg_pair, ui_pair;
 chtype arrows[] = { ACS_UARROW, ACS_RARROW, ACS_DARROW, ACS_LARROW };
 
 void init_def_pairs(color_t fg_color, color_t bg_color)
@@ -18,6 +18,7 @@ void init_def_pairs(color_t fg_color, color_t bg_color)
 			}
 		}
 	}
+	ui_pair = AVAILABLE_PAIR(bg_color, COLOR_WHITE, COLOR_SILVER);
 }
 
 void init_graphics(color_t fg_color, color_t bg_color)

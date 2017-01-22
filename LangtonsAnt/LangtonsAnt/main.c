@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
 	}
 
 	stgs.init_size = GRID_DEF_INIT_SIZE;
+	stgs.speed = LOOP_DEF_SPEED;
 	stgs.linked_sim = simulation_new(stgs.colors, stgs.init_size);
 
 	init_graphics(COLOR_BLACK, COLOR_WHITE);

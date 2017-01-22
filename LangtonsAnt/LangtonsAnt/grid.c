@@ -81,7 +81,7 @@ static bool is_in_old_matrix_row(size_t y, size_t old_size)
 
 void grid_silent_expand(Grid *grid)
 {
-	size_t size = grid->size*GRID_MUL, i;
+	size_t size = grid->size*GRID_MULT, i;
 	if (is_grid_sparse(grid) || grid->tmp_size >= size) {
 		return;
 	}
@@ -96,7 +96,7 @@ void grid_silent_expand(Grid *grid)
 
 static void grid_fill_tmp(Grid *grid)
 {
-	size_t size = grid->size * GRID_MUL;
+	size_t size = grid->size * GRID_MULT;
 	if (!grid->tmp) {
 		grid->tmp = malloc(size * sizeof(byte*));
 		grid->tmp_size = 0;
@@ -108,8 +108,8 @@ static void grid_fill_tmp(Grid *grid)
 
 static void grid_expand_n(Grid *grid)
 {
-	size_t old = grid->size, size = old*GRID_MUL, i;
-	size_t pre = old*(GRID_MUL/2), post = old*(GRID_MUL/2+1);
+	size_t old = grid->size, size = old*GRID_MULT, i;
+	size_t pre = old*(GRID_MULT/2), post = old*(GRID_MULT/2+1);
 	
 	grid_fill_tmp(grid);
 	for (i = 0; i < size; ++i) {
@@ -129,7 +129,7 @@ static void grid_expand_n(Grid *grid)
 
 static void grid_expand_s(Grid *grid)
 {
-	size_t old = grid->size, size = GRID_MUL*old, i;
+	size_t old = grid->size, size = GRID_MULT*old, i;
 	Cell **new = malloc(size*sizeof(Cell*)), *t;
 
 	for (i = 0; i < size; ++i) {
@@ -157,7 +157,7 @@ void grid_expand(Grid *grid, Ant *ant)
 	transfer_vector(&grid->top_left, grid->size);
 	transfer_vector(&grid->bottom_right, grid->size);
 	if (!is_grid_sparse(grid)) {
-		if (grid->size*GRID_MUL > GRID_SIZE_THRESHOLD && GRID_EFFICIENCY(grid) < 1) {
+		if (grid->size*GRID_MULT > GRID_SIZE_THRESHOLD && GRID_EFFICIENCY(grid) < 1) {
 			grid_make_sparse(grid);
 			grid_expand_s(grid);
 		} else {

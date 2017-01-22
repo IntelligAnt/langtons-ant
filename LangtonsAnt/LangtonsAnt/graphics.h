@@ -68,6 +68,7 @@
 #define GET_PAIR_FOR(c)  (COLOR_PAIR((c) + 1))
 #define GET_COLOR_FOR(p) (PAIR_NUMBER(p) - 1)
 #define AVAILABLE_COLOR(def, c, bk) (((def) == (c)) ? (bk) : (c))
+#define AVAILABLE_PAIR(def, c, bk)  GET_PAIR_FOR(AVAILABLE_COLOR(def, c, bk))
 ///@}
 
 
@@ -164,7 +165,8 @@ typedef struct scroll_info {
 /** Structure containing all relevant menu settings */
 typedef struct settings {
 	Colors *colors;         /**< Currently active colors/rules */
-	size_t init_size;       /**< Initial grid size setting */
+	size_t init_size;       /**< Initial grid size */
+	size_t speed;           /**< Speed multiplier */
 	Simulation *linked_sim; /**< Currently active simulation */
 } Settings;
 
@@ -216,7 +218,9 @@ typedef unsigned char input_t;
 
 /** @name Performance settings */
 ///@{
-#define FRAMERATE           60 // TODO
+#define LOOP_DEF_SPEED      5          /**< Default speed multiplier */
+#define LOOP_MIN_SPEED      1          /**< Minimum allowed speed multiplier */
+#define LOOP_MAX_SPEED      9          /**< Maximum allowed speed multiplier */
 #define OPT_DELAY_LOOP      1          /**< Should use a delay loop to extend time between draws? */
 #define OPT_DELAY           10000000.0 /**< Base value for the delay in the delay loop */
 #define OPT_STEPS           1          /**< Should optimize drawing of steps in the menu by skipping some? */
@@ -237,7 +241,7 @@ typedef struct sprite_info {
 
 /** @name Globals */
 ///@{
-extern chtype         fg_pair, bg_pair;
+extern chtype         fg_pair, bg_pair, ui_pair;
 
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
@@ -274,11 +278,13 @@ void init_def_pairs(color_t fg_color, color_t bg_color);
  * Initializes graphics and all windows
  * @param fg_color Foreground color
  * @param bg_color Background color
+ * @see end_graphics(void)
  */
 void init_graphics(color_t fg_color, color_t bg_color);
 
 /**
  * Closes windows and ends drawing
+ * @see init_graphics(color_t, color_t)
  */
 void end_graphics(void);
 
@@ -287,6 +293,7 @@ void end_graphics(void);
 * @param rel Relative vector
 * @param origin Point of reference
 * @return Absolute vector
+* @see abs2rel(Vector2i, Vector2i)
 */
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 
@@ -295,6 +302,7 @@ Vector2i rel2abs(Vector2i rel, Vector2i origin);
 * @param abs Absolute vector
 * @param origin Point of reference
 * @return Relative vector
+* @see rel2abs(Vector2i, Vector2i)
 */
 Vector2i abs2rel(Vector2i abs, Vector2i origin);
 
@@ -313,6 +321,7 @@ bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
  * @param w Window to draw to
  * @param top_left Box origin
  * @param size Box size
+ * @see draw_rect(WINDOW *, Vector2i, size_t, size_t)
  */
 void draw_square(WINDOW *w, Vector2i top_left, size_t size);
 
@@ -322,6 +331,7 @@ void draw_square(WINDOW *w, Vector2i top_left, size_t size);
  * @param top_left Box origin
  * @param width Box width
  * @param height Box height
+ * @see draw_square(WINDOW *, Vector2i, size_t)
  */
 void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 
@@ -347,6 +357,7 @@ void draw_sprite(WINDOW *w, SpriteInfo sprite_info, Vector2i top_left, bool over
  * Converts a direction into its char representation
  * @param dir Direction
  * @return Appropriate arrow char for the direction
+ * @see turn2arrow(turn_t)
  */
 chtype dir2arrow(Direction dir);
 
@@ -354,6 +365,7 @@ chtype dir2arrow(Direction dir);
  * Converts a turn direction into its char representation
  * @param turn Turn direction
  * @return Appropriate arrow char for the turn direction
+ * @see dir2arrow(Direction)
  */
 chtype turn2arrow(turn_t turn);
 
@@ -377,13 +389,15 @@ SpriteInfo get_ant_sprite(size_t size, Direction dir);
 
 /**
  * Main draw/update loop
+ * @see stop_game_loop(void)
  */
 void game_loop(void);
 
 /**
  * Stops the main draw/update loop
+ * @see game_loop(void)
  */
-void stop_game_loop();
+void stop_game_loop(void);
 
 
 /*----------------------------------------------------------------------------*
@@ -392,11 +406,13 @@ void stop_game_loop();
 
 /**
  * Initializes grid window and related components
+ * @see end_grid_window(void)
  */
 void init_grid_window(void);
 
 /**
  * Closes grid window and ends drawing
+ * @see init_grid_window(void)
  */
 void end_grid_window(void);
 
@@ -423,6 +439,8 @@ void draw_grid_iter(Grid *grid, Ant *ant, Vector2i oldp);
  * @param grid Grid from which to draw
  * @param dy Relative y offset
  * @param dx Relative x offset
+ * @see set_scroll(Grid *, int, int)
+ * @see reset_scroll(void)
  */
 void scroll_grid(Grid *grid, int dy, int dx);
 
@@ -430,11 +448,15 @@ void scroll_grid(Grid *grid, int dy, int dx);
  * Sets the absolute scroll of gridscrl
  * @param y Absolute y offset
  * @param x Absolute x offset
+ * @see scroll_grid(Grid, int, int)
+ * @see reset_scroll(void)
  */
 void set_scroll(Grid *grid, int y, int x);
 
 /**
  * Resets gridscrl to its initial state
+ * @see scroll_grid(Grid *, int, int)
+ * @see set_scroll(Grid *, int, int)
  */
 void reset_scroll(void);
 
@@ -468,11 +490,13 @@ input_t grid_mouse_command(Grid *grid);
 
 /**
  * Initializes menu window and related components
+ * @see end_menu_window(void)
  */
 void init_menu_window(void);
 
 /**
  * Closes menu window and ends drawing
+ * @see init_menu_window(void)
  */
 void end_menu_window(void);
 
@@ -559,11 +583,13 @@ input_t menu_mouse_command(void);
  * @param pos Dialog origin relative to menu
  * @param color_index Index of the color that is to be set (CIDX_NEWCOLOR to add a color,
  * CIDX_DEFAULT to change the default)
+ * @see close_dialog(void)
  */
 void open_dialog(Vector2i pos, color_t color_index);
 
 /**
  * Closes dialog and ends drawing
+ * @see open_dialog(Vector2i, color_t)
  */
 void close_dialog(void);
 

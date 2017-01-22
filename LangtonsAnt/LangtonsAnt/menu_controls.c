@@ -66,6 +66,19 @@ static input_t dir_button_clicked(Direction dir)
 	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 
+static input_t speed_button_clicked(int d)
+{
+	Simulation *sim = stgs.linked_sim;
+	if (d > 0) {
+		stgs.speed = min(stgs.speed+d, LOOP_MAX_SPEED);
+	} else if (d < 0) {
+		stgs.speed = max(stgs.speed+d, LOOP_MIN_SPEED);
+	} else {
+		return INPUT_NO_CHANGE;
+	}
+	return INPUT_MENU_CHANGED;
+}
+
 static input_t play_button_clicked(void)
 {
 	input_t ret = INPUT_NO_CHANGE;
@@ -134,6 +147,12 @@ input_t menu_key_command(int key)
 		return isize_button_clicked(1);
 	case '[':
 		return isize_button_clicked(-1);
+
+		/* Speed */
+	case '=': case '+':
+		return speed_button_clicked(1);
+	case '-':
+		return speed_button_clicked(-1);
 
 		/* Direction */
 	case 'W': case 'w':
@@ -204,29 +223,9 @@ input_t menu_mouse_command(void)
 			return ret | INPUT_MENU_CHANGED;
 		}
 	}
-
 	if (area_contains(get_menu_cdef_pos(), strlen(dialog_cdef_msg), 1, pos)) {
 		open_dialog(pos, CIDX_DEFAULT);
 		return ret | INPUT_MENU_CHANGED;
-	}
-
-	/* Control buttons clicked */
-	if (area_contains(menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return ret | play_button_clicked();
-	}
-	if (area_contains(menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return ret | pause_button_clicked();
-	}
-	if (area_contains(menu_stop_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return ret | stop_button_clicked();
-	}
-
-	/* IO buttons clicked */
-	if (area_contains(menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return ret | io_button_clicked(TRUE);
-	}
-	if (area_contains(menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return ret | io_button_clicked(FALSE);
 	}
 
 	/* Init size buttons clicked */
@@ -249,6 +248,33 @@ input_t menu_mouse_command(void)
 	}
 	if (area_contains(menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
 		return ret | dir_button_clicked(DIR_LEFT);
+	}
+
+	/* Speed buttons clicked */
+	if (area_contains(menu_speed_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return ret | speed_button_clicked(1);
+	}
+	if (area_contains(menu_speed_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return ret | speed_button_clicked(-1);
+	}
+
+	/* Control buttons clicked */
+	if (area_contains(menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return ret | play_button_clicked();
+	}
+	if (area_contains(menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return ret | pause_button_clicked();
+	}
+	if (area_contains(menu_stop_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return ret | stop_button_clicked();
+	}
+
+	/* IO buttons clicked */
+	if (area_contains(menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return ret | io_button_clicked(TRUE);
+	}
+	if (area_contains(menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
+		return ret | io_button_clicked(FALSE);
 	}
 
 	return ret;
