@@ -113,10 +113,12 @@ typedef struct scroll_info {
 ///@{
 #define MENU_WINDOW_WIDTH   42
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
-#define MENU_LOGO_HEIGHT    15
+#define MENU_LOGO_HEIGHT    16
 #define MENU_CONTROLS_POS   88
-#define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+11)
-#define MENU_SPEED_POS      (MENU_LOGO_HEIGHT+23)
+#define MENU_RIGHT_COLUMN   (MENU_WINDOW_WIDTH-18)
+#define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+10)
+#define MENU_SPEED_POS      (MENU_DIRECTION_POS+12)
+#define MENU_FUNC_POS       (MENU_SPEED_POS+25)
 #define MENU_EDGE_COLOR     COLOR_NAVY
 #define MENU_EDGE_COLOR_S   COLOR_MAROON
 #define MENU_ACTIVE_COLOR   COLOR_BLUE
@@ -270,6 +272,32 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 
 /**
+* Utility function for turning relative coords into absolute
+* @param rel Relative vector
+* @param origin Point of reference
+* @return Absolute vector
+*/
+Vector2i rel2abs(Vector2i rel, Vector2i origin);
+
+/**
+* Utility function for turning absolute coords into relative
+* @param abs Absolute vector
+* @param origin Point of reference
+* @return Relative vector
+*/
+Vector2i abs2rel(Vector2i abs, Vector2i origin);
+
+/**
+* Checks if a vector is contained within an area
+* @param top_left Area origin
+* @param width Area width
+* @param height Area height
+* @param v Vector to be checked
+* @return Does area contain the vector?
+*/
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
+
+/**
  * Utility function for drawing square boxes
  * @param w Window to draw to
  * @param top_left Box origin
@@ -309,30 +337,11 @@ void draw_sprite(WINDOW *w, const byte *sprite,
 				 bool overwrite);
 
 /**
- * Utility function for turning relative coords into absolute
- * @param rel Relative vector
- * @param origin Point of reference
- * @return Absolute vector
+ * Utility function for turning a direction into its char representation
+ * @param dir Direction
+ * @return Appropriate arrow character for the direction
  */
-Vector2i rel2abs(Vector2i rel, Vector2i origin);
-
-/**
- * Utility function for turning absolute coords into relative
- * @param abs Absolute vector
- * @param origin Point of reference
- * @return Relative vector
- */
-Vector2i abs2rel(Vector2i abs, Vector2i origin);
-
-/**
- * Checks if a vector is contained within an area
- * @param top_left Area origin
- * @param width Area width
- * @param height Area height
- * @param v Vector to be checked
- * @return Does area contain the vector?
- */
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v);
+chtype dir2arrow(Direction dir);
 
 
 /*----------------------------------------------------------------------------*

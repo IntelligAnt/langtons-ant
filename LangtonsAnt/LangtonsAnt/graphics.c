@@ -53,6 +53,30 @@ void end_graphics(void)
 	endwin();
 }
 
+Vector2i rel2abs(Vector2i rel, Vector2i origin)
+{
+	return (Vector2i)
+	{
+		.y = origin.y + rel.y,
+			.x = origin.x + rel.x
+	};
+}
+
+Vector2i abs2rel(Vector2i abs, Vector2i origin)
+{
+	return (Vector2i)
+	{
+		.y = abs.y - origin.y,
+			.x = abs.x - origin.x
+	};
+}
+
+bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v)
+{
+	return (v.y >= top_left.y && v.y < top_left.y+(int)height
+			&& v.x >= top_left.x && v.x < top_left.x+(int)width);
+}
+
 void draw_square(WINDOW *w, Vector2i top_left, size_t size)
 {
 	size_t i;
@@ -119,24 +143,16 @@ void draw_sprite(WINDOW *w, const byte *sprite,
 	}
 }
 
-Vector2i rel2abs(Vector2i rel, Vector2i origin)
+chtype dir2arrow(Direction dir) // TODO turn into macro
 {
-	return (Vector2i) {
-		.y = origin.y + rel.y,
-		.x = origin.x + rel.x
-	};
-}
-
-Vector2i abs2rel(Vector2i abs, Vector2i origin)
-{
-	return (Vector2i) {
-		.y = abs.y - origin.y,
-		.x = abs.x - origin.x
-	};
-}
-
-bool area_contains(Vector2i top_left, size_t width, size_t height, Vector2i v)
-{
-	return (v.y >= top_left.y && v.y < top_left.y+(int)height
-		 && v.x >= top_left.x && v.x < top_left.x+(int)width);
+	switch (dir) {
+	case DIR_UP:
+		return ACS_UARROW;
+	case DIR_RIGHT:
+		return ACS_RARROW;
+	case DIR_DOWN:
+		return ACS_DARROW;
+	case DIR_LEFT:
+		return ACS_LARROW;
+	}
 }

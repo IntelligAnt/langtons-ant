@@ -8,9 +8,9 @@ Settings stgs;
 IOStatus load_status, save_status;
 
 const Vector2i menu_pos = { 0, GRID_WINDOW_SIZE };
-const Vector2i menu_isize_u_pos = { MENU_LOGO_HEIGHT+3,   MENU_WINDOW_WIDTH-9 };
-const Vector2i menu_isize_d_pos = { MENU_LOGO_HEIGHT+6,   MENU_WINDOW_WIDTH-9 };
-const Vector2i menu_dir_u_pos   = { MENU_DIRECTION_POS+2,   MENU_WINDOW_WIDTH-8 };
+const Vector2i menu_isize_u_pos = { MENU_LOGO_HEIGHT+2,   MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_isize_d_pos = { MENU_LOGO_HEIGHT+5,   MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_dir_u_pos   = { MENU_DIRECTION_POS+2, MENU_WINDOW_WIDTH-8 };
 const Vector2i menu_dir_r_pos   = { MENU_DIRECTION_POS+4, MENU_WINDOW_WIDTH-4 };
 const Vector2i menu_dir_d_pos   = { MENU_DIRECTION_POS+7, MENU_WINDOW_WIDTH-8 };
 const Vector2i menu_dir_l_pos   = { MENU_DIRECTION_POS+4, MENU_WINDOW_WIDTH-11 };
@@ -25,22 +25,24 @@ const Vector2i menu_save_pos = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
                                  MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
 static const char *logo_msg   = " 14-COLOR 2D TURING MACHINE SIMULATOR ";
-static const char *tiles_msg  = "RULES:";
+static const char *rules_msg  = "RULES:";
 static const char *isize_msg  = "START GRID SIZE:";
 static const char *dir_msg    = "ANT DIRECTION:";
 static const char *speed_msg  = "SIMULATION SPEED";
+static const char *func_msg   = "STATE FUNCTION:";
 static const char *sparse_msg = "SPARSE MATRIX";
 static const char *size_msg   = "GRID SIZE:";
 static const char *steps_msg  = "STEPS:";
 
 static const Vector2i logo_pos       = { 3,  1 };
 static const Vector2i logo_msg_pos   = { 12, 2 };
-static const Vector2i tiles_pos      = { MENU_LOGO_HEIGHT+6,    MENU_TILE_SIZE+MENU_TILE_HSEP+3 };
-static const Vector2i tiles_msg_pos  = { MENU_LOGO_HEIGHT+1,    2 };
-static const Vector2i isize_pos      = { MENU_LOGO_HEIGHT+3,    MENU_WINDOW_WIDTH-5 };
-static const Vector2i isize_msg_pos  = { MENU_LOGO_HEIGHT+1,    MENU_WINDOW_WIDTH-18 };
-static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,    MENU_WINDOW_WIDTH-18 };
-static const Vector2i speed_msg_pos  = { MENU_SPEED_POS,        MENU_WINDOW_WIDTH-18 };
+static const Vector2i rules_pos      = { MENU_LOGO_HEIGHT+5,    MENU_TILE_SIZE+MENU_TILE_HSEP+3 };
+static const Vector2i rules_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
+static const Vector2i isize_pos      = { MENU_LOGO_HEIGHT+2,    MENU_WINDOW_WIDTH-5 };
+static const Vector2i isize_msg_pos  = { MENU_LOGO_HEIGHT,      MENU_RIGHT_COLUMN };
+static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,    MENU_RIGHT_COLUMN };
+static const Vector2i speed_msg_pos  = { MENU_SPEED_POS,        MENU_RIGHT_COLUMN };
+static const Vector2i func_msg_pos   = { MENU_FUNC_POS,         MENU_RIGHT_COLUMN };
 static const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 static const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
 static const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
@@ -105,8 +107,8 @@ Vector2i get_menu_tile_pos(size_t index)
 		index_y = MENU_TILES_PER_COL - index_y - 1;
 	}
 
-	pos.y = tiles_pos.y + index_y*(MENU_TILE_SIZE+MENU_TILE_VSEP);
-	pos.x = tiles_pos.x - index_x*(MENU_TILE_SIZE+MENU_TILE_HSEP);
+	pos.y = rules_pos.y + index_y*(MENU_TILE_SIZE+MENU_TILE_VSEP);
+	pos.x = rules_pos.x - index_x*(MENU_TILE_SIZE+MENU_TILE_HSEP);
 
 	return pos;
 }
@@ -115,7 +117,7 @@ Vector2i get_menu_cdef_pos(void)
 {
 	return (Vector2i) {
 		.y = get_menu_tile_pos(min(stgs.colors->n, MENU_TILES_PER_COL)).y + MENU_TILE_SIZE + MENU_TILE_VSEP + 1,
-		.x = tiles_pos.x - MENU_TILE_SIZE - MENU_TILE_HSEP + 1
+		.x = rules_pos.x - MENU_TILE_SIZE - MENU_TILE_HSEP + 1
 	};
 }
 
@@ -142,7 +144,7 @@ static void draw_logo(void)
 {
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
 	draw_sprite(menuw, logo_sprite, logo_pos, 40, 8, FALSE);
-	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR_S)); // TODO add copyright window
+	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR)); // TODO add copyright window
 	draw_sprite(menuw, logo_ant_sprite, logo_pos, 40, 8, FALSE);
 	wattron(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR) | A_REVERSE);
 	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
@@ -222,8 +224,8 @@ static void draw_color_list(void)
 	bool do_for = TRUE;
 	Vector2i pos1, pos2, cdef_pos;
 
-	pos1.y = tiles_pos.y - MENU_TILE_VSEP - 1;
-	pos1.x = tiles_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
+	pos1.y = rules_pos.y - MENU_TILE_VSEP - 1;
+	pos1.x = rules_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
 	wattrset(menuw, bg_pair);
 	draw_rect(menuw, pos1, MENU_TILES_WIDTH, MENU_TILES_HEIGHT);
 	
@@ -268,9 +270,6 @@ static void draw_color_list(void)
 
 static void draw_init_size(void)
 {
-	if (stgs.init_size < GRID_MIN_INIT_SIZE || stgs.init_size > GRID_MAX_INIT_SIZE) {
-		return;
-	}
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
 	draw_sprite(menuw, uarrow_sprite, menu_isize_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
 	draw_sprite(menuw, darrow_sprite, menu_isize_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
@@ -280,10 +279,9 @@ static void draw_init_size(void)
 
 static void draw_direction(void)
 {
-	//wattrset(menuw, fg_pair);
-	//mvwaddstr(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x, "Ant");
+	wattrset(menuw, fg_pair);
+	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, dir2arrow(stgs.linked_sim->ant->dir));
 	//draw_rect(menuw, (Vector2i) { menu_dir_u_pos.y+3, menu_dir_u_pos.x }, MENU_UDARROW_WIDTH, 1);
-
 	//wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
 	//							 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
@@ -294,6 +292,11 @@ static void draw_direction(void)
 }
 
 static void draw_speed(void)
+{
+
+}
+
+static void draw_func(void)
 {
 
 }
@@ -407,6 +410,18 @@ static void draw_steps(void)
 	}
 }
 
+static void draw_labels(void)
+{
+	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
+	mvwaddstr(menuw, rules_msg_pos.y, rules_msg_pos.x, rules_msg);
+	mvwaddstr(menuw, isize_msg_pos.y, isize_msg_pos.x, isize_msg);
+	mvwaddstr(menuw, dir_msg_pos.y,   dir_msg_pos.x,   dir_msg);
+	mvwaddstr(menuw, speed_msg_pos.y, speed_msg_pos.x, speed_msg);
+	mvwaddstr(menuw, func_msg_pos.y,  func_msg_pos.x,  func_msg);
+	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
+	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
+}
+
 void draw_menu_full(void)
 {
 	draw_edge();
@@ -415,22 +430,13 @@ void draw_menu_full(void)
 	draw_init_size();
 	draw_direction();
 	draw_speed();
+	draw_func();
 	draw_control_buttons();
 	draw_io_buttons();
 	draw_size();
 	draw_steps();
-
-	/* Draw labels */
-	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
-	mvwaddstr(menuw, tiles_msg_pos.y, tiles_msg_pos.x, tiles_msg);
-	mvwaddstr(menuw, isize_msg_pos.y, isize_msg_pos.x, isize_msg);
-	mvwaddstr(menuw, dir_msg_pos.y,   dir_msg_pos.x,   dir_msg);
-	mvwaddstr(menuw, speed_msg_pos.y, speed_msg_pos.x, speed_msg);
-	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
-	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
-
+	draw_labels();
 	wnoutrefresh(menuw);
-
 	if (dialogw) {
 		draw_dialog();
 	}
@@ -445,6 +451,8 @@ void draw_menu_iter(void)
 	static size_t prev_steps;
 	if (sim->steps <= 1 || (double)prev_steps/sim->steps <= OPT_STEPS_THRESHOLD) {
 #endif
+		draw_direction();
+		draw_func();
 		draw_steps();
 #if OPT_STEPS
 		prev_steps = sim->steps;

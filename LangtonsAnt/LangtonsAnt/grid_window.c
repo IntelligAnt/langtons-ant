@@ -86,9 +86,7 @@ static void draw_cell(Vector2i yx, int cs, short c, Ant *ant)
 			wattrset(gridw, fg_pair);
 			draw_sprite(gridw, ant_sprite, yx, cs, cs, FALSE);
 		} else {
-			div_t d = div(ant->dir, 2);
-			chtype arrow = (d.rem ? ACS_RARROW : ACS_UARROW) + d.quot; // Really awful hack
-			mvwaddch(gridw, yx.y+cs/2, yx.x+cs/2, arrow | A_REVERSE);
+			mvwaddch(gridw, yx.y+cs/2, yx.x+cs/2, dir2arrow(ant->dir) | A_REVERSE);
 		}
 	}
 }
