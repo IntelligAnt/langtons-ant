@@ -75,7 +75,6 @@ Simulation *load_state(char *filename)
 	Colors *colors;
 	FILE *input;
 	size_t nn = 0, i, j;
-	char c;
 	bool is_sparse;
 
 	if (!(colors = load_rules(filename))) {
@@ -89,7 +88,7 @@ Simulation *load_state(char *filename)
 	}
 
 	while (nn < 5) {
-		c = getc(input);
+		int c = getc(input);
 		if (c == '\n') {
 			nn++;
 		}
@@ -113,7 +112,6 @@ Simulation *load_state(char *filename)
 	simulation->grid->tmp_size = 0;
 	simulation->grid->csr = NULL;
 
-
 	if (fscanf(input, "%hhu %zu %zu %zu\n", &simulation->grid->def_color,
 			   &simulation->grid->init_size, &simulation->grid->size, &simulation->grid->colored) < 0) {
 		goto error_end;
@@ -128,7 +126,7 @@ Simulation *load_state(char *filename)
 		size_t colp;
 		Cell *temp;
 		for (i = 0; i < simulation->grid->size; i++) {
-
+			char c;
 			temp = NULL;
 			simulation->grid->csr[i] = NULL;
 			while (fscanf(input, "%c", &c) > 0 && c == ' ') {

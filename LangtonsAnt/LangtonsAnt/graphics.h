@@ -104,7 +104,7 @@ typedef struct scroll_info {
 	bool enabled;         /**< Scrolling is enabled */                    /**@{*/
 	int y, x;             /**< Current view position relative to (0,0) */ /**@}*/ /**@{*/
 	int hcenter, vcenter; /**< Scrollbar slider positions */              /**@}*/
-	double scale;         /**< Scaling factor */
+	double scale;         /**< Scaling multiplier */
 } ScrollInfo;
 
 
@@ -218,13 +218,12 @@ typedef unsigned char input_t;
 
 /** @name Performance settings */
 ///@{
-#define LOOP_DEF_SPEED      5          /**< Default speed multiplier */
-#define LOOP_MIN_SPEED      1          /**< Minimum allowed speed multiplier */
-#define LOOP_MAX_SPEED      9          /**< Maximum allowed speed multiplier */
-#define OPT_DELAY_LOOP      1          /**< Should use a delay loop to extend time between draws? */
-#define OPT_DELAY           10000000.0 /**< Base value for the delay in the delay loop */
-#define OPT_STEPS           1          /**< Should optimize drawing of steps in the menu by skipping some? */
-#define OPT_STEPS_THRESHOLD 0.9        /**< Ratio of steps between two draws must fall below this value */
+#define LOOP_DEF_SPEED      2   /**< Default speed multiplier */
+#define LOOP_MIN_SPEED      1   /**< Minimum allowed speed multiplier */
+#define LOOP_MAX_SPEED      9   /**< Maximum allowed speed multiplier */
+#define LOOP_DELAY          (1 << (LOOP_MAX_SPEED-1)) /**< Base delay in ms */
+#define OPT_STEPS           1   /**< Should optimize drawing of steps in the menu by skipping some? */
+#define OPT_STEPS_THRESHOLD 0.9 /**< Ratio of steps between two draws must fall below this value */
 ///@}
 
 

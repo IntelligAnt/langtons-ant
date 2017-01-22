@@ -68,7 +68,6 @@ static input_t dir_button_clicked(Direction dir)
 
 static input_t speed_button_clicked(int d)
 {
-	Simulation *sim = stgs.linked_sim;
 	if (d > 0) {
 		stgs.speed = min(stgs.speed+d, LOOP_MAX_SPEED);
 	} else if (d < 0) {

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+
 #include "logic.h"
 
 Colors *colors_new(color_t def)
