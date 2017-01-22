@@ -40,7 +40,7 @@ input_t clear_simulation(void)
 	return reset_simulation();
 }
 
-static input_t isz_button_clicked(int i)
+static input_t isize_button_clicked(int i)
 {
 	Simulation *sim = stgs.linked_sim;
 	switch (i) {
@@ -138,9 +138,9 @@ input_t menu_key_command(int key)
 	switch (key) {
 		/* Init size */
 	case '[':
-		return isz_button_clicked(-1);
+		return isize_button_clicked(-1);
 	case ']':
-		return isz_button_clicked(1);
+		return isize_button_clicked(1);
 
 		/* Direction */
 	case 'W': case 'w':
@@ -237,11 +237,11 @@ input_t menu_mouse_command(void)
 	}
 
 	/* Init size buttons clicked */
-	if (area_contains(menu_isz_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | isz_button_clicked(1);
+	if (area_contains(menu_isize_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return res | isize_button_clicked(1);
 	}
-	if (area_contains(menu_isz_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | isz_button_clicked(-1);
+	if (area_contains(menu_isize_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
+		return res | isize_button_clicked(-1);
 	}
 
 	/* Direction buttons clicked */

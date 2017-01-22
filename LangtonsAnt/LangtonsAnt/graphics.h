@@ -100,7 +100,7 @@
 
 /** Structure for managing scroll data */
 typedef struct scroll_info {
-	bool enabled;		  /**< Scrolling is enabled */                    /**@{*/
+	bool enabled;         /**< Scrolling is enabled */                    /**@{*/
 	int y, x;             /**< Current view position relative to (0,0) */ /**@}*/ /**@{*/
 	int hcenter, vcenter; /**< Scrollbar slider positions */              /**@}*/
 	double scale;         /**< Scaling factor */
@@ -115,7 +115,8 @@ typedef struct scroll_info {
 #define MENU_WINDOW_HEIGHT  GRID_WINDOW_SIZE
 #define MENU_LOGO_HEIGHT    15
 #define MENU_CONTROLS_POS   88
-#define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+9)
+#define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+11)
+#define MENU_SPEED_POS      (MENU_LOGO_HEIGHT+23)
 #define MENU_EDGE_COLOR     COLOR_NAVY
 #define MENU_EDGE_COLOR_S   COLOR_MAROON
 #define MENU_ACTIVE_COLOR   COLOR_BLUE
@@ -233,8 +234,9 @@ extern Settings       stgs;
 extern IOStatus       load_status, save_status;
 extern WINDOW         *menuw;
 extern const Vector2i menu_pos;
-extern const Vector2i menu_isz_u_pos, menu_isz_d_pos;
+extern const Vector2i menu_isize_u_pos, menu_isize_d_pos;
 extern const Vector2i menu_dir_u_pos, menu_dir_r_pos, menu_dir_d_pos, menu_dir_l_pos;
+extern const Vector2i menu_speed_u_pos, menu_speed_d_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 

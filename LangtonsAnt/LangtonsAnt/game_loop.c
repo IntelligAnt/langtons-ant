@@ -31,20 +31,21 @@ void game_loop(void)
 			bool in_bounds = ant_move(sim->ant, sim->grid, sim->colors);
 			grid_silent_expand(sim->grid);
 
-			if (!in_bounds) {
+			if (in_bounds) {
+				//napms(100);
+				if (!grid_changed) {
+					draw_grid_iter(sim->grid, sim->ant, oldp);
+				}
+				if (!menu_changed) {
+					draw_menu_iter();
+				}
+			} else {
 				grid_expand(sim->grid, sim->ant);
 				if (!grid_changed) {
 					draw_grid_full(sim->grid, sim->ant);
 				}
 				if (!menu_changed) {
 					draw_menu_full();
-				}
-			} else {
-				if (!grid_changed) {
-					draw_grid_iter(sim->grid, sim->ant, oldp);
-				}
-				if (!menu_changed) {
-					draw_menu_iter();
 				}
 			}
 
