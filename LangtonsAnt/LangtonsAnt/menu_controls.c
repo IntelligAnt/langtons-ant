@@ -102,12 +102,12 @@ static input_t stop_button_clicked(void)
 	return has_simulation_started(stgs.linked_sim) ? reset_simulation() : clear_simulation();
 }
 
-static void read_filename(char *filename, bool load)
+static void read_filename(char *filename)
 {
 	iow = newwin(3, INPUT_WINDOW_WIDTH, io_pos.y, io_pos.x); // TODO move to window drawing file
 	wbkgd(iow, GET_PAIR_FOR(COLOR_GRAY) | A_REVERSE);
 	wattron(iow, fg_pair);
-	waddstr(iow, load ? " Load path: " : " Save path: ");
+	waddstr(iow, " Path: ");
 	wattroff(iow, fg_pair);
 	echo();
 	mvwgetnstr(iow, 1, 1, filename, FILENAME_BUF_LEN);
@@ -119,7 +119,7 @@ static input_t io_button_clicked(bool load)
 {
 	Simulation *sim;
 	char filename[FILENAME_BUF_LEN];
-	read_filename(filename, load);
+	read_filename(filename);
 	if (load) {
 		load_status = (sim = load_state(filename)) ? STATUS_SUCCESS : STATUS_FAILURE;
 		if (sim) {
