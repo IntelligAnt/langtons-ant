@@ -55,7 +55,6 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 	short turn;
 
 	if (is_def) {
-		*c = (byte)colors->first;
 		grid->colored++;
 		update_bounding_box(grid, ant->pos);
 	}

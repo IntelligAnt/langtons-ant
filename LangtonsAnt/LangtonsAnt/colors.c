@@ -21,11 +21,18 @@ void colors_delete(Colors *colors)
 	free(colors);
 }
 
+static void update_def(Colors *c)
+{
+	c->next[c->def] = c->next[c->first];
+	c->turn[c->def] = c->turn[c->first];
+}
+
 void add_color(Colors *colors, short c, short turn)
 {
 	if (c < 0 || c >= COLOR_COUNT || c == colors->def) {
 		return;
 	}
+	
 	if (colors->first == COLOR_NONE) {
 		assert(colors->last == COLOR_NONE);
 		colors->first = c;
@@ -35,6 +42,8 @@ void add_color(Colors *colors, short c, short turn)
 	colors->next[c] = colors->first;
 	colors->last = c;
 	colors->turn[c] = turn;
+
+	update_def(colors);
 	++colors->n;
 }
 
@@ -63,6 +72,7 @@ void remove_color(Colors *colors, short c)
 		}
 	}
 
+	update_def(colors);
 	--colors->n;
 }
 
@@ -89,6 +99,7 @@ void set_color(Colors *colors, size_t index, short c, short turn)
 	colors->next[prev] = c;
 	colors->next[c] = colors->next[i];
 	colors->turn[c] = turn;
+	
 	colors->next[i] = c; // Special
 	for (j = 0; j < COLOR_COUNT; ++j) {
 		if (colors->next[j] == i) {
@@ -96,12 +107,14 @@ void set_color(Colors *colors, size_t index, short c, short turn)
 		}
 	}
 	colors->turn[i] = TURN_NONE;
+
 	if (i == colors->first) {
 		colors->first = c;
 	}
 	if (i == colors->last) {
 		colors->last = c;
 	}
+	update_def(colors);
 }
 
 void set_turn(Colors *colors, size_t index, short turn)
@@ -112,6 +125,7 @@ void set_turn(Colors *colors, size_t index, short turn)
 		i = colors->next[i];
 	}
 	colors->turn[i] = turn;
+	update_def(colors);
 }
 
 short get_color_at(Colors *colors, size_t index)
