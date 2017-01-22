@@ -93,7 +93,7 @@ typedef struct ant {
 
 /** Colors container */
 typedef struct colors {
-	short next[COLOR_COUNT];
+	short next[COLOR_COUNT]; // TODO change to color_t
 	short turn[COLOR_COUNT];
 	short first, last;
 	short def;
@@ -119,6 +119,7 @@ typedef struct colors {
 #define IS_GRID_LARGE(g)        ((g)->size >= GRID_SIZE_LARGE(g))
 #define GRID_EFFICIENCY(g)      ((g)->size*(g)->size / ((double)sizeof(Cell)*(g)->colored))
 #define GRID_COLOR_AT(g, p)     (is_grid_sparse(g) ? color_at_s(g, p) : (g)->c[(p).y][(p).x])
+#define GRID_ANT_COLOR(g, a)    GRID_COLOR_AT(g, (a)->pos)
 ///@}
 
 /** @name Sparse matrix bit packing macros */

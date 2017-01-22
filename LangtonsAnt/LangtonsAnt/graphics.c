@@ -145,3 +145,10 @@ chtype dir2arrow(Direction dir)
 	static const chtype arrows[] = { ACS_UARROW, ACS_RARROW, ACS_DARROW, ACS_LARROW };
 	return arrows[dir];
 }
+
+chtype turn2arrow(short turn)
+{
+	return (turn == TURN_LEFT)  ? '<'
+		 : (turn == TURN_RIGHT) ? '>'
+		 : '-';
+}

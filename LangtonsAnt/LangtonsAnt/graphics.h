@@ -216,7 +216,7 @@ typedef unsigned char input_t;
 
 /** @name Performance settings */
 ///@{
-#define FRAMERATE           60
+#define FRAMERATE           60  // TODO
 #define OPT_STEPS           1   /**< Should optimize drawing of steps in the menu by skipping some? */
 #define OPT_STEPS_THRESHOLD 0.9 /**< Ratio of steps between two draws must fall below this value */
 ///@}
@@ -281,7 +281,7 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 
 /**
-* Turns relative coordinates into absolute
+* Converts relative coordinates into absolute
 * @param rel Relative vector
 * @param origin Point of reference
 * @return Absolute vector
@@ -289,7 +289,7 @@ void end_graphics(void);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 
 /**
-* Turns absolute coordinates into relative
+* Converts absolute coordinates into relative
 * @param abs Absolute vector
 * @param origin Point of reference
 * @return Relative vector
@@ -342,11 +342,18 @@ void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_sprite(WINDOW *w, SpriteInfo sprite_info, Vector2i top_left, bool overwrite);
 
 /**
-* Turns a direction into its char representation
-* @param dir Direction
-* @return Appropriate arrow char for the direction
-*/
+ * Converts a direction into its char representation
+ * @param dir Direction
+ * @return Appropriate arrow char for the direction
+ */
 chtype dir2arrow(Direction dir);
+
+/**
+ * Converts a turn direction into its char representation
+ * @param turn Turn direction
+ * @return Appropriate arrow char for the turn direction
+ */
+chtype turn2arrow(short turn);
 
 
 /*----------------------------------------------------------------------------*

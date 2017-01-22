@@ -164,8 +164,6 @@ Simulation *load_state(char *filename)
 		}
 	}
 
-
-
 	if (fclose(input) == EOF) {
 		return NULL;
 	}
@@ -175,7 +173,6 @@ error_end:
 	simulation_delete(simulation);
 	fclose(input);
 	return NULL;
-
 }
 
 int save_state(char *filename, Simulation *simulation)

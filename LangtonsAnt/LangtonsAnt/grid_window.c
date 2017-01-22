@@ -199,7 +199,7 @@ void draw_grid_iter(Grid *grid, Ant *ant, Vector2i oldp)
 	if (ant) {
 		pos = abs2rel(ant->pos, origin);
 		yx = pos2yx(pos, lw, cs, o);
-		draw_cell(yx, cs, GRID_COLOR_AT(grid, ant->pos), ant);
+		draw_cell(yx, cs, GRID_ANT_COLOR(grid, ant), ant);
 	}
 	
 	wnoutrefresh(gridw);

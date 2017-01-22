@@ -82,8 +82,8 @@ static void draw_buttons(void)
 	draw_rect(dialogw, left_pos,  DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	draw_rect(dialogw, right_pos, DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
 	wattron(dialogw, A_REVERSE);
-	mvwaddstr(dialogw, left_pos.y+ymid,  left_pos.x+xmid,  "<");
-	mvwaddstr(dialogw, right_pos.y+ymid, right_pos.x+xmid, ">");
+	mvwaddstr(dialogw, left_pos.y+ymid,  left_pos.x+xmid,  turn2arrow(TURN_LEFT));
+	mvwaddstr(dialogw, right_pos.y+ymid, right_pos.x+xmid, turn2arrow(TURN_RIGHT));
 	if (picked_turn != TURN_NONE) {
 		draw_border(dialogw, (picked_turn == TURN_LEFT) ? left_pos : right_pos,
 						DIALOG_BUTTON_WIDTH, DIALOG_BUTTON_HEIGHT);
