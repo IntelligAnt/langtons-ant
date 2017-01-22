@@ -136,6 +136,13 @@ input_t menu_key_command(int key)
 	Simulation *sim = stgs.linked_sim;
 
 	switch (key) {
+		/* Init size */
+	case '[':
+		return isz_button_clicked(-1);
+	case ']':
+		return isz_button_clicked(1);
+
+		/* Direction */
 	case 'W': case 'w':
 		return dir_button_clicked(DIR_UP);
 	case 'D': case 'd':
@@ -145,20 +152,21 @@ input_t menu_key_command(int key)
 	case 'A': case 'a':
 		return dir_button_clicked(DIR_LEFT);
 
+		/* Simulation */
 	case ' ':
 		return is_simulation_running(sim) ? pause_button_clicked() : play_button_clicked();
-
 	case 'R': case 'r':
 		return stop_button_clicked();
-
 	case KEY_BACKSPACE: case '\b':
 		return clear_simulation();
 
+		/* IO */
 	case KEY_F(1):
 		return io_button_clicked(TRUE);
 	case KEY_F(2):
 		return io_button_clicked(FALSE);
 
+		/* Quit */
 	case KEY_ESC:
 		stop_game_loop();
 		return INPUT_NO_CHANGE;

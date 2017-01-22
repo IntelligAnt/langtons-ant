@@ -45,8 +45,8 @@ static void draw_buffer_zone(int total, int offset)
 
 static void draw_scrollbars(short def)
 {
-	int n = GRID_VIEW_SIZE, mid = n/2;
-	int size = (int)(max((n-2)*gridscrl.scale, 1));
+	int n = GRID_VIEW_SIZE, mid = n/2, step = n-2;
+	int size = (int)(max(step*gridscrl.scale, 1));
 	int h = mid + gridscrl.hcenter - size/2;
 	int v = mid + gridscrl.vcenter - size/2;
 	short sb_fg_color = AVAILABLE_COLOR(def, COLOR_WHITE, COLOR_SILVER);
@@ -87,7 +87,7 @@ static void draw_cell(Vector2i yx, int cs, short c, Ant *ant)
 			draw_sprite(gridw, ant_sprite, yx, cs, cs, FALSE);
 		} else {
 			div_t d = div(ant->dir, 2);
-			chtype arrow = (d.rem ? ACS_RARROW : ACS_UARROW) + d.quot;
+			chtype arrow = (d.rem ? ACS_RARROW : ACS_UARROW) + d.quot; // Really awful hack
 			mvwaddch(gridw, yx.y+cs/2, yx.x+cs/2, arrow | A_REVERSE);
 		}
 	}

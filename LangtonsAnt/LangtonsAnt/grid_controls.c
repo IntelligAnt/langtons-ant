@@ -8,7 +8,7 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 	int o = GRID_VIEW_SIZE / 2 - 1;
 
 	switch (key) {
-		/* Arrow keys */
+		/* Scroll - arrow keys */
 	case KEY_UP:
 		scroll_grid(grid, -SCROLL_STEP_MEDIUM, 0);
 		break;
@@ -22,7 +22,7 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 		scroll_grid(grid, 0,  SCROLL_STEP_MEDIUM);
 		break;
 
-		/* Numpad keys */
+		/* Scroll - numpad keys */
 	case '8':
 		scroll_grid(grid, -SCROLL_STEP_LARGE, 0);
 		break;
@@ -48,7 +48,7 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 		scroll_grid(grid,  SCROLL_STEP_LARGE,  SCROLL_STEP_LARGE);
 		break;
 
-		/* PgUp, PgDn, Home, End */
+		/* Jump to bounds */
 	case KEY_PPAGE:
 		set_scroll(grid, tl.y+o, gridscrl.x);
 		break;
@@ -62,12 +62,12 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 		set_scroll(grid, gridscrl.y, br.x-o);
 		break;
 
-		/* F - Move to ant */
+		/* Jump to ant */
 	case 'F': case 'f': case '5':
 		set_scroll(grid, pos.y, pos.x);
 		break;
 
-		/* C - Move to center */
+		/* Jump to center */
 	case 'C': case 'c': case '0':
 		set_scroll(grid, 0, 0);
 		break;
