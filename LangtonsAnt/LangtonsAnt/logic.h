@@ -94,10 +94,13 @@ typedef struct ant {
 /** Curses color type */
 typedef short color_t;
 
+/**  */
+typedef char turn_t;
+
 /** Colors container */
 typedef struct colors {
 	color_t next[COLOR_COUNT];
-	short turn[COLOR_COUNT];
+	turn_t turn[COLOR_COUNT];
 	color_t first, last;
 	color_t def;
 	size_t n;
@@ -177,11 +180,11 @@ bool is_ant_out_of_bounds(Ant *ant, Grid *grid);
 
 Colors *colors_new(color_t def);
 void colors_delete(Colors *colors);
-void add_color(Colors *colors, color_t c, short turn);
+void add_color(Colors *colors, color_t c, turn_t turn);
 void remove_color(Colors *colors, color_t c);
 void remove_all_colors(Colors *colors);
-void set_color(Colors *colors, size_t index, color_t c, short turn);
-void set_turn(Colors *colors, size_t index, short turn);
+void set_color(Colors *colors, size_t index, color_t c, turn_t turn);
+void set_turn(Colors *colors, size_t index, turn_t turn);
 color_t get_color_at(Colors *colors, size_t index);
 bool color_exists(Colors *colors, color_t c);
 bool is_color_special(Colors *colors, color_t c);

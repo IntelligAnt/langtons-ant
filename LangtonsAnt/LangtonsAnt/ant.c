@@ -52,7 +52,7 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
 	byte *c = &grid->c[ant->pos.y][ant->pos.x];
 	bool is_def = *c == colors->def;
-	short turn;
+	turn_t turn;
 
 	if (is_def) {
 		grid->colored++;

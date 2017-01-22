@@ -27,7 +27,7 @@ static void update_def(Colors *c)
 	c->turn[c->def] = c->turn[c->first];
 }
 
-void add_color(Colors *colors, color_t c, short turn)
+void add_color(Colors *colors, color_t c, turn_t turn)
 {
 	if (c < 0 || c >= COLOR_COUNT || c == colors->def) {
 		return;
@@ -86,7 +86,7 @@ void remove_all_colors(Colors *colors)
 	colors->n = 0;
 }
 
-void set_color(Colors *colors, size_t index, color_t c, short turn)
+void set_color(Colors *colors, size_t index, color_t c, turn_t turn)
 {
 	color_t prev = colors->last, i = colors->first, j;
 	assert(index < colors->n);
@@ -116,7 +116,7 @@ void set_color(Colors *colors, size_t index, color_t c, short turn)
 	update_def(colors);
 }
 
-void set_turn(Colors *colors, size_t index, short turn)
+void set_turn(Colors *colors, size_t index, turn_t turn)
 {
 	color_t i = colors->first;
 	assert(index < colors->n);

@@ -353,7 +353,7 @@ chtype dir2arrow(Direction dir);
  * @param turn Turn direction
  * @return Appropriate arrow char for the turn direction
  */
-chtype turn2arrow(short turn);
+chtype turn2arrow(turn_t turn);
 
 
 /*----------------------------------------------------------------------------*

@@ -6,7 +6,7 @@ const char *dialog_cdef_msg = "Pick grid color";
 
 static int cidx;
 static color_t picked_color = COLOR_NONE;
-static short picked_turn = TURN_NONE;
+static turn_t picked_turn = TURN_NONE;
 
 static const Vector2i colors_pos  = { 1, 1 };
 static const Vector2i left_pos    = { DIALOG_TILE_ROWS*DIALOG_TILE_SIZE+2, 1 };

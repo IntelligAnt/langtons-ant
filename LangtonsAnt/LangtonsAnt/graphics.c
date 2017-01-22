@@ -146,7 +146,7 @@ chtype dir2arrow(Direction dir)
 	return arrows[dir];
 }
 
-chtype turn2arrow(short turn)
+chtype turn2arrow(turn_t turn)
 {
 	return (turn == TURN_LEFT)  ? '<'
 		 : (turn == TURN_RIGHT) ? '>'
