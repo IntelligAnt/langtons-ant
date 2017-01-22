@@ -149,9 +149,9 @@ input_t menu_key_command(int key)
 		return isize_button_clicked(-1);
 
 		/* Speed */
-	case '=': case '+':
+	case '=': case PADPLUS:
 		return speed_button_clicked(1);
-	case '-':
+	case '-': case PADMINUS:
 		return speed_button_clicked(-1);
 
 		/* Direction */

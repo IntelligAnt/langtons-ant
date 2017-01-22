@@ -23,28 +23,28 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 		break;
 
 		/* Scroll - numpad keys */
-	case '8':
+	case '8': case KEY_A2:
 		scroll_grid(grid, -SCROLL_STEP_LARGE, 0);
 		break;
-	case '2':
+	case '2': case KEY_C2:
 		scroll_grid(grid,  SCROLL_STEP_LARGE, 0);
 		break;
-	case '4':
+	case '4': case KEY_B1:
 		scroll_grid(grid, 0, -SCROLL_STEP_LARGE);
 		break;
-	case '6':
+	case '6': case KEY_B3:
 		scroll_grid(grid, 0,  SCROLL_STEP_LARGE);
 		break;
-	case '7':
+	case '7': case KEY_A1:
 		scroll_grid(grid, -SCROLL_STEP_LARGE, -SCROLL_STEP_LARGE);
 		break;
-	case '9':
+	case '9': case KEY_A3:
 		scroll_grid(grid, -SCROLL_STEP_LARGE,  SCROLL_STEP_LARGE);
 		break;
-	case '1':
+	case '1': case KEY_C1:
 		scroll_grid(grid,  SCROLL_STEP_LARGE, -SCROLL_STEP_LARGE);
 		break;
-	case '3':
+	case '3': case KEY_C3:
 		scroll_grid(grid,  SCROLL_STEP_LARGE,  SCROLL_STEP_LARGE);
 		break;
 
@@ -63,12 +63,12 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 		break;
 
 		/* Jump to ant */
-	case 'F': case 'f': case '5':
+	case 'F': case 'f': case '5': case KEY_B2:
 		set_scroll(grid, pos.y, pos.x);
 		break;
 
 		/* Jump to center */
-	case 'C': case 'c': case '0':
+	case 'C': case 'c': case '0': case PAD0:
 		set_scroll(grid, 0, 0);
 		break;
 
