@@ -280,7 +280,7 @@ static void draw_init_size(void)
 static void draw_direction(void)
 {
 	wattrset(menuw, fg_pair);
-	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, dir2arrow(stgs.linked_sim->ant->dir));
+	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, arrows[stgs.linked_sim->ant->dir]);
 	//wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
 	//							 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));

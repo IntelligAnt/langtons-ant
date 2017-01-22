@@ -10,7 +10,7 @@
 #include "include/curses.h"
 
 
-/*-------------------------- Display colors macros ---------------------------*/
+/*--------------------------- Display color macros ---------------------------*/
 
 #undef COLOR_BLACK
 #undef COLOR_RED
@@ -227,6 +227,7 @@ typedef unsigned char input_t;
 /** @name Globals */
 ///@{
 extern chtype         fg_pair, bg_pair;
+extern chtype         arrows[];
 
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
@@ -272,7 +273,7 @@ void init_graphics(short fg_color, short bg_color);
 void end_graphics(void);
 
 /**
-* Utility function for turning relative coords into absolute
+* Turns relative coordinates into absolute
 * @param rel Relative vector
 * @param origin Point of reference
 * @return Absolute vector
@@ -280,7 +281,7 @@ void end_graphics(void);
 Vector2i rel2abs(Vector2i rel, Vector2i origin);
 
 /**
-* Utility function for turning absolute coords into relative
+* Turns absolute coordinates into relative
 * @param abs Absolute vector
 * @param origin Point of reference
 * @return Relative vector
@@ -335,13 +336,6 @@ void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 void draw_sprite(WINDOW *w, const byte *sprite,
 				 Vector2i top_left, size_t width, size_t height,
 				 bool overwrite);
-
-/**
- * Utility function for turning a direction into its char representation
- * @param dir Direction
- * @return Appropriate arrow character for the direction
- */
-chtype dir2arrow(Direction dir);
 
 
 /*----------------------------------------------------------------------------*

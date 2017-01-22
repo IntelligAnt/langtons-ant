@@ -2,6 +2,7 @@
 #include "graphics.h"
 
 chtype fg_pair, bg_pair;
+chtype arrows[] = { ACS_UARROW, ACS_RARROW, ACS_DARROW, ACS_LARROW };
 
 void init_def_pairs(short fg_color, short bg_color)
 {
@@ -55,19 +56,17 @@ void end_graphics(void)
 
 Vector2i rel2abs(Vector2i rel, Vector2i origin)
 {
-	return (Vector2i)
-	{
+	return (Vector2i) {
 		.y = origin.y + rel.y,
-			.x = origin.x + rel.x
+		.x = origin.x + rel.x
 	};
 }
 
 Vector2i abs2rel(Vector2i abs, Vector2i origin)
 {
-	return (Vector2i)
-	{
+	return (Vector2i) {
 		.y = abs.y - origin.y,
-			.x = abs.x - origin.x
+		.x = abs.x - origin.x
 	};
 }
 
@@ -140,21 +139,5 @@ void draw_sprite(WINDOW *w, const byte *sprite,
 		} else if (pixel) {
 			mvwaddch(w, top_left.y+y, top_left.x+x, ACS_BLOCK);
 		}
-	}
-}
-
-chtype dir2arrow(Direction dir) // TODO turn into macro
-{
-	switch (dir) {
-	case DIR_UP:
-		return ACS_UARROW;
-	case DIR_RIGHT:
-		return ACS_RARROW;
-	case DIR_DOWN:
-		return ACS_DARROW;
-	case DIR_LEFT:
-		return ACS_LARROW;
-	default:
-		return ACS_BLOCK;
 	}
 }
