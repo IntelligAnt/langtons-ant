@@ -281,7 +281,6 @@ static void draw_direction(void)
 {
 	wattrset(menuw, fg_pair);
 	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, dir2arrow(stgs.linked_sim->ant->dir));
-	//draw_rect(menuw, (Vector2i) { menu_dir_u_pos.y+3, menu_dir_u_pos.x }, MENU_UDARROW_WIDTH, 1);
 	//wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
 	//							 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));

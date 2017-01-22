@@ -40,21 +40,14 @@ input_t clear_simulation(void)
 	return reset_simulation();
 }
 
-static input_t isize_button_clicked(int i)
+static input_t isize_button_clicked(int d)
 {
 	Simulation *sim = stgs.linked_sim;
-	switch (i) {
-	case 1:
-		if (stgs.init_size < GRID_MAX_INIT_SIZE) {
-			++stgs.init_size;
-		}
-		break;
-	case -1:
-		if (stgs.init_size > GRID_MIN_INIT_SIZE) {
-			--stgs.init_size;
-		}
-		break;
-	default:
+	if (d > 0) {
+		stgs.init_size = min(stgs.init_size+d, GRID_MAX_INIT_SIZE);
+	} else if (d < 0) {
+		stgs.init_size = max(stgs.init_size+d, GRID_MIN_INIT_SIZE);
+	} else {
 		return INPUT_NO_CHANGE;
 	}
 	if (!is_simulation_running(sim) && !has_simulation_started(sim)) { // Sanity check
@@ -137,10 +130,10 @@ input_t menu_key_command(int key)
 
 	switch (key) {
 		/* Init size */
-	case '[':
-		return isize_button_clicked(-1);
 	case ']':
 		return isize_button_clicked(1);
+	case '[':
+		return isize_button_clicked(-1);
 
 		/* Direction */
 	case 'W': case 'w':

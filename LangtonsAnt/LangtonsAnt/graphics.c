@@ -154,5 +154,7 @@ chtype dir2arrow(Direction dir) // TODO turn into macro
 		return ACS_DARROW;
 	case DIR_LEFT:
 		return ACS_LARROW;
+	default:
+		return ACS_BLOCK;
 	}
 }
