@@ -63,10 +63,9 @@ static const byte logo_ant_sprite[] = {
 	0x00, 0x00, 0xE9, 0x01, 0x80, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
-static const byte uarrow_sprite[] = { 0x5C };
-static const byte darrow_sprite[] = { 0xE8 };
-static const byte larrow_sprite[] = { 0xB8 };
-static const byte rarrow_sprite[] = { 0x74 };
+static const byte arrow_sprites[][1] = {
+	{ 0x5C }, { 0xB8 }, { 0xE8 }, { 0x74 }
+};
 static const byte button_sprites[][4] = {
 	{ 0x43, 0x1C, 0xC4, 0x00 }, { 0x02, 0x94, 0xA0, 0x00 },
 	{ 0x03, 0x9C, 0xE0, 0x00 }, { 0x47, 0x92, 0x17, 0x00 }
@@ -143,9 +142,9 @@ static void draw_edge(void)
 static void draw_logo(void)
 {
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
-	draw_sprite(menuw, logo_sprite, logo_pos, 40, 8, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { logo_sprite, 40, 8 }, logo_pos, FALSE);
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR)); // TODO add copyright window
-	draw_sprite(menuw, logo_ant_sprite, logo_pos, 40, 8, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { logo_ant_sprite, 40, 8 }, logo_pos, FALSE);
 	wattron(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR) | A_REVERSE);
 	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
 }
@@ -224,8 +223,7 @@ static void draw_color_list(void)
 	bool do_for = TRUE;
 	Vector2i pos1, pos2, cdef_pos;
 
-	pos1.y = rules_pos.y - MENU_TILE_VSEP - 1;
-	pos1.x = rules_pos.x - MENU_TILE_HSEP - MENU_TILE_SIZE;
+	pos1.y = rules_pos.y-MENU_TILE_VSEP-1, pos1.x = rules_pos.x-MENU_TILE_HSEP-MENU_TILE_SIZE;
 	wattrset(menuw, bg_pair);
 	draw_rect(menuw, pos1, MENU_TILES_WIDTH, MENU_TILES_HEIGHT);
 	
@@ -271,23 +269,30 @@ static void draw_color_list(void)
 static void draw_init_size(void)
 {
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
-	draw_sprite(menuw, uarrow_sprite, menu_isize_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, darrow_sprite, menu_isize_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_UP],   MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
+				menu_isize_u_pos, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_DOWN], MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
+				menu_isize_d_pos, FALSE);
 	wattrset(menuw, fg_pair);
-	draw_sprite(menuw, digit_sprites[stgs.init_size], isize_pos, 3, 5, TRUE);
+	draw_sprite(menuw, (SpriteInfo) { digit_sprites[stgs.init_size], 3, 5 }, isize_pos, TRUE);
 }
 
 static void draw_direction(void)
 {
 	wattrset(menuw, fg_pair);
-	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, arrows[stgs.linked_sim->ant->dir]);
+	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, dir2arrow(stgs.linked_sim->ant->dir));
 	//wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
 	//							 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
-	draw_sprite(menuw, uarrow_sprite, menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, larrow_sprite, menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, darrow_sprite, menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, FALSE);
-	draw_sprite(menuw, rarrow_sprite, menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_UP],    MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
+				menu_dir_u_pos, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_RIGHT], MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT },
+				menu_dir_r_pos, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_DOWN],  MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
+				menu_dir_d_pos, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_LEFT],  MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT },
+				menu_dir_l_pos, FALSE);
+
 }
 
 static void draw_speed(void)
@@ -315,19 +320,19 @@ static void draw_control_buttons(void)
 
 	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors)
 								 ? MENU_PLAY_COLOR : MENU_INACTIVE_COLOR));
-	draw_sprite(menuw, button_sprites[0], pos1, 5, 5, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { button_sprites[0], 5, 5 }, pos1, FALSE);
 
 	wattrset(menuw, GET_PAIR_FOR(is_simulation_running(stgs.linked_sim)
 								 ? MENU_PAUSE_COLOR : MENU_INACTIVE_COLOR));
-	draw_sprite(menuw, button_sprites[1], pos2, 5, 5, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { button_sprites[1], 5, 5 }, pos2, FALSE);
 	
 	if (has_simulation_started(stgs.linked_sim)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_STOP_COLOR));
-		draw_sprite(menuw, button_sprites[2], pos3, 5, 5, FALSE);
+		draw_sprite(menuw, (SpriteInfo) { button_sprites[2], 5, 5 }, pos3, FALSE);
 	} else {
 		wattrset(menuw, GET_PAIR_FOR(!is_colors_empty(stgs.colors)
 									 ? MENU_CLEAR_COLOR : MENU_INACTIVE_COLOR));
-		draw_sprite(menuw, button_sprites[3], pos3, 5, 5, FALSE);
+		draw_sprite(menuw, (SpriteInfo) { button_sprites[3], 5, 5 }, pos3, FALSE);
 	}
 }
 
@@ -390,7 +395,7 @@ static void draw_steps(void)
 
 	wattrset(menuw, fg_pair);
 	if (len > 8) {
-		draw_sprite(menuw, inf_sprite, tl, 31, 5, TRUE);
+		draw_sprite(menuw, (SpriteInfo) { inf_sprite, 31, 5 }, tl, TRUE);
 		do_draw = FALSE;
 		return;
 	}
@@ -400,7 +405,7 @@ static void draw_steps(void)
 		if (*p != ' ') {
 			digit = *p - '0';
 			wattroff(menuw, A_REVERSE);
-			draw_sprite(menuw, digit_sprites[digit], tl, 3, 5, TRUE);
+			draw_sprite(menuw, (SpriteInfo) { digit_sprites[digit], 3, 5 }, tl, TRUE);
 		} else {
 			wattron(menuw, A_REVERSE);
 			draw_rect(menuw, tl, 3, 5);

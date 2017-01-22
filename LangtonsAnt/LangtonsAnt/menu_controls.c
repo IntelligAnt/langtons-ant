@@ -68,17 +68,17 @@ static input_t dir_button_clicked(Direction dir)
 
 static input_t play_button_clicked(void)
 {
-	input_t res = INPUT_NO_CHANGE;
+	input_t ret = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	if (is_simulation_running(sim)) {
-		res |= reset_simulation();
+		ret |= reset_simulation();
 		sim = stgs.linked_sim;
 	}
 	if (sim && has_enough_colors(sim->colors)) {
 		simulation_run(sim);
-		res |= INPUT_MENU_CHANGED;
+		ret |= INPUT_MENU_CHANGED;
 	}
-	return res;
+	return ret;
 }
 
 static input_t pause_button_clicked(void)
@@ -174,7 +174,7 @@ input_t menu_key_command(int key)
 
 input_t menu_mouse_command(void)
 {
-	input_t res = INPUT_NO_CHANGE;
+	input_t ret = INPUT_NO_CHANGE;
 	MEVENT event;
 	Vector2i event_pos, pos, tile;
 	size_t i;
@@ -188,7 +188,7 @@ input_t menu_mouse_command(void)
 			return dialog_mouse_command(event);
 		} else {
 			close_dialog();
-			res = INPUT_MENU_CHANGED;
+			ret = INPUT_MENU_CHANGED;
 		}
 	}
 
@@ -201,55 +201,55 @@ input_t menu_mouse_command(void)
 			} else if (event.bstate & BUTTON3_CLICKED) {
 				open_dialog(pos, CIDX_DEFAULT);
 			}
-			return res | INPUT_MENU_CHANGED;
+			return ret | INPUT_MENU_CHANGED;
 		}
 	}
 
 	if (area_contains(get_menu_cdef_pos(), strlen(dialog_cdef_msg), 1, pos)) {
 		open_dialog(pos, CIDX_DEFAULT);
-		return res | INPUT_MENU_CHANGED;
+		return ret | INPUT_MENU_CHANGED;
 	}
 
 	/* Control buttons clicked */
 	if (area_contains(menu_play_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return res | play_button_clicked();
+		return ret | play_button_clicked();
 	}
 	if (area_contains(menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return res | pause_button_clicked();
+		return ret | pause_button_clicked();
 	}
 	if (area_contains(menu_stop_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return res | stop_button_clicked();
+		return ret | stop_button_clicked();
 	}
 
 	/* IO buttons clicked */
 	if (area_contains(menu_load_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return res | io_button_clicked(TRUE);
+		return ret | io_button_clicked(TRUE);
 	}
 	if (area_contains(menu_save_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT, pos)) {
-		return res | io_button_clicked(FALSE);
+		return ret | io_button_clicked(FALSE);
 	}
 
 	/* Init size buttons clicked */
 	if (area_contains(menu_isize_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | isize_button_clicked(1);
+		return ret | isize_button_clicked(1);
 	}
 	if (area_contains(menu_isize_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | isize_button_clicked(-1);
+		return ret | isize_button_clicked(-1);
 	}
 
 	/* Direction buttons clicked */
 	if (area_contains(menu_dir_u_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(DIR_UP);
+		return ret | dir_button_clicked(DIR_UP);
 	}
 	if (area_contains(menu_dir_r_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(DIR_RIGHT);
+		return ret | dir_button_clicked(DIR_RIGHT);
 	}
 	if (area_contains(menu_dir_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(DIR_DOWN);
+		return ret | dir_button_clicked(DIR_DOWN);
 	}
 	if (area_contains(menu_dir_l_pos, MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT, pos)) {
-		return res | dir_button_clicked(DIR_LEFT);
+		return ret | dir_button_clicked(DIR_LEFT);
 	}
 
-	return res;
+	return ret;
 }

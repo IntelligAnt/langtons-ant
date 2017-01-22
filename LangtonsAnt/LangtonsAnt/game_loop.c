@@ -5,14 +5,14 @@ static bool run_loop = TRUE;
 
 static input_t handle_input(void)
 {
-	input_t res = INPUT_NO_CHANGE;
+	input_t ret = INPUT_NO_CHANGE;
 	Simulation *sim = stgs.linked_sim;
 	int ch = getch();
 	if (sim) {
-		res |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
+		ret |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
 	}
-	res |= menu_key_command(ch);
-	return res;
+	ret |= menu_key_command(ch);
+	return ret;
 }
 
 void game_loop(void)

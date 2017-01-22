@@ -55,7 +55,7 @@ static void draw_tiles(void)
 				draw_border(dialogw, outer, DIALOG_TILE_SIZE, DIALOG_TILE_SIZE);
 			}
 		} else {
-			inner.y = outer.y + 1, inner.x = outer.x + 1;
+			inner.y = outer.y+1, inner.x = outer.x+1;
 			wattrset(dialogw, GET_PAIR_FOR(stgs.colors->def));
 			draw_square(dialogw, outer, DIALOG_TILE_SIZE);
 			wattrset(dialogw, GET_PAIR_FOR(i));

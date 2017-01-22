@@ -78,15 +78,19 @@ static void draw_cell(Vector2i yx, int cs, short c, Ant *ant)
 	if (yx.y < 0 || yx.y >= GRID_VIEW_SIZE || yx.x < 0 || yx.x >= GRID_VIEW_SIZE) {
 		return;
 	}
+
 	wattrset(gridw, GET_PAIR_FOR(c));
 	draw_square(gridw, yx, cs);
+
 	if (ant) {
-		const byte *ant_sprite;
-		if (ant_sprite = get_ant_sprite(cs, ant->dir)) {
+		Vector2i center = { yx.y + cs/2, yx.x + cs/2 };
+		SpriteInfo sprite = get_ant_sprite(cs, ant->dir);
+		if (sprite.data) {
+			yx.y = center.y-sprite.height/2, yx.x = center.x-sprite.width/2;
 			wattrset(gridw, fg_pair);
-			draw_sprite(gridw, ant_sprite, yx, cs, cs, FALSE);
+			draw_sprite(gridw, sprite, yx, FALSE);
 		} else {
-			mvwaddch(gridw, yx.y+cs/2, yx.x+cs/2, arrows[ant->dir] | A_REVERSE);
+			mvwaddch(gridw, center.y, center.x, dir2arrow(ant->dir) | A_REVERSE);
 		}
 	}
 }
@@ -217,8 +221,7 @@ void set_scroll(Grid *grid, int y, int x)
 	y = sgn(y) * min(abs(y), clamp);
 	x = sgn(x) * min(abs(x), clamp);
 
-	gridscrl.y = y;
-	gridscrl.x = x;
+	gridscrl.y = y, gridscrl.x = x;
 	gridscrl.hcenter = (int)(gridscrl.scale * x);
 	gridscrl.vcenter = (int)(gridscrl.scale * y);
 }
@@ -226,10 +229,8 @@ void set_scroll(Grid *grid, int y, int x)
 void reset_scroll(void)
 {
 	if (gridscrl.enabled) {
-		gridscrl.y = 0;
-		gridscrl.x = 0;
-		gridscrl.hcenter = 0;
-		gridscrl.vcenter = 0;
+		gridscrl.y = gridscrl.x = 0;
+		gridscrl.hcenter = gridscrl.vcenter = 0;
 		gridscrl.scale = 0.0;
 	}
 }

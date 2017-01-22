@@ -47,16 +47,10 @@ static const byte *ant24_sprites[] = {
 	ant24_up, ant24_rt, ant24_dn, ant24_lf
 };
 
-const byte *get_ant_sprite(size_t size, Direction dir)
+SpriteInfo get_ant_sprite(size_t size, Direction dir)
 {
-	switch (size) {
-	case 3:
-		return ant3_sprites[dir];
-	case 8:
-		return ant8_sprites[dir];
-	case 24:
-		return ant24_sprites[dir];
-	default:
-		return NULL;
-	}
+	return (size >= 24) ? (SpriteInfo) { ant24_sprites[dir], 24, 24 }
+		 : (size >= 8)  ? (SpriteInfo) { ant8_sprites[dir],  8,  8  }
+		 : (size >= 3)  ? (SpriteInfo) { ant3_sprites[dir],  3,  3  }
+		 : (SpriteInfo) { NULL, 0, 0 };
 }

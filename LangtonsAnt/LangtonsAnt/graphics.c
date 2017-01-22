@@ -125,19 +125,23 @@ void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 	}
 }
 
-void draw_sprite(WINDOW *w, const byte *sprite,
-				 Vector2i top_left, size_t width, size_t height,
-				 bool overwrite)
+void draw_sprite(WINDOW *w, SpriteInfo sprite, Vector2i top_left, bool overwrite)
 {
 	size_t read, y, x;
 	byte pixel;
-	for (read = 0; read < width*height; ++read) {
-		pixel = sprite[read/8] >> (7-read%8) & 0x1;
-		y = read / width, x = read % width;
+	for (read = 0; read < sprite.width*sprite.height; ++read) {
+		pixel = sprite.data[read/8] >> (7-read%8) & 0x1;
+		y = read / sprite.width, x = read % sprite.width;
 		if (overwrite) {
 			mvwaddch(w, top_left.y+y, top_left.x+x, pixel ? ACS_BLOCK : ' ');
 		} else if (pixel) {
 			mvwaddch(w, top_left.y+y, top_left.x+x, ACS_BLOCK);
 		}
 	}
+}
+
+chtype dir2arrow(Direction dir)
+{
+	static const chtype arrows[] = { ACS_UARROW, ACS_RARROW, ACS_DARROW, ACS_LARROW };
+	return arrows[dir];
 }

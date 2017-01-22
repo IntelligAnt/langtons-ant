@@ -212,7 +212,7 @@ typedef unsigned char input_t;
 ///@}
 
 
-/*--------------------- Performance optimization macros ----------------------*/
+/*--------------------- Performance/optimization macros ----------------------*/
 
 /** @name Performance settings */
 ///@{
@@ -222,12 +222,20 @@ typedef unsigned char input_t;
 ///@}
 
 
+/*------------------------------- Sprite type --------------------------------*/
+
+/** Structure containing sprite data and size */
+typedef struct sprite_info {
+	const byte *data;     /**< Byte array */  /**@{*/
+	size_t width, height; /**< Sprite size */ /**@}*/
+} SpriteInfo;
+
+
 /*------------------------ Global variables/constants ------------------------*/
 
 /** @name Globals */
 ///@{
 extern chtype         fg_pair, bg_pair;
-extern chtype         arrows[];
 
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
@@ -327,15 +335,18 @@ void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height);
 /**
  * Utility function for drawing monochrome sprites
  * @param w Window to draw to
- * @param sprite Sprite to be drawn (byte array)
- * @param top_left Box origin
- * @param width Box width
- * @param height Box height
+ * @param sprite Sprite to be drawn and its size as SpriteInfo
+ * @param top_left Sprite origin
  * @param overwrite Should existing content be overwritten?
  */
-void draw_sprite(WINDOW *w, const byte *sprite,
-				 Vector2i top_left, size_t width, size_t height,
-				 bool overwrite);
+void draw_sprite(WINDOW *w, SpriteInfo sprite_info, Vector2i top_left, bool overwrite);
+
+/**
+* Turns a direction into its char representation
+* @param dir Direction
+* @return Appropriate arrow char for the direction
+*/
+chtype dir2arrow(Direction dir);
 
 
 /*----------------------------------------------------------------------------*
@@ -348,7 +359,7 @@ void draw_sprite(WINDOW *w, const byte *sprite,
  * @param dir Current ant direction
  * @return Ant sprite with requested size and direction, if one exists; NULL otherwise
  */
-const byte *get_ant_sprite(size_t size, Direction dir);
+SpriteInfo get_ant_sprite(size_t size, Direction dir);
 
 
 /*----------------------------------------------------------------------------*
