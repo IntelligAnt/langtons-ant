@@ -302,10 +302,11 @@ static void draw_direction(void)
 
 static void draw_speed(void)
 {
+	chtype pair = GET_PAIR_FOR(MENU_ACTIVE_COLOR);
 	int dy = menu_speed_d_pos.y - menu_speed_u_pos.y - 2;
 	Vector2i pos = { speed_pos.y + dy+1 - 2*stgs.speed, speed_pos.x };
 
-	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
+	wattrset(menuw, pair);
 	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_UP], MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
 				menu_speed_u_pos, FALSE);
 	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_DOWN], MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
@@ -313,10 +314,10 @@ static void draw_speed(void)
 	wattrset(menuw, ui_pair);
 	mvwvline(menuw, menu_speed_u_pos.y+2, menu_speed_u_pos.x+1, ACS_VLINE, dy);
 
-	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
-	mvwaddch(menuw, pos.y+2, pos.x-3, ACS_BLOCK);
+	wattrset(menuw, pair);
+	mvwvline(menuw, pos.y+1, pos.x-3, ACS_BLOCK, 3);
 	wattrset(menuw, fg_pair | A_REVERSE);
-	draw_rect(menuw, speed_pos, MENU_DIGIT_WIDTH, 21);
+	draw_rect(menuw, speed_pos, MENU_DIGIT_WIDTH, dy+4);
 	wattroff(menuw, A_REVERSE);
 	draw_sprite(menuw, (SpriteInfo) { digit_sprites[stgs.speed], 3, 5 }, pos, TRUE);
 }
@@ -324,26 +325,26 @@ static void draw_speed(void)
 static void draw_func(void)
 {
 	Simulation *sim = stgs.linked_sim;
-	chtype f_pair = GET_PAIR_FOR(MENU_ACTIVE_COLOR);
-	char f_str[8];
+	chtype pair = GET_PAIR_FOR(MENU_ACTIVE_COLOR);
+	char str[8];
 	color_t ant_color = GRID_ANT_COLOR(sim->grid, sim->ant);
 	color_t next_color = sim->colors->next[ant_color]; // uses sim->colors instead of stgs.colors
 
-	sprintf(f_str, "f(q%hd, ", state_map[ant_color]);
-	wattrset(menuw, f_pair);
-	mvwaddstr(menuw, func_pos.y, func_pos.x, f_str);
+	sprintf(str, "f(q%hd, ", state_map[ant_color]);
+	wattrset(menuw, pair);
+	mvwaddstr(menuw, func_pos.y, func_pos.x, str);
 	wattrset(menuw, GET_PAIR_FOR(ant_color));
 	waddch(menuw, ACS_BLOCK);
-	wattrset(menuw, f_pair);
+	wattrset(menuw, pair);
 	waddstr(menuw, ") = ");
 	
-	sprintf(f_str, "(q%hd, ", state_map[next_color]);
-	mvwaddstr(menuw, func_pos.y+1, func_pos.x+1, f_str);
+	sprintf(str, "(q%hd, ", state_map[next_color]);
+	mvwaddstr(menuw, func_pos.y+1, func_pos.x+1, str);
 	wattrset(menuw, GET_PAIR_FOR(next_color));
 	waddch(menuw, ACS_BLOCK);
-	sprintf(f_str, ", %c) ", turn2arrow(sim->colors->turn[ant_color]));
-	wattrset(menuw, f_pair);
-	waddstr(menuw, f_str);
+	sprintf(str, ", %c) ", turn2arrow(sim->colors->turn[ant_color]));
+	wattrset(menuw, pair);
+	waddstr(menuw, str);
 }
 
 static void draw_control_buttons(void)
