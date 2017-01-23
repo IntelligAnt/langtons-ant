@@ -58,11 +58,7 @@ static input_t isize_button_clicked(int d)
 
 static input_t dir_button_clicked(Direction dir)
 {
-	Simulation *sim = stgs.linked_sim;
-	//if (has_simulation_started(sim)) {
-	//	return INPUT_NO_CHANGE;
-	//}
-	sim->ant->dir = dir;
+	stgs.linked_sim->ant->dir = dir;
 	return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 }
 

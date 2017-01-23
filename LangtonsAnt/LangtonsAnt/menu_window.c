@@ -26,7 +26,7 @@ const Vector2i menu_save_pos = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
 
 static const char *logo_msg   = " 14-COLOR 2D TURING MACHINE SIMULATOR ";
 static const char *rules_msg  = "RULES:";
-static const char *isize_msg  = "START GRID SIZE:";
+static const char *isize_msg  = "INIT GRID SIZE:";
 static const char *dir_msg    = "ANT DIRECTION:";
 static const char *speed_msg  = "SIMULATION SPEED";
 static const char *func_msg   = "STATE FUNCTION:";
@@ -58,7 +58,7 @@ static const byte logo_sprite[] = {
 	0x22, 0x7C, 0xE9, 0x39, 0x99, 0x26, 0x00, 0x00,
 	0x08, 0x00, 0x00, 0x00, 0x00, 0x30, 0x00, 0x00
 };
-static const byte logo_ant_sprite[] = {
+static const byte logo_highlight_sprite[] = {
 	0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x02,
 	0x00, 0x00, 0x00, 0xEE, 0x03, 0x80, 0x00, 0x01,
 	0x29, 0x02, 0x00, 0x00, 0x01, 0x29, 0x02, 0x00,
@@ -68,10 +68,6 @@ static const byte logo_ant_sprite[] = {
 static const byte arrow_sprites[][1] = {
 	{ 0x5C }, { 0xB8 }, { 0xE8 }, { 0x74 }
 };
-static const byte button_sprites[][4] = {
-	{ 0x43, 0x1C, 0xC4, 0x00 }, { 0x02, 0x94, 0xA0, 0x00 },
-	{ 0x03, 0x9C, 0xE0, 0x00 }, { 0x47, 0x92, 0x17, 0x00 }
-};
 static const byte digit_sprites[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
@@ -79,6 +75,10 @@ static const byte digit_sprites[][2] = {
 static const byte inf_sprite[] = {
 	0x00, 0x00, 0x07, 0x1C, 0x00, 0x00, 0x11, 0x44, 0x00, 0x00,
 	0x21, 0x08, 0x00, 0x00, 0x45, 0x10, 0x00, 0x00, 0x71, 0xC0
+};
+static const byte button_sprites[][4] = {
+	{ 0x43, 0x1C, 0xC4, 0x00 }, { 0x02, 0x94, 0xA0, 0x00 },
+	{ 0x03, 0x9C, 0xE0, 0x00 }, { 0x47, 0x92, 0x17, 0x00 }
 };
 
 static size_t state_map[COLOR_COUNT] = { 0 };
@@ -150,7 +150,7 @@ static void draw_logo(void)
 	wattron(menuw, A_REVERSE);
 	mvwaddstr(menuw, logo_msg_pos.y, logo_msg_pos.x, logo_msg);
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR)); // TODO add copyright window
-	draw_sprite(menuw, (SpriteInfo) { logo_ant_sprite, 40, 8 }, logo_pos, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { logo_highlight_sprite, 40, 8 }, logo_pos, FALSE);
 }
 
 static void draw_color_arrow(Vector2i pos1, Vector2i pos2)
@@ -287,8 +287,6 @@ static void draw_direction(void)
 {
 	wattrset(menuw, fg_pair);
 	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, dir2arrow(stgs.linked_sim->ant->dir));
-	//wattrset(menuw, GET_PAIR_FOR(!has_simulation_started(stgs.linked_sim)
-	//							 ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
 	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_UP],    MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
 				menu_dir_u_pos, FALSE);
@@ -328,7 +326,7 @@ static void draw_func(void)
 	chtype pair = GET_PAIR_FOR(MENU_ACTIVE_COLOR);
 	char str[8];
 	color_t ant_color = GRID_ANT_COLOR(sim->grid, sim->ant);
-	color_t next_color = sim->colors->next[ant_color]; // uses sim->colors instead of stgs.colors
+	color_t next_color = sim->colors->next[ant_color]; // Uses sim->colors instead of stgs.colors
 
 	sprintf(str, "f(q%hd, ", state_map[ant_color]);
 	wattrset(menuw, pair);
@@ -390,12 +388,12 @@ static void draw_io_buttons(void)
 	draw_rect(menuw, inner2, MENU_BUTTON_WIDTH-2, MENU_BUTTON_HEIGHT-2);
 
 	wattrset(menuw, fg_pair);
-	mvwaddstr(menuw, inner1.y+1, inner1.x+1, "LOAD");
-	mvwaddstr(menuw, inner1.y+2, inner1.x+2, "FROM");
-	mvwaddstr(menuw, inner1.y+3, inner1.x+4, "FILE");
-	mvwaddstr(menuw, inner2.y+1, inner2.x+1, "SAVE");
-	mvwaddstr(menuw, inner2.y+2, inner2.x+3, "TO");
-	mvwaddstr(menuw, inner2.y+3, inner2.x+4, "FILE");
+	mvwaddstr(menuw, inner1.y+1, inner1.x, " LOAD    ");
+	mvwaddstr(menuw, inner1.y+2, inner1.x, "  FROM   ");
+	mvwaddstr(menuw, inner1.y+3, inner1.x, "    FILE ");
+	mvwaddstr(menuw, inner2.y+1, inner2.x, " SAVE    ");
+	mvwaddstr(menuw, inner2.y+2, inner2.x, "   TO    ");
+	mvwaddstr(menuw, inner2.y+3, inner2.x, "    FILE ");
 
 	/* Draw status indicators */
 	if (load_status != STATUS_NONE) {
@@ -481,6 +479,7 @@ void draw_menu_full(void)
 	draw_steps();
 	draw_labels();
 	wnoutrefresh(menuw);
+
 	if (dialogw) {
 		draw_dialog();
 	}
