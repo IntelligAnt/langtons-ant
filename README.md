@@ -1,5 +1,5 @@
 # Langton's Ant
 
-Langton's ant Turing machine simulator with ASCII graphics, written in C
+14-color 2D Turing machine simulator with ASCII graphics, written in C
 
-v1.0
+v2.0
