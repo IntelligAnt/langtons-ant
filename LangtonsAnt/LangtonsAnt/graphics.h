@@ -223,7 +223,7 @@ typedef unsigned char input_t;
 #define LOOP_MAX_SPEED 9 /**< Maximum allowed speed multiplier */
 #define LOOP_DELAY     (1 << (LOOP_MAX_SPEED-1)) /**< Base delay in ms */
 #define LOOP_OPT_STEPS 1 /**< Should optimize drawing of steps in the menu by skipping? */
-#define LOOP_OPT_SPEED 4 /**< Threshold speed at which to begin skipping */
+#define LOOP_OPT_SPEED 3 /**< Threshold speed at which to begin skipping */
 ///@}
 
 

@@ -283,10 +283,14 @@ static void draw_init_size(void)
 	draw_sprite(menuw, (SpriteInfo) { digit_sprites[stgs.init_size], 3, 5 }, isize_pos, TRUE);
 }
 
-static void draw_direction(void)
+static void draw_dir_arrow(void)
 {
 	wattrset(menuw, fg_pair);
 	mvwaddch(menuw, menu_dir_u_pos.y+3, menu_dir_u_pos.x+1, dir2arrow(stgs.linked_sim->ant->dir));
+}
+
+static void draw_direction(void)
+{
 	wattrset(menuw, GET_PAIR_FOR(MENU_ACTIVE_COLOR));
 	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_UP],    MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
 				menu_dir_u_pos, FALSE);
@@ -296,6 +300,7 @@ static void draw_direction(void)
 				menu_dir_d_pos, FALSE);
 	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_LEFT],  MENU_RLARROW_WIDTH, MENU_RLARROW_HEIGHT },
 				menu_dir_l_pos, FALSE);
+	draw_dir_arrow();
 }
 
 static void draw_speed(void)
@@ -410,10 +415,10 @@ static void draw_size(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	size_t size = sim ? sim->grid->size : 0;
-	char size_str[29];
-	sprintf(size_str, "%28d", size);
+	char str[29];
+	sprintf(str, "%28d", size);
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
-	mvwaddstr(menuw, size_pos.y, size_pos.x-28, size_str);
+	mvwaddstr(menuw, size_pos.y, size_pos.x-28, str);
 }
 
 static void draw_steps(void)
@@ -421,9 +426,9 @@ static void draw_steps(void)
 	static bool do_draw;
 	Simulation *sim = stgs.linked_sim;
 	size_t steps = sim ? sim->steps : 0;
-	int digit, len = (int)log10(steps) + 1;
-	char digits_str[9], *p;
+	int len = (int)log10(steps) + 1;
 	Vector2i tl = steps_pos;
+	char digits[9], *d;
 
 	if (steps <= 1) {
 		do_draw = TRUE;
@@ -438,10 +443,10 @@ static void draw_steps(void)
 		return;
 	}
 
-	sprintf(digits_str, "%8d", steps);
-	for (p = digits_str; p < digits_str+8; ++p) {
-		if (*p != ' ') {
-			digit = *p - '0';
+	sprintf(digits, "%8d", steps);
+	for (d = digits; d < digits+8; ++d) {
+		if (*d != ' ') {
+			int digit = *d - '0';
 			wattroff(menuw, A_REVERSE);
 			draw_sprite(menuw, (SpriteInfo) { digit_sprites[digit], 3, 5 }, tl, TRUE);
 		} else {
@@ -487,24 +492,31 @@ void draw_menu_full(void)
 
 void draw_menu_iter(void)
 {
-	Simulation *sim = stgs.linked_sim;
 	static bool sparse = FALSE;
-
+	Simulation *sim = stgs.linked_sim;
 #if LOOP_OPT_STEPS
-	static size_t prev_steps;
-	if (sim->steps-prev_steps >= 1U << max(stgs.speed-LOOP_OPT_SPEED, 0)) {
+	static size_t prev_steps = 0;
+	bool do_draw = sim->steps-prev_steps >= exp(max(stgs.speed-LOOP_OPT_SPEED, 0));
+
+	if (do_draw) {
 #endif
-		draw_direction();
+		draw_dir_arrow();
 		draw_func();
 		draw_steps();
 #if LOOP_OPT_STEPS
 		prev_steps = sim->steps;
 	}
 #endif
-	
 	if (!sparse && is_grid_sparse(sim->grid)) {
 		draw_edge();
 		sparse = TRUE;
+		do_draw = TRUE;
 	}
-	wnoutrefresh(menuw);
+#if LOOP_OPT_STEPS
+	if (do_draw) {
+#endif
+		wnoutrefresh(menuw);
+#if LOOP_OPT_STEPS
+	}
+#endif
 }
