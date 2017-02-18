@@ -119,7 +119,7 @@ typedef struct scroll_info {
 #define MENU_RIGHT_COLUMN   (MENU_WINDOW_WIDTH-18)
 #define MENU_DIRECTION_POS  (MENU_LOGO_HEIGHT+10)
 #define MENU_SPEED_POS      (MENU_DIRECTION_POS+12)
-#define MENU_FUNC_POS       (MENU_SPEED_POS+26)
+#define MENU_FUNCTION_POS   (MENU_SPEED_POS+26)
 #define MENU_EDGE_COLOR     COLOR_NAVY
 #define MENU_EDGE_COLOR_S   COLOR_MAROON
 #define MENU_ACTIVE_COLOR   COLOR_BLUE
@@ -136,18 +136,15 @@ typedef struct scroll_info {
 #define MENU_CLEAR_COLOR    COLOR_TEAL
 ///@}
 
+/** @name Menu sprite dimensions */
 ///@{
-/** Arrow sprite dimension */
 #define MENU_UDARROW_WIDTH  3
 #define MENU_UDARROW_HEIGHT 2
 #define MENU_RLARROW_WIDTH  MENU_UDARROW_HEIGHT
 #define MENU_RLARROW_HEIGHT MENU_UDARROW_WIDTH
-///@}
-
-///@{
-/** Digit sprite dimension */
 #define MENU_DIGIT_WIDTH    3
 #define MENU_DIGIT_HEIGHT   5
+#define MENU_PLUS_SIZE      3
 ///@}
 
 /** @name Menu color tiles attributes */
@@ -252,7 +249,7 @@ extern WINDOW         *menuw;
 extern const Vector2i menu_pos;
 extern const Vector2i menu_isize_u_pos, menu_isize_d_pos;
 extern const Vector2i menu_dir_u_pos, menu_dir_r_pos, menu_dir_d_pos, menu_dir_l_pos;
-extern const Vector2i menu_speed_u_pos, menu_speed_d_pos;
+extern const Vector2i menu_speed_u_pos, menu_speed_d_pos, menu_stepup_pos;
 extern const Vector2i menu_play_pos, menu_pause_pos, menu_stop_pos;
 extern const Vector2i menu_load_pos, menu_save_pos;
 
@@ -383,12 +380,20 @@ SpriteInfo get_ant_sprite(size_t size, Direction dir);
 
 
 /*----------------------------------------------------------------------------*
- *                                game_loop.c                                 *
+ *                                   game.c                                   *
  *----------------------------------------------------------------------------*/
 
 /**
- * Main draw/update loop
+ * Steps one frame through the simulation and updates the state
+ * @param sim Simulation through which to step
+ * @see game_loop(void)
+ */
+void game_step(Simulation *sim);
+
+/**
+ * Main draw/update loop for the current simulation
  * @see stop_game_loop(void)
+ * @see game_step(Simulation *)
  */
 void game_loop(void);
 
@@ -397,7 +402,6 @@ void game_loop(void);
  * @see game_loop(void)
  */
 void stop_game_loop(void);
-
 
 /*----------------------------------------------------------------------------*
  *                               grid_window.c                                *
@@ -428,10 +432,10 @@ void draw_grid_full(Grid *grid, Ant *ant);
  * Suitable for calling in loops as it does less work than draw_grid__full.
  * @param grid Grid from which to draw
  * @param ant Ant to be drawn in the grid (NULL for no ant)
- * @param oldp Position of cell that has changed and should be drawn
+ * @param old_pos Position of cell that has changed and should be drawn
  * @see draw_grid_full(Grid *)
  */
-void draw_grid_iter(Grid *grid, Ant *ant, Vector2i oldp);
+void draw_grid_iter(Grid *grid, Ant *ant, Vector2i old_pos);
 
 /**
  * Scrolls the grid relative to the current gridscrl position

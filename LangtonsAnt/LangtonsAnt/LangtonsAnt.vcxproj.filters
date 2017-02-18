@@ -68,10 +68,10 @@
     <ClCompile Include="io.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game_loop.c">
+    <ClCompile Include="ant_sprites.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ant_sprites.c">
+    <ClCompile Include="game.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

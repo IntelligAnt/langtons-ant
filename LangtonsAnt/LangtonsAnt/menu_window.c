@@ -16,6 +16,7 @@ const Vector2i menu_dir_d_pos   = { MENU_DIRECTION_POS+7, MENU_WINDOW_WIDTH-8 };
 const Vector2i menu_dir_l_pos   = { MENU_DIRECTION_POS+4, MENU_WINDOW_WIDTH-11 };
 const Vector2i menu_speed_u_pos = { MENU_SPEED_POS+2,     MENU_WINDOW_WIDTH-9 };
 const Vector2i menu_speed_d_pos = { MENU_SPEED_POS+21,    MENU_WINDOW_WIDTH-9 };
+const Vector2i menu_stepup_pos  = { MENU_SPEED_POS+20,    MENU_RIGHT_COLUMN+2 };
 const Vector2i menu_play_pos    = { MENU_CONTROLS_POS,    2 };
 const Vector2i menu_pause_pos   = { MENU_CONTROLS_POS,    MENU_BUTTON_WIDTH+4 };
 const Vector2i menu_stop_pos    = { MENU_CONTROLS_POS,    2*MENU_BUTTON_WIDTH+6 };
@@ -29,6 +30,7 @@ static const char *rules_msg  = "RULES:";
 static const char *isize_msg  = "INIT GRID SIZE:";
 static const char *dir_msg    = "ANT DIRECTION:";
 static const char *speed_msg  = "SIMULATION SPEED";
+static const char *stepup_msg = "STEP+";
 static const char *func_msg   = "STATE FUNCTION:";
 static const char *sparse_msg = "SPARSE MATRIX";
 static const char *size_msg   = "GRID SIZE:";
@@ -41,10 +43,11 @@ static const Vector2i rules_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
 static const Vector2i isize_pos      = { MENU_LOGO_HEIGHT+2,    MENU_WINDOW_WIDTH-5 };
 static const Vector2i isize_msg_pos  = { MENU_LOGO_HEIGHT,      MENU_RIGHT_COLUMN };
 static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,    MENU_RIGHT_COLUMN };
-static const Vector2i speed_pos      = { MENU_SPEED_POS+2,        MENU_WINDOW_WIDTH-5 };
+static const Vector2i speed_pos      = { MENU_SPEED_POS+2,      MENU_WINDOW_WIDTH-5 };
 static const Vector2i speed_msg_pos  = { MENU_SPEED_POS,        MENU_RIGHT_COLUMN };
-static const Vector2i func_pos       = { MENU_FUNC_POS+2,       MENU_RIGHT_COLUMN+4 };
-static const Vector2i func_msg_pos   = { MENU_FUNC_POS,         MENU_RIGHT_COLUMN };
+static const Vector2i stepup_msg_pos = { MENU_SPEED_POS+18,     MENU_RIGHT_COLUMN+1 };
+static const Vector2i func_pos       = { MENU_FUNCTION_POS+2,   MENU_RIGHT_COLUMN+4 };
+static const Vector2i func_msg_pos   = { MENU_FUNCTION_POS,     MENU_RIGHT_COLUMN };
 static const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
 static const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
 static const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
@@ -68,6 +71,7 @@ static const byte logo_highlight_sprite[] = {
 static const byte arrow_sprites[][1] = {
 	{ 0x5C }, { 0xB8 }, { 0xE8 }, { 0x74 }
 };
+static const byte plus_sprite[] = { 0x5D, 0x00 };
 static const byte digit_sprites[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
@@ -100,12 +104,9 @@ void end_menu_window(void)
 Vector2i get_menu_tile_pos(size_t index)
 {
 	Vector2i pos;
-	size_t index_y, index_x;
+	size_t index_y = index % MENU_TILES_PER_COL, index_x = index / MENU_TILES_PER_COL;
 
 	assert(index < MENU_TILE_COUNT);
-
-	index_y = index % MENU_TILES_PER_COL;
-	index_x = index / MENU_TILES_PER_COL;
 	if (index_x % 2) {
 		index_y = MENU_TILES_PER_COL - index_y - 1;
 	}
@@ -307,7 +308,7 @@ static void draw_speed(void)
 {
 	chtype pair = GET_PAIR_FOR(MENU_ACTIVE_COLOR);
 	int dy = menu_speed_d_pos.y - menu_speed_u_pos.y - 2;
-	Vector2i pos = { speed_pos.y + dy+1 - 2*stgs.speed, speed_pos.x };
+	Vector2i pos = { speed_pos.y + dy+1 - 2*stgs.speed, speed_pos.x }; // TODO better way for speed slider pos
 
 	wattrset(menuw, pair);
 	draw_sprite(menuw, (SpriteInfo) { arrow_sprites[DIR_UP], MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT },
@@ -323,9 +324,12 @@ static void draw_speed(void)
 	draw_rect(menuw, speed_pos, MENU_DIGIT_WIDTH, dy+4);
 	wattroff(menuw, A_REVERSE);
 	draw_sprite(menuw, (SpriteInfo) { digit_sprites[stgs.speed], 3, 5 }, pos, TRUE);
+
+	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors) ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
+	draw_sprite(menuw, (SpriteInfo) { plus_sprite, 3, 3 }, menu_stepup_pos, FALSE);
 }
 
-static void draw_func(void)
+static void draw_function(void)
 {
 	Simulation *sim = stgs.linked_sim;
 	chtype pair = GET_PAIR_FOR(MENU_ACTIVE_COLOR);
@@ -362,20 +366,17 @@ static void draw_control_buttons(void)
 	draw_rect(menuw, menu_pause_pos, MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 	draw_rect(menuw, menu_stop_pos,  MENU_BUTTON_WIDTH, MENU_BUTTON_HEIGHT);
 
-	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors)
-								 ? MENU_PLAY_COLOR : MENU_INACTIVE_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors) ? MENU_PLAY_COLOR : MENU_INACTIVE_COLOR));
 	draw_sprite(menuw, (SpriteInfo) { button_sprites[0], 5, 5 }, pos1, FALSE);
 
-	wattrset(menuw, GET_PAIR_FOR(is_simulation_running(stgs.linked_sim)
-								 ? MENU_PAUSE_COLOR : MENU_INACTIVE_COLOR));
+	wattrset(menuw, GET_PAIR_FOR(is_simulation_running(stgs.linked_sim) ? MENU_PAUSE_COLOR : MENU_INACTIVE_COLOR));
 	draw_sprite(menuw, (SpriteInfo) { button_sprites[1], 5, 5 }, pos2, FALSE);
 	
 	if (has_simulation_started(stgs.linked_sim)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_STOP_COLOR));
 		draw_sprite(menuw, (SpriteInfo) { button_sprites[2], 5, 5 }, pos3, FALSE);
 	} else {
-		wattrset(menuw, GET_PAIR_FOR(!is_colors_empty(stgs.colors)
-									 ? MENU_CLEAR_COLOR : MENU_INACTIVE_COLOR));
+		wattrset(menuw, GET_PAIR_FOR(!is_colors_empty(stgs.colors) ? MENU_CLEAR_COLOR : MENU_INACTIVE_COLOR));
 		draw_sprite(menuw, (SpriteInfo) { button_sprites[3], 5, 5 }, pos3, FALSE);
 	}
 }
@@ -460,13 +461,14 @@ static void draw_steps(void)
 static void draw_labels(void)
 {
 	wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
-	mvwaddstr(menuw, rules_msg_pos.y, rules_msg_pos.x, rules_msg);
-	mvwaddstr(menuw, isize_msg_pos.y, isize_msg_pos.x, isize_msg);
-	mvwaddstr(menuw, dir_msg_pos.y,   dir_msg_pos.x,   dir_msg);
-	mvwaddstr(menuw, speed_msg_pos.y, speed_msg_pos.x, speed_msg);
-	mvwaddstr(menuw, func_msg_pos.y,  func_msg_pos.x,  func_msg);
-	mvwaddstr(menuw, size_msg_pos.y,  size_msg_pos.x,  size_msg);
-	mvwaddstr(menuw, steps_msg_pos.y, steps_msg_pos.x, steps_msg);
+	mvwaddstr(menuw, rules_msg_pos.y,  rules_msg_pos.x,  rules_msg);
+	mvwaddstr(menuw, isize_msg_pos.y,  isize_msg_pos.x,  isize_msg);
+	mvwaddstr(menuw, dir_msg_pos.y,    dir_msg_pos.x,    dir_msg);
+	mvwaddstr(menuw, speed_msg_pos.y,  speed_msg_pos.x,  speed_msg);
+	mvwaddstr(menuw, stepup_msg_pos.y, stepup_msg_pos.x, stepup_msg);
+	mvwaddstr(menuw, func_msg_pos.y,   func_msg_pos.x,   func_msg);
+	mvwaddstr(menuw, size_msg_pos.y,   size_msg_pos.x,   size_msg);
+	mvwaddstr(menuw, steps_msg_pos.y,  steps_msg_pos.x,  steps_msg);
 }
 
 void draw_menu_full(void)
@@ -477,7 +479,7 @@ void draw_menu_full(void)
 	draw_init_size();
 	draw_direction();
 	draw_speed();
-	draw_func();
+	draw_function();
 	draw_control_buttons();
 	draw_io_buttons();
 	draw_size();
@@ -501,7 +503,7 @@ void draw_menu_iter(void)
 	if (do_draw) {
 #endif
 		draw_dir_arrow();
-		draw_func();
+		draw_function();
 		draw_steps();
 #if LOOP_OPT_STEPS
 		prev_steps = sim->steps;

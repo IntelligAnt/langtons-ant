@@ -74,6 +74,17 @@ static input_t speed_button_clicked(int d)
 	return INPUT_MENU_CHANGED;
 }
 
+static input_t stepup_button_clicked(void)
+{
+	Simulation *sim = stgs.linked_sim;
+	if (sim && has_enough_colors(sim->colors)) {
+		simulation_halt(sim);
+		game_step(sim);
+		return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
+	}
+	return INPUT_NO_CHANGE;
+}
+
 static input_t play_button_clicked(void)
 {
 	input_t ret = INPUT_NO_CHANGE;
@@ -149,6 +160,10 @@ input_t menu_key_command(int key)
 	case '-': case PADMINUS:
 		return speed_button_clicked(-1);
 
+		/* Step+ */
+	case '\n': case PADENTER:
+		return stepup_button_clicked();
+
 		/* Direction */
 	case 'W': case 'w':
 		return dir_button_clicked(DIR_UP);
@@ -159,7 +174,7 @@ input_t menu_key_command(int key)
 	case 'A': case 'a':
 		return dir_button_clicked(DIR_LEFT);
 
-		/* Simulation */
+		/* Control */
 	case ' ':
 		return is_simulation_running(sim) ? pause_button_clicked() : play_button_clicked();
 	case 'R': case 'r':
@@ -251,6 +266,11 @@ input_t menu_mouse_command(void)
 	}
 	if (area_contains(menu_speed_d_pos, MENU_UDARROW_WIDTH, MENU_UDARROW_HEIGHT, pos)) {
 		return ret | speed_button_clicked(-1);
+	}
+
+	/* Step+ button clicked */
+	if (area_contains(menu_stepup_pos, MENU_PLUS_SIZE, MENU_PLUS_SIZE, pos)) {
+		return ret | stepup_button_clicked();
 	}
 
 	/* Control buttons clicked */
