@@ -1,7 +1,7 @@
 #include "graphics.h"
 
 static bool run_loop = TRUE, in_bounds;
-Vector2i old_pos;
+static Vector2i old_pos;
 
 static input_t handle_input(Simulation* sim)
 {
@@ -41,23 +41,14 @@ void game_loop(void)
 
 			if (in_bounds) {
 				napms(LOOP_DELAY / (1 << stgs.speed)); // TODO fixed timestep loop
-				if (!grid_changed) {
-					draw_grid_iter(sim->grid, sim->ant, old_pos);
-				}
-				if (!menu_changed) {
-					draw_menu_iter();
-				}
+				draw_grid_iter(sim->grid, sim->ant, old_pos);
+				draw_menu_iter();
 			} else {
-				if (!grid_changed) {
-					draw_grid_full(sim->grid, sim->ant);
-				}
-				if (!menu_changed) {
-					draw_menu_full();
-				}
+				grid_changed = menu_changed = TRUE;
 			}
 		}
 
-		if (grid_changed) { // TODO move before the update logic
+		if (grid_changed) {
 			draw_grid_full(sim->grid, sim->ant);
 		}
 		if (menu_changed) {
