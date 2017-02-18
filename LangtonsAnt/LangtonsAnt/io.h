@@ -22,7 +22,7 @@
  *----------------------------------------------------------------------------*/
 
 /**
- * Attemps to read rules from a .lant textfile
+ * Attemps to read rules from a .lant file
  * @param filename Path of file from which to load
  * @return Pointer to a Colors struct if successful; NULL otherwise
  * @see save_rules(char *, Colors *)
@@ -30,29 +30,29 @@
 Colors *load_rules(char *filename);
 
 /**
- * Attempts to write rules to a .lant textfile
+ * Attempts to write rules to a .lant file
  * @param filename Path of file to which to save
  * @param colors Rules to be written
- * @return Number of read fields if successful; EOF otherwise
+ * @return Number of written fields if successful; EOF otherwise
  * @see load_rules(char *)
  */
 int save_rules(char *filename, Colors *colors);
 
 /**
- * Attemps to read a simulation state from a .lant textfile
+ * Attemps to read simulation state from a .lant file
  * @param filename Path of file from which to load
  * @return Pointer to a Simulation struct if successful; NULL otherwise
- * @see save_state(char *, Simulation *)
+ * @see save_simulation(char *, Simulation *)
  */
-Simulation *load_state(char *filename);
+Simulation *load_simulation(char *filename);
 
 /**
- * Attempts to write a simulation state to a .lant textfile
+ * Attempts to write simulation state to a .lant file
  * @param filename Path of file to which to save
  * @param simulation Simulation to be written
- * @return Number of read fields if successful; EOF otherwise
- * @see load_state(char *)
+ * @return Number of written fields if successful; EOF otherwise
+ * @see load_simulation(char *)
  */
-int save_state(char *filename, Simulation *simulation);
+int save_simulation(char *filename, Simulation *sim);
 
 #endif

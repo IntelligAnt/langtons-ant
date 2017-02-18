@@ -20,10 +20,8 @@ const Vector2i menu_stepup_pos  = { MENU_SPEED_POS+20,    MENU_RIGHT_COLUMN+2 };
 const Vector2i menu_play_pos    = { MENU_CONTROLS_POS,    2 };
 const Vector2i menu_pause_pos   = { MENU_CONTROLS_POS,    MENU_BUTTON_WIDTH+4 };
 const Vector2i menu_stop_pos    = { MENU_CONTROLS_POS,    2*MENU_BUTTON_WIDTH+6 };
-const Vector2i menu_load_pos = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4,
-								 MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
-const Vector2i menu_save_pos = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,
-                                 MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
+const Vector2i menu_load_pos    = { MENU_CONTROLS_POS-2*MENU_BUTTON_HEIGHT-4, MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
+const Vector2i menu_save_pos    = { MENU_CONTROLS_POS-MENU_BUTTON_HEIGHT-2,   MENU_WINDOW_WIDTH-MENU_BUTTON_WIDTH-3 };
 
 static const char *logo_msg   = " 14-COLOR 2D TURING MACHINE SIMULATOR ";
 static const char *rules_msg  = "RULES:";

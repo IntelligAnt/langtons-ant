@@ -69,9 +69,9 @@ int save_rules(char *filename, Colors *colors)
 	return e;
 }
 
-Simulation *load_state(char *filename)
+Simulation *load_simulation(char *filename)
 {
-	Simulation *simulation;
+	Simulation *sim;
 	Colors *colors;
 	FILE *input;
 	size_t nn = 0, i, j;
@@ -81,7 +81,7 @@ Simulation *load_state(char *filename)
 		return NULL;
 	}
 
-	simulation = simulation_new(colors, GRID_DEF_INIT_SIZE);
+	sim = simulation_new(colors, GRID_DEF_INIT_SIZE);
 
 	if (!(input = fopen(filename, "r"))) {
 		return NULL;
@@ -94,50 +94,50 @@ Simulation *load_state(char *filename)
 		}
 	}
 
-	if (fscanf(input, "%d %d %u\n", &simulation->ant->pos.x, &simulation->ant->pos.y,
-			   &simulation->ant->dir) < 3) {
-		return simulation;
+	if (fscanf(input, "%d %d %u\n", &sim->ant->pos.x, &sim->ant->pos.y,
+			   &sim->ant->dir) < 3) {
+		return sim;
 	}
-	if (fscanf(input, "%zu\n", &simulation->steps) < 0) {
+	if (fscanf(input, "%zu\n", &sim->steps) < 0) {
 		goto error_end;
 	}
 	if (fscanf(input, "%c\n", &is_sparse) < 0) {
 		goto error_end;
 	}
 
-	grid_delete(simulation->grid);
-	simulation->grid = malloc(sizeof(Grid));
-	simulation->grid->c = NULL;
-	simulation->grid->tmp = NULL;
-	simulation->grid->tmp_size = 0;
-	simulation->grid->csr = NULL;
+	grid_delete(sim->grid);
+	sim->grid = malloc(sizeof(Grid));
+	sim->grid->c = NULL;
+	sim->grid->tmp = NULL;
+	sim->grid->tmp_size = 0;
+	sim->grid->csr = NULL;
 
-	if (fscanf(input, "%hhu %zu %zu %zu\n", &simulation->grid->def_color,
-			   &simulation->grid->init_size, &simulation->grid->size, &simulation->grid->colored) < 0) {
+	if (fscanf(input, "%hhu %zu %zu %zu\n", &sim->grid->def_color,
+			   &sim->grid->init_size, &sim->grid->size, &sim->grid->colored) < 0) {
 		goto error_end;
 	}
-	if (fscanf(input, "%d %d %d %d\n", &simulation->grid->top_left.x, &simulation->grid->top_left.y,
-			   &simulation->grid->bottom_right.x, &simulation->grid->bottom_right.y) < 0) {
+	if (fscanf(input, "%d %d %d %d\n", &sim->grid->top_left.x, &sim->grid->top_left.y,
+			   &sim->grid->bottom_right.x, &sim->grid->bottom_right.y) < 0) {
 		goto error_end;
 	}
 
 	if (is_sparse) {
-		simulation->grid->csr = malloc(simulation->grid->size*sizeof(Cell*));
+		sim->grid->csr = malloc(sim->grid->size*sizeof(Cell*));
 		size_t colp;
 		Cell *temp;
-		for (i = 0; i < simulation->grid->size; i++) {
+		for (i = 0; i < sim->grid->size; i++) {
 			char c;
 			temp = NULL;
-			simulation->grid->csr[i] = NULL;
+			sim->grid->csr[i] = NULL;
 			while (fscanf(input, "%c", &c) > 0 && c == ' ') {
 				if (fscanf(input, "%zu", &colp) < 0) {
 					goto error_end;
 				}
 				if (!temp) {
-					simulation->grid->csr[i] = malloc(sizeof(Cell));
-					simulation->grid->csr[i]->packed = colp;
-					simulation->grid->csr[i]->next = NULL;
-					temp = simulation->grid->csr[i];
+					sim->grid->csr[i] = malloc(sizeof(Cell));
+					sim->grid->csr[i]->packed = colp;
+					sim->grid->csr[i]->next = NULL;
+					temp = sim->grid->csr[i];
 				} else {
 					temp->next = malloc(sizeof(Cell));
 					temp->next->packed = colp;
@@ -147,15 +147,15 @@ Simulation *load_state(char *filename)
 			}
 		}
 	} else {
-		simulation->grid->c = malloc(simulation->grid->size * sizeof(byte*));
-		for (i = 0; i < simulation->grid->size; i++) {
-			simulation->grid->c[i] = malloc(simulation->grid->size);
+		sim->grid->c = malloc(sim->grid->size * sizeof(byte*));
+		for (i = 0; i < sim->grid->size; i++) {
+			sim->grid->c[i] = malloc(sim->grid->size);
 			if (feof(input)) {
 				goto error_end;
 			}
-			for (j = 0; j < simulation->grid->size; j++) {
-				if (fscanf(input, (j == simulation->grid->size - 1) ? "%hhu\n" : "%hhu ",
-						   &simulation->grid->c[i][j]) < 0) {
+			for (j = 0; j < sim->grid->size; j++) {
+				if (fscanf(input, (j == sim->grid->size - 1) ? "%hhu\n" : "%hhu ",
+						   &sim->grid->c[i][j]) < 0) {
 					goto error_end;
 				}
 			}
@@ -165,18 +165,18 @@ Simulation *load_state(char *filename)
 	if (fclose(input) == EOF) {
 		return NULL;
 	}
-	return simulation;
+	return sim;
 
 error_end:
-	simulation_delete(simulation);
+	simulation_delete(sim);
 	fclose(input);
 	return NULL;
 }
 
-int save_state(char *filename, Simulation *simulation)
+int save_simulation(char *filename, Simulation *sim)
 {
 	size_t i, j;
-	if (save_rules(filename, simulation->colors) == EOF) {
+	if (save_rules(filename, sim->colors) == EOF) {
 		return EOF;
 	}
 
@@ -186,28 +186,28 @@ int save_state(char *filename, Simulation *simulation)
 		return EOF;
 	}
 
-	if (fprintf(output, "%d %d %u\n", simulation->ant->pos.x, simulation->ant->pos.y,
-				simulation->ant->dir) < 0) {
+	if (fprintf(output, "%d %d %u\n", sim->ant->pos.x, sim->ant->pos.y,
+				sim->ant->dir) < 0) {
 		return EOF;
 	}
-	if (fprintf(output, "%zu\n", simulation->steps) < 0) {
+	if (fprintf(output, "%zu\n", sim->steps) < 0) {
 		return EOF;
 	}
-	if (fprintf(output, "%c\n", is_grid_sparse(simulation->grid)) < 0) {
+	if (fprintf(output, "%c\n", is_grid_sparse(sim->grid)) < 0) {
 		return EOF;
 	}
-	if (fprintf(output, "%hhu %zu %zu %zu\n", simulation->grid->def_color,
-				simulation->grid->init_size, simulation->grid->size, simulation->grid->colored) < 0) {
+	if (fprintf(output, "%hhu %zu %zu %zu\n", sim->grid->def_color,
+				sim->grid->init_size, sim->grid->size, sim->grid->colored) < 0) {
 		return EOF;
 	}
-	if (fprintf(output, "%d %d %d %d\n", simulation->grid->top_left.x, simulation->grid->top_left.y,
-				simulation->grid->bottom_right.x, simulation->grid->bottom_right.y) < 0) {
+	if (fprintf(output, "%d %d %d %d\n", sim->grid->top_left.x, sim->grid->top_left.y,
+				sim->grid->bottom_right.x, sim->grid->bottom_right.y) < 0) {
 		return EOF;
 	}
 	Cell *temp;
-	if (is_grid_sparse(simulation->grid)) {
-		for (i = 0; i < simulation->grid->size; i++) {
-			temp = simulation->grid->csr[i];
+	if (is_grid_sparse(sim->grid)) {
+		for (i = 0; i < sim->grid->size; i++) {
+			temp = sim->grid->csr[i];
 			while (temp) {
 				if (fprintf(output, " %zu", temp->packed) < 0) {
 					return EOF;
@@ -219,10 +219,10 @@ int save_state(char *filename, Simulation *simulation)
 			}
 		}
 	} else {
-		for (i = 0; i < simulation->grid->size; i++) {
-			for (j = 0; j < simulation->grid->size; j++) {
-				if (fprintf(output, (j == simulation->grid->size-1) ? "%hhu\n" : "%hhu ",
-							simulation->grid->c[i][j]) < 0) {
+		for (i = 0; i < sim->grid->size; i++) {
+			for (j = 0; j < sim->grid->size; j++) {
+				if (fprintf(output, (j == sim->grid->size-1) ? "%hhu\n" : "%hhu ",
+							sim->grid->c[i][j]) < 0) {
 					return EOF;
 				}
 			}
