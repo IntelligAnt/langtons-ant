@@ -268,7 +268,7 @@ input_t menu_mouse_command(void)
 	}
 
 	/* Step+ button clicked */
-	if (area_contains(menu_stepup_pos, MENU_PLUS_SIZE, MENU_PLUS_SIZE, pos)) {
+	if (area_contains(menu_stepup_pos, MENU_STEPUP_SIZE, MENU_STEPUP_SIZE, pos)) {
 		return ret | stepup_button_clicked();
 	}
 

@@ -144,7 +144,7 @@ typedef struct scroll_info {
 #define MENU_RLARROW_HEIGHT MENU_UDARROW_WIDTH
 #define MENU_DIGIT_WIDTH    3
 #define MENU_DIGIT_HEIGHT   5
-#define MENU_PLUS_SIZE      3
+#define MENU_STEPUP_SIZE    3
 ///@}
 
 /** @name Menu color tiles attributes */
@@ -425,10 +425,10 @@ void draw_grid_full(Grid *grid, Ant *ant);
  * Suitable for calling in loops as it does less work than draw_grid__full.
  * @param grid Grid from which to draw
  * @param ant Ant to be drawn in the grid (NULL for no ant)
- * @param oldp Position of cell that has changed and should be drawn
+ * @param old_pos Position of cell that has changed and should be drawn
  * @see draw_grid_full(Grid *)
  */
-void draw_grid_iter(Grid *grid, Ant *ant, Vector2i oldp);
+void draw_grid_iter(Grid *grid, Ant *ant, Vector2i old_pos);
 
 /**
  * Scrolls the grid relative to the current gridscrl position

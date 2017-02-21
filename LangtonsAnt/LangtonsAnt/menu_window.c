@@ -69,7 +69,7 @@ static const byte logo_highlight_sprite[] = {
 static const byte arrow_sprites[][1] = {
 	{ 0x5C }, { 0xB8 }, { 0xE8 }, { 0x74 }
 };
-static const byte plus_sprite[] = { 0x5D, 0x00 };
+static const byte stepup_sprite[] = { 0x5D, 0x00 };
 static const byte digit_sprites[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
@@ -324,7 +324,7 @@ static void draw_speed(void)
 	draw_sprite(menuw, (SpriteInfo) { digit_sprites[stgs.speed], 3, 5 }, pos, TRUE);
 
 	wattrset(menuw, GET_PAIR_FOR(has_enough_colors(stgs.colors) ? MENU_ACTIVE_COLOR : MENU_INACTIVE_COLOR));
-	draw_sprite(menuw, (SpriteInfo) { plus_sprite, 3, 3 }, menu_stepup_pos, FALSE);
+	draw_sprite(menuw, (SpriteInfo) { stepup_sprite, 3, 3 }, menu_stepup_pos, FALSE);
 }
 
 static void draw_function(void)

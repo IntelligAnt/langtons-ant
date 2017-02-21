@@ -7,7 +7,7 @@ static input_t handle_input(Simulation* sim)
 	input_t ret = INPUT_NO_CHANGE;
 	int ch = getch();
 	if (sim) {
-		ret |= grid_key_command(sim->grid, sim->ant, ch); // TODO wgetch refreshes
+		ret |= grid_key_command(sim->grid, sim->ant, ch);
 	}
 	ret |= menu_key_command(ch);
 	return ret;
@@ -25,10 +25,10 @@ void game_loop(void)
 		sim = stgs.linked_sim;
 
 		if (is_simulation_running(sim)) {
-			Vector2i oldp = sim->ant->pos;
+			Vector2i old_pos = sim->ant->pos;
 			if (simulation_step(sim)) {
 				napms(LOOP_DELAY / (1 << stgs.speed)); // TODO fixed timestep loop
-				draw_grid_iter(sim->grid, sim->ant, oldp);
+				draw_grid_iter(sim->grid, sim->ant, old_pos);
 				draw_menu_iter();
 			} else {
 				grid_changed = menu_changed = TRUE;
