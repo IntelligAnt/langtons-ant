@@ -94,7 +94,7 @@
     <ClCompile Include="ant_sprites.c" />
     <ClCompile Include="colors.c" />
     <ClCompile Include="dialog.c" />
-    <ClCompile Include="game.c" />
+    <ClCompile Include="game_loop.c" />
     <ClCompile Include="grid_controls.c" />
     <ClCompile Include="menu_controls.c" />
     <ClCompile Include="menu_window.c" />

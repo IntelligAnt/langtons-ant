@@ -171,7 +171,7 @@ typedef struct simulation {
 Ant *ant_new(Grid *grid, Direction dir);
 void ant_delete(Ant *ant);
 bool ant_move(Ant *ant, Grid *grid, Colors *colors);
-bool is_ant_out_of_bounds(Ant *ant, Grid *grid);
+bool is_ant_in_bounds(Ant *ant, Grid *grid);
 
 
 /*----------------------------------------------------------------------------*
@@ -202,6 +202,7 @@ void grid_silent_expand(Grid*);
 void grid_expand(Grid *grid, Ant *ant);
 void grid_make_sparse(Grid *grid);
 bool is_grid_sparse(Grid *grid);
+bool is_grid_usage_low(Grid *grid);
 void new_cell(Cell **cur, size_t column, byte c);
 byte color_at_s(Grid *grid, Vector2i p);
 
@@ -214,6 +215,7 @@ Simulation *simulation_new(Colors *colors, size_t init_size);
 void simulation_delete(Simulation *sim);
 void simulation_run(Simulation *sim);
 void simulation_halt(Simulation *sim);
+bool simulation_step(Simulation *sim);
 bool is_simulation_running(Simulation *sim);
 bool has_simulation_started(Simulation *sim);
 

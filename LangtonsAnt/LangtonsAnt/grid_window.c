@@ -182,7 +182,7 @@ void draw_grid_full(Grid *grid, Ant *ant)
 	wnoutrefresh(gridw);
 }
 
-void draw_grid_iter(Grid *grid, Ant *ant, Vector2i old_pos)
+void draw_grid_iter(Grid *grid, Ant *ant, Vector2i oldp)
 {
 	int gs = grid->size, vgs = min(gs, GRID_VIEW_SIZE);
 	int lw = (gs == GRID_SIZE_SMALL(grid))  ? LINE_WIDTH_SMALL
@@ -192,9 +192,9 @@ void draw_grid_iter(Grid *grid, Ant *ant, Vector2i old_pos)
 	int o = OFFSET_SIZE(TOTAL_SIZE(vgs, lw, cs));
 	Vector2i origin = ORIGIN_POS(gs, vgs, gridscrl.y, gridscrl.x), pos, yx;
 
-	pos = abs2rel(old_pos, origin);
+	pos = abs2rel(oldp, origin);
 	yx = pos2yx(pos, lw, cs, o);
-	draw_cell(yx, cs, GRID_COLOR_AT(grid, old_pos), NULL);
+	draw_cell(yx, cs, GRID_COLOR_AT(grid, oldp), NULL);
 
 	if (ant) {
 		pos = abs2rel(ant->pos, origin);

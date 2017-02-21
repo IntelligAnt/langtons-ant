@@ -78,7 +78,7 @@ static input_t stepup_button_clicked(void)
 	Simulation *sim = stgs.linked_sim;
 	if (sim && has_enough_colors(sim->colors)) {
 		simulation_halt(sim);
-		game_step(sim);
+		simulation_step(sim);
 		return INPUT_MENU_CHANGED | INPUT_GRID_CHANGED;
 	}
 	return INPUT_NO_CHANGE;

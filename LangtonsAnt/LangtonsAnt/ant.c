@@ -15,7 +15,7 @@ void ant_delete(Ant *ant)
 	free(ant);
 }
 
-static void change_dir(Ant *ant, int turn)
+static Direction change_dir(Ant *ant, turn_t turn)
 {
 	switch (ant->dir) {
 	case DIR_UP:
@@ -31,7 +31,7 @@ static void change_dir(Ant *ant, int turn)
 		ant->pos.y -= turn;
 		break;
 	}
-	ant->dir = (ant->dir + turn + 4) % 4;
+	return ant->dir = (ant->dir + turn + 4) % 4;
 }
 
 static void update_bounding_box(Grid *grid, Vector2i pos)
@@ -43,36 +43,29 @@ static void update_bounding_box(Grid *grid, Vector2i pos)
 	br->x = max(br->x, pos.x);
 }
 
-static bool is_grid_usage_low(Grid *grid)
-{
-	int b = (grid->bottom_right.y - grid->top_left.y + 1)*(grid->bottom_right.x - grid->top_left.x + 1);
-	return (double)grid->colored / b < GRID_USAGE_THRESHOLD;
-}
-
 static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 {
 	byte *c = &grid->c[ant->pos.y][ant->pos.x];
 	bool is_def = *c == colors->def;
 	turn_t turn;
 
-	if (is_def) {
-		grid->colored++;
-		update_bounding_box(grid, ant->pos);
-	}
-
 	// In-place color changing
 	if (is_color_special(colors, *c)) {
 		*c = (byte)colors->next[*c];
 	}
 
+	if (is_def) {
+		grid->colored++;
+		update_bounding_box(grid, ant->pos);
+		if (IS_GRID_LARGE(grid) && is_grid_usage_low(grid)) {
+			grid_make_sparse(grid);
+		}
+	}
+	
 	turn = colors->turn[*c];
 	assert(abs(turn) == 1);
 	*c = (byte)colors->next[*c];
 	change_dir(ant, turn);
-
-	if (is_def && IS_GRID_LARGE(grid) && is_grid_usage_low(grid)) {
-		grid_make_sparse(grid);
-	}
 }
 
 static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
@@ -102,18 +95,18 @@ static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)
 	change_dir(ant, turn);
 }
 
-bool ant_move(Ant *ant, Grid *grid, Colors *colors) // TODO have ant_move return move direction (either relative or absolute)
+bool ant_move(Ant *ant, Grid *grid, Colors *colors)
 {
 	if (is_grid_sparse(grid)) {
 		ant_move_s(ant, grid, colors);
 	} else {
 		ant_move_n(ant, grid, colors);
 	}
-	return !is_ant_out_of_bounds(ant, grid);
+	return is_ant_in_bounds(ant, grid);
 }
 
-bool is_ant_out_of_bounds(Ant *ant, Grid *grid)
+bool is_ant_in_bounds(Ant *ant, Grid *grid)
 {
-	return ant->pos.y < 0 || (size_t)ant->pos.y >= grid->size
-		|| ant->pos.x < 0 || (size_t)ant->pos.x >= grid->size;
+	return ant->pos.y >= 0 && (size_t)ant->pos.y < grid->size
+		&& ant->pos.x >= 0 && (size_t)ant->pos.x < grid->size;
 }

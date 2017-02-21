@@ -239,13 +239,13 @@ typedef struct sprite_info {
 ///@{
 extern chtype         fg_pair, bg_pair, ui_pair;
 
+extern WINDOW         *gridw;
 extern ScrollInfo     gridscrl;
 extern const Vector2i grid_pos;
-extern WINDOW         *gridw;
 
+extern WINDOW         *menuw;
 extern Settings       stgs;
 extern IOStatus       load_status, save_status;
-extern WINDOW         *menuw;
 extern const Vector2i menu_pos;
 extern const Vector2i menu_isize_u_pos, menu_isize_d_pos;
 extern const Vector2i menu_dir_u_pos, menu_dir_r_pos, menu_dir_d_pos, menu_dir_l_pos;
@@ -380,20 +380,13 @@ SpriteInfo get_ant_sprite(size_t size, Direction dir);
 
 
 /*----------------------------------------------------------------------------*
- *                                   game.c                                   *
+ *                                game_loop.c                                 *
  *----------------------------------------------------------------------------*/
-
-/**
- * Steps one frame through the simulation and updates the state
- * @param sim Simulation through which to step
- * @see game_loop(void)
- */
-void game_step(Simulation *sim);
 
 /**
  * Main draw/update loop for the current simulation
  * @see stop_game_loop(void)
- * @see game_step(Simulation *)
+ * @see simulation_step(Simulation *)
  */
 void game_loop(void);
 
@@ -432,10 +425,10 @@ void draw_grid_full(Grid *grid, Ant *ant);
  * Suitable for calling in loops as it does less work than draw_grid__full.
  * @param grid Grid from which to draw
  * @param ant Ant to be drawn in the grid (NULL for no ant)
- * @param old_pos Position of cell that has changed and should be drawn
+ * @param oldp Position of cell that has changed and should be drawn
  * @see draw_grid_full(Grid *)
  */
-void draw_grid_iter(Grid *grid, Ant *ant, Vector2i old_pos);
+void draw_grid_iter(Grid *grid, Ant *ant, Vector2i oldp);
 
 /**
  * Scrolls the grid relative to the current gridscrl position

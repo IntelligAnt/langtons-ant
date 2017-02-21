@@ -71,7 +71,7 @@
     <ClCompile Include="ant_sprites.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="game.c">
+    <ClCompile Include="game_loop.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -233,5 +233,5 @@ int save_simulation(char *filename, Simulation *sim)
 		return EOF;
 	}
 
-	return 0; // TODO return # of fields read
+	return 0; // TODO return success bool
 }

@@ -1,7 +1,6 @@
 #include "graphics.h"
 
-static bool run_loop = TRUE, in_bounds;
-static Vector2i old_pos;
+static bool run_loop = TRUE;
 
 static input_t handle_input(Simulation* sim)
 {
@@ -12,17 +11,6 @@ static input_t handle_input(Simulation* sim)
 	}
 	ret |= menu_key_command(ch);
 	return ret;
-}
-
-void game_step(Simulation *sim)
-{
-	old_pos = sim->ant->pos;
-	in_bounds = ant_move(sim->ant, sim->grid, sim->colors);
-	grid_silent_expand(sim->grid);
-	if (!in_bounds) {
-		grid_expand(sim->grid, sim->ant);
-	}
-	++(sim->steps);
 }
 
 void game_loop(void)
@@ -37,11 +25,10 @@ void game_loop(void)
 		sim = stgs.linked_sim;
 
 		if (is_simulation_running(sim)) {
-			game_step(sim);
-
-			if (in_bounds) {
+			Vector2i oldp = sim->ant->pos;
+			if (simulation_step(sim)) {
 				napms(LOOP_DELAY / (1 << stgs.speed)); // TODO fixed timestep loop
-				draw_grid_iter(sim->grid, sim->ant, old_pos);
+				draw_grid_iter(sim->grid, sim->ant, oldp);
 				draw_menu_iter();
 			} else {
 				grid_changed = menu_changed = TRUE;

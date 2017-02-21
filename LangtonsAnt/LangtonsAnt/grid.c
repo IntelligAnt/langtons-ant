@@ -197,6 +197,12 @@ bool is_grid_sparse(Grid *grid)
 	return grid->csr ? assert(!grid->c), TRUE : FALSE;
 }
 
+bool is_grid_usage_low(Grid *grid)
+{
+	int b = (grid->bottom_right.y - grid->top_left.y + 1) * (grid->bottom_right.x - grid->top_left.x + 1);
+	return (double)grid->colored / b < GRID_USAGE_THRESHOLD;
+}
+
 void new_cell(Cell **cur, size_t column, byte c)
 {
 	Cell *new = malloc(sizeof(Cell));
