@@ -154,13 +154,13 @@ input_t menu_key_command(int key)
 		return isize_button_clicked(-1);
 
 		/* Speed */
-	case '=': case PADPLUS:
+	case 'Q': case 'q': case '=': case PADPLUS:
 		return speed_button_clicked(1);
-	case '-': case PADMINUS:
+	case 'Z': case 'z': case '-': case PADMINUS:
 		return speed_button_clicked(-1);
 
 		/* Step+ */
-	case '\n': case PADENTER:
+	case 'E': case 'e': case '.': case PADSTOP:
 		return stepup_button_clicked();
 
 		/* Direction */
@@ -174,11 +174,11 @@ input_t menu_key_command(int key)
 		return dir_button_clicked(DIR_LEFT);
 
 		/* Control */
-	case ' ':
+	case ' ': case '\n': case PADENTER:
 		return is_simulation_running(sim) ? pause_button_clicked() : play_button_clicked();
 	case 'R': case 'r':
 		return stop_button_clicked();
-	case KEY_BACKSPACE: case '\b':
+	case 'X': case 'x': case '\b':
 		return clear_simulation();
 
 		/* IO */
