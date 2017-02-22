@@ -221,7 +221,7 @@ input_t menu_mouse_command(void)
 	}
 
 	/* Color tiles clicked */
-	for (i = 0; i <= stgs.colors->n; ++i) {
+	for (i = 0; i <= stgs.colors->n; i++) {
 		tile = get_menu_tile_pos(i);
 		if (area_contains(tile, MENU_TILE_SIZE, MENU_TILE_SIZE, pos)) {
 			if (event.bstate & BUTTON1_CLICKED) {

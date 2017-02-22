@@ -22,10 +22,10 @@ Colors *load_rules(char *filename) // TODO format checks
 	colors = colors_new(def);
 	colors->def = def;
 
-	for (c = 0; c < COLOR_COUNT; ++c) {
+	for (c = 0; c < COLOR_COUNT; c++) {
 		e += fscanf(input, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->next+c);
 	}
-	for (c = 0; c < COLOR_COUNT; ++c) {
+	for (c = 0; c < COLOR_COUNT; c++) {
 		e += fscanf(input, (c == COLOR_COUNT-1) ? "%c\n" : "%c ", colors->turn+c);
 	}
 	e += fscanf(input, "%hd %hd\n", &colors->first, &colors->last);
@@ -54,10 +54,10 @@ int save_rules(char *filename, Colors *colors)
 	}
 
 	e = fprintf(output, "%hd\n", colors->def);
-	for (c = 0; c < COLOR_COUNT; ++c) {
+	for (c = 0; c < COLOR_COUNT; c++) {
 		e += fprintf(output, (c == COLOR_COUNT-1) ? "%hd\n" : "%hd ", colors->next[c]);
 	}
-	for (c = 0; c < COLOR_COUNT; ++c) {
+	for (c = 0; c < COLOR_COUNT; c++) {
 		e += fprintf(output, (c == COLOR_COUNT-1) ? "%c\n" : "%c ", colors->turn[c]);
 	}
 	e += fprintf(output, "%hd %hd\n", colors->first, colors->last);

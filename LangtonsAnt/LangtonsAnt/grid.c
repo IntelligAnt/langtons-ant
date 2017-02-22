@@ -9,7 +9,7 @@ Grid *grid_new(Colors *colors, size_t init_size)
 	Grid *grid = malloc(sizeof(Grid));
 	size_t i;
 	grid->c = malloc(init_size * sizeof(byte*));
-	for (i = 0; i < init_size; ++i) {
+	for (i = 0; i < init_size; i++) {
 		grid->c[i] = malloc(init_size);
 		memset(grid->c[i], (byte)colors->def, init_size);
 	}
@@ -42,7 +42,7 @@ static void grid_delete_n(Grid *grid)
 {
 	size_t i;
 	grid_delete_tmp(grid);
-	for (i = 0; i < grid->size; ++i) {
+	for (i = 0; i < grid->size; i++) {
 		free(grid->c[i]);
 	}
 	free(grid->c);
@@ -112,7 +112,7 @@ static void grid_expand_n(Grid *grid)
 	size_t pre = old*(GRID_MULT/2), post = old*(GRID_MULT/2+1);
 	
 	grid_fill_tmp(grid);
-	for (i = 0; i < size; ++i) {
+	for (i = 0; i < size; i++) {
 		memset(grid->tmp[i], grid->def_color, size);
 		if (i >= pre && i < post) {
 			memcpy(&grid->tmp[i][pre], grid->c[i-pre], old);
@@ -132,7 +132,7 @@ static void grid_expand_s(Grid *grid)
 	size_t old = grid->size, size = GRID_MULT*old, i;
 	Cell **new = malloc(size*sizeof(Cell*)), *t;
 
-	for (i = 0; i < size; ++i) {
+	for (i = 0; i < size; i++) {
 		if (is_in_old_matrix_row(i, old)) {
 			new[i] = grid->csr[i-old];
 			grid->csr[i-old] = NULL;

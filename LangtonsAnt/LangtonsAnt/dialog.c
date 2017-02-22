@@ -119,7 +119,7 @@ Vector2i get_dialog_tile_pos(color_t color)
 		return VECTOR_INVALID;
 	}
 
-	for (i = 0; i < color; ++i) {
+	for (i = 0; i < color; i++) {
 		if (i == fg || cidx != CIDX_DEFAULT && i == stgs.colors->def) {
 			continue;
 		}

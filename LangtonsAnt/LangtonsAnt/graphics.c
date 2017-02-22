@@ -7,7 +7,7 @@ chtype fg_pair, bg_pair, ui_pair;
 void init_def_pairs(color_t fg_color, color_t bg_color)
 {
 	color_t i;
-	for (i = 0; i < COLOR_COUNT; ++i) {
+	for (i = 0; i < COLOR_COUNT; i++) {
 		if (i == bg_color) {
 			init_pair(i+1, i, fg_color);
 			bg_pair = GET_PAIR_FOR(i);
@@ -84,7 +84,7 @@ void draw_square(WINDOW *w, Vector2i top_left, size_t size)
 		mvwaddch(w, top_left.y, top_left.x, ACS_BLOCK);
 		return;
 	}
-	for (i = 0; i < size; ++i) {
+	for (i = 0; i < size; i++) {
 		mvwhline(w, top_left.y+i, top_left.x, ACS_BLOCK, size);
 	}
 }
@@ -96,7 +96,7 @@ void draw_rect(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 		mvwaddch(w, top_left.y, top_left.x, ACS_BLOCK);
 		return;
 	}
-	for (i = 0; i < height; ++i) {
+	for (i = 0; i < height; i++) {
 		mvwhline(w, top_left.y+i, top_left.x, ACS_BLOCK, width);
 	}
 }
@@ -116,11 +116,11 @@ void draw_border(WINDOW *w, Vector2i top_left, size_t width, size_t height)
 		mvwaddch(w, top_left.y,   top_left.x+x, ACS_PLUS);
 		mvwaddch(w, top_left.y+y, top_left.x,   ACS_PLUS);
 	}
-	for (i = 1; i < width-1; ++i) {
+	for (i = 1; i < width-1; i++) {
 		mvwaddch(w, top_left.y,   top_left.x+i, ACS_HLINE);
 		mvwaddch(w, top_left.y+y, top_left.x+i, ACS_HLINE);
 	}
-	for (i = 1; i < height-1; ++i) {
+	for (i = 1; i < height-1; i++) {
 		mvwaddch(w, top_left.y+i, top_left.x,   ACS_VLINE);
 		mvwaddch(w, top_left.y+i, top_left.x+x, ACS_VLINE);
 	}
@@ -130,7 +130,7 @@ void draw_sprite(WINDOW *w, SpriteInfo sprite, Vector2i top_left, bool overwrite
 {
 	size_t read, y, x;
 	byte pixel;
-	for (read = 0; read < sprite.width*sprite.height; ++read) {
+	for (read = 0; read < sprite.width*sprite.height; read++) {
 		pixel = sprite.data[read/8] >> (7-read%8) & 0x1;
 		y = read / sprite.width, x = read % sprite.width;
 		if (overwrite) {

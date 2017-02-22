@@ -31,7 +31,7 @@ static Vector2i pos2yx(Vector2i pos, int line_width, int cell_size, int offset)
 static void draw_buffer_zone(int total, int offset)
 {
 	int n = GRID_WINDOW_SIZE, i;
-	for (i = 0; i < offset; ++i) {
+	for (i = 0; i < offset; i++) {
 		mvwhline(gridw, i,     i,     ACS_BLOCK, n-i);
 		mvwvline(gridw, i,     i,     ACS_BLOCK, n-i);
 		mvwhline(gridw, n-1-i, i,     ACS_BLOCK, n-i);
@@ -110,15 +110,15 @@ static void bordered(Grid *grid, Ant *ant, int line_width)
 	/* Draw grid lines */
 	wattrset(gridw, fg_pair);
 	for (i = 0; i < GRID_WINDOW_SIZE; i += cs+line_width) {
-		for (j = 0; j < line_width; ++j) {
+		for (j = 0; j < line_width; j++) {
 			mvwhline(gridw, o+i+j, o,     ACS_BLOCK, t);
 			mvwvline(gridw, o,     o+i+j, ACS_BLOCK, t);
 		}
 	}
 	
 	/* Draw cells */
-	for (i = 0; i < gs; ++i) {
-		for (j = 0; j < gs; ++j) {
+	for (i = 0; i < gs; i++) {
+		for (j = 0; j < gs; j++) {
 			pos.y = i, pos.x = j;
 			yx = pos2yx(pos, line_width, cs, o);
 			draw_cell(yx, cs, GRID_COLOR_AT(grid, pos),
@@ -150,8 +150,8 @@ static void borderless(Grid *grid, Ant *ant)
 	}
 
 	/* Draw cells */
-	for (i = 0; i < vgs; ++i) {
-		for (j = 0; j < vgs; ++j) {
+	for (i = 0; i < vgs; i++) {
+		for (j = 0; j < vgs; j++) {
 			rel.y = i, rel.x = j;
 			yx = pos2yx(rel, 0, cs, o);
 			pos = rel2abs(rel, origin);
@@ -175,7 +175,7 @@ void draw_grid_full(Grid *grid, Ant *ant)
 	} else {
 		int i;
 		wattrset(gridw, bg_pair);
-		for (i = 0; i < GRID_WINDOW_SIZE; ++i) {
+		for (i = 0; i < GRID_WINDOW_SIZE; i++) {
 			mvwhline(gridw, i, 0, ACS_BLOCK, GRID_WINDOW_SIZE);
 		}
 	}

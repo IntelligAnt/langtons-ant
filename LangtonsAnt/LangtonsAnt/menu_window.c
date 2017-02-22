@@ -443,7 +443,7 @@ static void draw_steps(void)
 	}
 
 	sprintf(digits, "%8d", steps);
-	for (d = digits; d < digits+8; ++d) {
+	for (d = digits; d < digits+8; d++) {
 		if (*d != ' ') {
 			int digit = *d - '0';
 			wattroff(menuw, A_REVERSE);

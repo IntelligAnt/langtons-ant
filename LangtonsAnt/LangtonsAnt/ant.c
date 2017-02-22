@@ -54,6 +54,11 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 		*c = (byte)colors->next[*c];
 	}
 
+	turn = colors->turn[*c];
+	assert(abs(turn) == 1);
+	*c = (byte)colors->next[*c];
+	change_dir(ant, turn);
+
 	if (is_def) {
 		grid->colored++;
 		update_bounding_box(grid, ant->pos);
@@ -61,11 +66,6 @@ static void ant_move_n(Ant *ant, Grid *grid, Colors *colors)
 			grid_make_sparse(grid);
 		}
 	}
-	
-	turn = colors->turn[*c];
-	assert(abs(turn) == 1);
-	*c = (byte)colors->next[*c];
-	change_dir(ant, turn);
 }
 
 static void ant_move_s(Ant *ant, Grid *grid, Colors *colors)

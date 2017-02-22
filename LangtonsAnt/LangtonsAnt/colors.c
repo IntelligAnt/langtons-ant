@@ -7,7 +7,7 @@ Colors *colors_new(color_t def)
 	assert(def >= 0 && def < COLOR_COUNT);
 	Colors *colors = malloc(sizeof(Colors));
 	int i;
-	for (i = 0; i < COLOR_COUNT; ++i) {
+	for (i = 0; i < COLOR_COUNT; i++) {
 		colors->next[i] = def;
 		colors->turn[i] = TURN_NONE;
 	}
@@ -45,7 +45,7 @@ void add_color(Colors *colors, color_t c, turn_t turn)
 	colors->turn[c] = turn;
 
 	update_def(colors);
-	++colors->n;
+	colors->n++;
 }
 
 void remove_color(Colors *colors, color_t c)
@@ -65,7 +65,7 @@ void remove_color(Colors *colors, color_t c)
 	if (colors->first == c) {
 		colors->first = colors->next[colors->last] = colors->next[c];
 	}
-	for (i = 0; i < COLOR_COUNT; ++i) {
+	for (i = 0; i < COLOR_COUNT; i++) {
 		if (colors->next[i] == c) {
 			colors->next[i] = colors->next[c];
 			if (colors->turn[i] != TURN_NONE && colors->last == c) {
@@ -79,7 +79,7 @@ void remove_color(Colors *colors, color_t c)
 void remove_all_colors(Colors *colors)
 {
 	color_t i;
-	for (i = 0; i < COLOR_COUNT; ++i) {
+	for (i = 0; i < COLOR_COUNT; i++) {
 		colors->next[i] = colors->def;
 		colors->turn[i] = TURN_NONE;
 	}
@@ -91,7 +91,7 @@ void set_color(Colors *colors, size_t index, color_t c, turn_t turn)
 {
 	color_t prev = colors->last, i = colors->first, j;
 	assert(index < colors->n);
-	for (; index > 0; --index) {
+	for (; index > 0; index--) {
 		prev = i;
 		i = colors->next[i];
 	}
@@ -101,7 +101,7 @@ void set_color(Colors *colors, size_t index, color_t c, turn_t turn)
 	colors->turn[c] = turn;
 	
 	colors->next[i] = c; // Special
-	for (j = 0; j < COLOR_COUNT; ++j) {
+	for (j = 0; j < COLOR_COUNT; j++) {
 		if (colors->next[j] == i) {
 			colors->next[j] = c;
 		}
@@ -121,7 +121,7 @@ void set_turn(Colors *colors, size_t index, turn_t turn)
 {
 	color_t i = colors->first;
 	assert(index < colors->n);
-	for (; index > 0; --index) {
+	for (; index > 0; index--) {
 		i = colors->next[i];
 	}
 	colors->turn[i] = turn;
@@ -132,7 +132,7 @@ color_t get_color_at(Colors *colors, size_t index)
 {
 	color_t i = colors->first;
 	assert(index < colors->n);
-	for (; index > 0; --index) {
+	for (; index > 0; index--) {
 		i = colors->next[i];
 	}
 	return i;
