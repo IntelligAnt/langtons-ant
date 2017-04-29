@@ -49,16 +49,16 @@ input_t grid_key_command(Grid *grid, Ant *ant, int key)
 		break;
 
 		/* Jump to bounds */
-	case KEY_PPAGE: case 'I': case 'i':
+	case KEY_PPAGE:
 		set_scroll(grid, tl.y+o, gridscrl.x);
 		break;
-	case KEY_NPAGE: case 'K': case 'k':
+	case KEY_NPAGE:
 		set_scroll(grid, br.y-o, gridscrl.x);
 		break;
-	case KEY_HOME: case 'J': case 'j':
+	case KEY_HOME:
 		set_scroll(grid, gridscrl.y, tl.x+o);
 		break;
-	case KEY_END: case 'L': case 'l':
+	case KEY_END:
 		set_scroll(grid, gridscrl.y, br.x-o);
 		break;
 
