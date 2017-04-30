@@ -30,27 +30,27 @@ static const char *dir_msg    = "ANT DIRECTION:";
 static const char *speed_msg  = "SIMULATION SPEED";
 static const char *stepup_msg = "STEP+";
 static const char *func_msg   = "STATE FUNCTION:";
-static const char *sparse_msg = "SPARSE MATRIX";
 static const char *size_msg   = "GRID SIZE:";
+static const char *sparse_msg = "SPARSE";
 static const char *steps_msg  = "STEPS:";
 
 static const Vector2i logo_pos       = { 3,  1 };
 static const Vector2i logo_msg_pos   = { 12, 2 };
-static const Vector2i rules_pos      = { MENU_LOGO_HEIGHT+5,    MENU_TILE_SIZE+MENU_TILE_HSEP+3 };
-static const Vector2i rules_msg_pos  = { MENU_LOGO_HEIGHT,      2 };
-static const Vector2i isize_pos      = { MENU_LOGO_HEIGHT+2,    MENU_WINDOW_WIDTH-5 };
-static const Vector2i isize_msg_pos  = { MENU_LOGO_HEIGHT,      MENU_RIGHT_COLUMN };
-static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,    MENU_RIGHT_COLUMN };
-static const Vector2i speed_pos      = { MENU_SPEED_POS+2,      MENU_WINDOW_WIDTH-5 };
-static const Vector2i speed_msg_pos  = { MENU_SPEED_POS,        MENU_RIGHT_COLUMN };
-static const Vector2i stepup_msg_pos = { MENU_SPEED_POS+18,     MENU_RIGHT_COLUMN+2 };
-static const Vector2i func_pos       = { MENU_FUNCTION_POS+2,   MENU_RIGHT_COLUMN+4 };
-static const Vector2i func_msg_pos   = { MENU_FUNCTION_POS,     MENU_RIGHT_COLUMN };
-static const Vector2i status_msg_pos = { MENU_WINDOW_HEIGHT-12, 2 };
-static const Vector2i size_pos       = { MENU_WINDOW_HEIGHT-10, MENU_WINDOW_WIDTH-2 };
-static const Vector2i size_msg_pos   = { MENU_WINDOW_HEIGHT-10, 2 };
-static const Vector2i steps_pos      = { MENU_WINDOW_HEIGHT-8,  9 };
-static const Vector2i steps_msg_pos  = { MENU_WINDOW_HEIGHT-4,  2 };
+static const Vector2i rules_pos      = { MENU_LOGO_HEIGHT+5,  MENU_TILE_SIZE+MENU_TILE_HSEP+3 };
+static const Vector2i rules_msg_pos  = { MENU_LOGO_HEIGHT,    2 };
+static const Vector2i isize_pos      = { MENU_LOGO_HEIGHT+2,  MENU_WINDOW_WIDTH-5 };
+static const Vector2i isize_msg_pos  = { MENU_LOGO_HEIGHT,    MENU_RIGHT_COLUMN };
+static const Vector2i dir_msg_pos    = { MENU_DIRECTION_POS,  MENU_RIGHT_COLUMN };
+static const Vector2i speed_pos      = { MENU_SPEED_POS+2,    MENU_WINDOW_WIDTH-5 };
+static const Vector2i speed_msg_pos  = { MENU_SPEED_POS,      MENU_RIGHT_COLUMN };
+static const Vector2i stepup_msg_pos = { MENU_SPEED_POS+18,   MENU_RIGHT_COLUMN+2 };
+static const Vector2i func_pos       = { MENU_FUNCTION_POS+2, MENU_RIGHT_COLUMN+4 };
+static const Vector2i func_msg_pos   = { MENU_FUNCTION_POS,   MENU_RIGHT_COLUMN };
+static const Vector2i size_pos       = { MENU_STATUS_POS,     MENU_WINDOW_WIDTH-2 };
+static const Vector2i size_msg_pos   = { MENU_STATUS_POS,     2 };
+static const Vector2i sparse_msg_pos = { MENU_STATUS_POS+3,   2 };
+static const Vector2i steps_pos      = { MENU_STATUS_POS+2,   9 };
+static const Vector2i steps_msg_pos  = { MENU_STATUS_POS+6,   2 };
 
 static const byte logo_sprite[] = {
 	0x70, 0x00, 0x02, 0x00, 0x10, 0x20, 0x00, 0x02,
@@ -69,7 +69,7 @@ static const byte logo_highlight_sprite[] = {
 static const byte arrow_sprites[][1] = {
 	{ 0x5C }, { 0xB8 }, { 0xE8 }, { 0x74 }
 };
-static const byte stepup_sprite[] = { 0xCF, 0x00 }; // > 0xCF, + 0x5D
+static const byte stepup_sprite[] = { 0x5D, 0x00 }; // > 0xCF, + 0x5D
 static const byte digit_sprites[][2] = {
 	{ 0xF6, 0xDE }, { 0x24, 0x92 }, { 0xE7, 0xCE }, { 0xE7, 0x9E }, { 0xB7, 0x92 },
 	{ 0xF3, 0x9E }, { 0xF3, 0xDE }, { 0xE4, 0x92 }, { 0xF7, 0xDE }, { 0xF7, 0x9E }
@@ -130,10 +130,10 @@ static void draw_edge(void)
 
 	if (sim && is_grid_sparse(sim->grid)) {
 		wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR_S));
-		mvwaddstr(menuw, status_msg_pos.y, status_msg_pos.x, sparse_msg);
+		mvwaddstr(menuw, sparse_msg_pos.y, sparse_msg_pos.x, sparse_msg);
 	} else {
 		wattrset(menuw, GET_PAIR_FOR(MENU_EDGE_COLOR));
-		mvwhline(menuw, status_msg_pos.y, status_msg_pos.x, ' ', strlen(sparse_msg));
+		mvwhline(menuw, sparse_msg_pos.y, sparse_msg_pos.x, ' ', strlen(sparse_msg));
 	}
 
 	mvwhline(menuw, 0,   0,   ACS_BLOCK, h);
