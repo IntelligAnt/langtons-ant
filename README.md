@@ -1,5 +1,7 @@
 # Langton's Ant
 
-14-color 2D Turing machine simulator with ASCII graphics, written in C
+Simulator for a two-dimensional, 14-color [Langton's ant](https://en.wikipedia.org/wiki/Langton%27s_ant) Turing machine (or, more precisely, a [turmite](https://en.wikipedia.org/wiki/Turmite)).
 
-v2.0
+Written in C. Uses [PDCurses](https://github.com/wmcbrine/PDCurses) for character graphics.
+
+Initially written as an assignment for the Numerical Analysis and Discreet Mathematics (SI2NAD) course at the University of Belgrade, School of Electrical Engineering (ETF).
